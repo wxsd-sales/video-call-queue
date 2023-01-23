@@ -8,8 +8,8 @@
   import Weather from '$components/Weather/Weather.svelte';
   import DeviceCode from '$components/DeviceCode/DeviceCode.svelte';
 
-  import Responder from './responder/index.svelte';
-  import Requester from './requester/index.svelte';
+  import Responder from './.Responder.svelte';
+  import Requester from './.Requester.svelte';
 
   import type { Demo } from 'src/database/entities';
   import { tokenResponseStore } from '$lib/store';

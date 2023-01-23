@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let demos = [];
+  import type { Demo } from 'src/database/entities';
+
+  export let demos: Array<Demo>;
 </script>
 
 <div class="container px-4 mb-6">

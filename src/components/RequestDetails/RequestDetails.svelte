@@ -1,8 +1,10 @@
 <script lang="ts">
   import { readable } from 'svelte/store';
-  import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-  import type { RequestInfo } from './types';
-  import { SESSION_STATUS } from './enums';
+  import { BROWSER_VISIBILITY_STATUS, MEETING_TYPE_OPTIONS, SESSION_STATUS } from '$lib/enums';
+  import type { RequestInfo } from '$lib/types';
+
+  export const CLOSE_REQUEST = 'close-request';
+  export const FORCE_CLOSE_REQUEST = 'force-close-request';
 
   export let onClick: (requestInfo: RequestInfo) => void;
   export let requestInfo: RequestInfo;
@@ -23,7 +25,7 @@
   mstime.subscribe(() => {
     if (minutes === 0 && seconds === 0) {
       if (requestInfo.sessionStatus === SESSION_STATUS.INACTIVE) {
-        onClick({ ...requestInfo, command: 'force-close' });
+        onClick({ ...requestInfo, command: FORCE_CLOSE_REQUEST });
       }
     }
   });
@@ -33,10 +35,10 @@
   };
 
   const close = () => {
-    onClick({ ...requestInfo, command: 'close' });
+    onClick({ ...requestInfo, command: CLOSE_REQUEST });
   };
 
-  $: time = Math.floor(($mstime - requestInfo.timeStamp) / 1000);
+  $: time = Math.floor(($mstime - new Date(requestInfo.timeStamp).getTime()) / 1000);
   $: toWait = timer - time > 0 ? timer - time : 0;
   $: minutes = Math.floor(toWait / 60);
   $: seconds = toWait - minutes * 60;
@@ -63,7 +65,7 @@
             class={`icon has-text-${
               requestInfo?.sessionStatus === SESSION_STATUS.ACTIVE
                 ? 'danger'
-                : requestInfo?.status === SESSION_STATUS.ACTIVE
+                : requestInfo?.visibilityStatus === BROWSER_VISIBILITY_STATUS.ACTIVE
                 ? 'success'
                 : 'warning'
             }`}
@@ -78,7 +80,7 @@
         </div>
       </div>
       <div class="column has-text-white is-4 is-size-6 has-text-right">
-        {requestInfo?.timeStamp.format('LT')}
+        {requestInfo?.timeStamp.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
       </div>
     </div>
     <div class="columns mb-5 mt-4">

@@ -1,13 +1,12 @@
-# RoomOS Device Widgets
+# Video Call Queue
 
-**An app for demoing RoomOS device capabilities in Kiosk/PWA mode.**
+**An app for Demoing Webex meeting capabilities.**
 
-This is a proof-of-concept application that generates customized web application links for use on a compatible [RoomOS 11](https://help.webex.com/en-us/article/n01kjh1/New-user-experience-with-RoomOS-11) device in Kiosk/PWA mode.
-Kiosk and PWA (Persistent Web App) are new modes that make use of the in-built Web Engine on modern RoomOS devices to display a webpage or custom-made web application on the device. As a result, developers can have full control on the integrations (using APIs and SDKs), branding, controls and UI/UX presented to the end users.
+This is a proof-of-concept application that generates customized web application links to create a video call queue system backed by Webex Engine with two options: our built-in [Guest Demo](https://github.com/wxsd-sales/wxsd-guest-demo) or [Instant Connect](https://instant.webex.com/) solution.
 
 <p align="center">
    <a href="https://app.vidcast.io/share/bb910329-f398-4f04-baec-18ddaf46f493" target="_blank">
-       <img src="https://user-images.githubusercontent.com/6129517/189224369-5be0a47e-201e-4d93-8d2b-215ff85879a6.png" alt="roomos-device-widgets"/>
+       <img src="static/readme/videoQueue.gif" alt="roomos-device-widgets"/>
     </a>
 </p>
 
@@ -17,7 +16,6 @@ Kiosk and PWA (Persistent Web App) are new modes that make use of the in-built W
     
   * [Overview](#overview)
   * [Setup](#setup)
-  * [Demo](#demo)
   * [Support](#support)
 
 </details>
@@ -25,71 +23,63 @@ Kiosk and PWA (Persistent Web App) are new modes that make use of the in-built W
 
 ## Overview
 
-This application generates customized web application links to demos that you create. In this context, a "demo" is a collection of widgets (brand logo, background, sensors etc.) that make up the UI/controls of a PWA/Kiosk device. You can create multiple demos and activate them on a compatible device of your choice after logging-in. Once activated, the application uses [cloud xAPI requests](https://roomos.cisco.com/docs/Introduction.md#the-xapi) with a Webex Bot token to control the device (make calls, get room analytics data, etc.).
+As you see in the figure above, there is a list of request for a responder to manage or setup a call with. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. responder could either cancel the request or accept and start a session with the requester. After the session had ended, both responder and the requester will be redirected to the initial view.
 
-## Setup
+### Built With
 
-These instructions assume that you have:
+- [Webex Browser SDK](https://github.com/webex/webex-js-sdk)
+- [SvelteJS](https://reactjs.org)
+- [TypeScript](https://www.typescriptlang.org/)
 
-- Administrator access to an Org's Webex Control Hub and a compatible RoomOS 11 device (in a shared workspace).
-- [Docker installed](https://docs.docker.com/engine/install/) and running on a Windows (via WSL2), macOS, or Linux machine.
+<!-- GETTING STARTED -->
 
-Open a new terminal window and follow the instructions below to setup the project locally for development/demo.
+## Getting Started
 
-1. Clone this repository and change directory:
+If you would like to contribute to our source code and to improve our demo, please follow the steps mentioned below:
 
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/wxsd-sales/call-queue.git
    ```
-   git clone https://github.com/wxsd-sales/roomos-device-widgets && cd roomos-device-widgets
+2. We use NVM to manage our node.js machine versioning. You can learn more about NVM [here](https://github.com/nvm-sh/nvm)
+   ```sh
+   nvm use
    ```
-
-2. Copy `.env.example` file as `.env`:
-
+3. Install the packages via [Yarn](https://classic.yarnpkg.com/en/)
+   ```sh
+   npm i
    ```
-   cp .env.example .env
-   ```
-
-3. Review and follow the [Registering your Integration on Webex](https://developer.webex.com/docs/integrations#registering-your-integration) guide.
-
-   - Your registration must have the following [Webex REST API scopes](https://developer.webex.com/docs/integrations#scopes):
-     | Scope | Description |
-     |---------------------------|----------------------------------------------------------------------------------|
-     | spark-admin:devices_read | See details for any device in your organization |
-     | spark-admin:devices_write | Create, update and delete devices and device configurations in your organization |
-     | spark:kms | Permission to interact with encrypted content |
-   - Use these Redirect URIs:
-     - `https://localhost/auth/webex/callback`
-     - `http://localhost/auth/webex/callback`
-   - Take note of your Client ID and Client Secret. Assign these values to the `WEBEX_AUTHORIZATION_CODE_CLIENT_ID`
-     and `WEBEX_AUTHORIZATION_CODE_CLIENT_SECRET` environment variables within the `.env` file respectively.
-
-4. Review and follow the [Registering your Integration on Webex](https://developer.webex.com/docs/integrations#registering-your-integration) guide.
-
-   - Your registration must have the following [Webex REST API scopes](https://developer.webex.com/docs/integrations#scopes):
-     | Scope | Description |
-     |-------------------------|-----------------------------------------------|
-     | spark:people_read | Access to read your user's company directory |
-     | spark:kms | Permission to interact with encrypted content |
-   - Use this Redirect URI: `https://oauth-helper-a.wbx2.com/helperservice/v1/actions/device/callback`
-   - Take note of your Client ID and Client Secret. Assign these values to the `WEBEX_DEVICE_CODE_CLIENT_ID`
-     and `WEBEX_DEVICE_CODE_CLIENT_SECRET` environment variables within the `.env` file respectively.
-
-5. Review and follow the [Creating a Webex Bot](https://developer.webex.com/docs/bots#creating-a-webex-bot) guide.
-   Take note of your Bot ID and Bot access token. Assign these values to the `WEBEX_BOT_ID` and
-   `WEBEX_BOT_TOKEN` environment variables within the `.env` file respectively.
-
-6. Set other environment variables as needed in the `.env` file.
-
-7. Start the application using:
-   ```
-   docker-compose up
+4. Start the server
+   ```sh
+   npm start
    ```
 
-Lastly, navigate to `http://localhost` in your browser and follow instructions.
+### Trouble Shooting
 
-## Demo
+In case of not receiving the request on the responder's view, the fastest approach to fix the issue would be to restart the `soapbox-redis` instance in lens platform. This would resolve the issue by clearing out the queue which might have been populated in an incorrect order.
 
-A video where we demo this PoC is available on Vidcast — https://app.vidcast.io/share/bb910329-f398-4f04-baec-18ddaf46f493.
+<!-- CONTRIBUTING -->
 
-## Support
+## Contributing
 
-Please reach out to the WXSD team at [wxsd@external.cisco.com](mailto:wxsd@external.cisco.com?cc=ashessin@cisco.com&subject=Azure%20Group%20Sync) or contact me on Webex (ashessin@cisco.com).
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch in your forked repo (`git checkout -b myrepo/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin myrepo/AmazingFeature`)
+5. Open a Pull Request
+
+<!-- LICENSE -->
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+<!-- CONTACT -->
+
+## Contact
+
+Please reach out to the WXSD team at [wxsd@external.cisco.com](mailto:wxsd@external.cisco.com?cc=ashessin@cisco.com&subject=Azure%20Group%20Sync) or contact me on Webex (akoushke@cisco.com).

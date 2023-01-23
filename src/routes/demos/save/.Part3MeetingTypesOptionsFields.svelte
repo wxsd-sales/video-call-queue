@@ -3,19 +3,25 @@
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
 
   import Modal from '$components/Modal/Modal.svelte';
+  import { BROWSER_SDK_GETTING_STARTED_URL, INSTANT_CONNECT_GETTING_STARTED_URL } from '$lib/constants';
 
   export let isSDK: boolean, isIC: boolean, isSIP: boolean, showSIPWarningModal: boolean;
-  let isNotRequired = isSDK || isIC || isSIP;
 
+  let isNotRequired = isSDK || isIC || isSIP;
   let SDKCheckBoxElement: HTMLInputElement;
   let ICCheckBoxElement: HTMLInputElement;
-  let SIPCheckBoxElement: HTMLInputElement;
+  // let SIPCheckBoxElement: HTMLInputElement;
 
-  const handleClick = () => {
-    isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked || SIPCheckBoxElement.checked;
+  /**
+   * All checkboxes required statues may disable if only one checkbox is checked.
+   *
+   * @returns {void}
+   */
+  const handleCheckboxesRequiredStatus = () => {
+    isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked;
   };
 
-  const dispatch = createEventDispatcher();
+  // const dispatch = createEventDispatcher();
 
   $: if (showSIPWarningModal) isSIP = false;
 </script>
@@ -25,7 +31,7 @@
     <h2 class="title">Video Call Options</h2>
   </div>
   <div class="column is-full content mb-0">
-    <p>Provide a list of Meeting type options for a requester to choose from.</p>
+    <p>Provide a list of video call options for a requester to choose from.</p>
   </div>
   <!-- A -->
   <div class="column is-one-half">
@@ -36,17 +42,14 @@
         id={MEETING_TYPE_OPTIONS.BROWSER_SDK}
         name={MEETING_TYPE_OPTIONS.BROWSER_SDK}
         bind:this={SDKCheckBoxElement}
-        on:input={handleClick}
+        on:input={handleCheckboxesRequiredStatus}
         required={!isNotRequired}
       />
       Meeting Browser SDK
     </label>
     <div class="help">
       <p>
-        For more information click <a
-          target="_blank"
-          href="https://developer.webex.com/docs/sdks/browser#getting-started">here</a
-        >
+        For more information click <a target="_blank" href={BROWSER_SDK_GETTING_STARTED_URL}>here</a>
       </p>
     </div>
   </div>
@@ -58,14 +61,14 @@
         id={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
         name={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
         bind:this={ICCheckBoxElement}
-        on:input={handleClick}
+        on:input={handleCheckboxesRequiredStatus}
         required={!isNotRequired}
       />
       Instant Connect
     </label>
     <div class="help">
       <p>
-        For more information click <a target="_blank" href="https://instant.webex.com/">here</a>
+        For more information click <a target="_blank" href={INSTANT_CONNECT_GETTING_STARTED_URL}>here</a>
       </p>
     </div>
   </div>
@@ -77,7 +80,7 @@
         id={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
         name={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
         bind:this={SIPCheckBoxElement}
-        on:input={handleClick}
+        on:input={handleCheckboxesRequiredStatus}
         on:click={() => dispatch('showAuthWarningModal', { checkSIPBox: !isSIP })}
         required={!isNotRequired}
       />

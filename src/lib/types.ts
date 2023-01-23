@@ -1,80 +1,17 @@
-import type { JSONObject } from '@sveltejs/kit/types/private';
+import type {
+  MEETING_TYPE_OPTIONS,
+  SESSION_STATUS,
+  BROWSER_VISIBILITY_STATUS,
+  WEATHER_RESPONSE_UNITS
+} from '$lib/enums';
 
-export interface RoomAnalytics {
-  ambientNoiseLevelA?: number;
-  ambientTemperature?: number;
-  airQualityIndex?: number;
-  peopleCountCapacity?: number;
-  peopleCountCurrent?: number;
-  soundLevelA?: number;
-  relativeHumidity?: number;
-  peoplePresence?: boolean;
-  t3AlarmDetected?: boolean;
-  engagementCloseProximity?: boolean;
-}
-
-export interface Peripheral {
-  id: number;
-  status: number;
-  roomAnalytics?: RoomAnalytics;
-  networkAddress?: string;
-  softwareInfo?: string;
-  hardwareInfo?: string;
-  serialNumber?: string;
-  type?:
-    | 'AudioAmplifier'
-    | 'AudioMicrophone'
-    | 'Byod'
-    | 'Camera'
-    | 'ControlSystem'
-    | 'InputDevice'
-    | 'ISDNLink'
-    | 'Other'
-    | 'SpeakerTracker'
-    | 'TouchPanel'
-    | 'Headset'
-    | 'RoomScheduler'
-    | 'PersistentWebApp';
-  name?: string;
-  location?: 'OutsideRoom' | 'InsideRoom';
-}
-
-export interface Call {
-  id: number;
-  connectedAt: number;
-  callbackNumber: string;
-  status:
-    | 'Connected'
-    | 'Connecting'
-    | 'Dialling'
-    | 'Disconnecting'
-    | 'EarlyMedia'
-    | 'Idle'
-    | 'OnHold'
-    | 'Preserved'
-    | 'RemotePreserved'
-    | 'Ringing';
-  remoteNumber: string;
-  displayName: string;
-  callType: 'Audio' | 'AudioCanEscalate' | 'ForwardAllCall' | 'Unknown' | 'Video';
-  direction: 'Incoming' | 'Outgoing';
-  answerState: 'Answered' | 'Autoanswered' | 'Ignored' | 'Unanswered';
-  protocol: 'Unknown' | 'H320' | 'H323' | 'SIP' | 'Spark' | 'WebRTC';
-  capabilities?: JSONObject;
-  bookingId?: string;
-}
-
-export interface Status {
-  roomAnalytics?: RoomAnalytics;
-  peripherals?: Peripheral[];
-  calls?: Call[];
-}
-
-export enum StateKey {
-  WEBEX_TOKEN = 'WEBEX_TOKEN',
-  QUEUE_ORDER = 'QUEUE_ORDER',
-  REQUESTER_ID = 'REQUESTER_ID'
-}
+export type RequestInfo = {
+  id: string;
+  sessionStatus: SESSION_STATUS;
+  timeStamp?: Date;
+  meetingType: MEETING_TYPE_OPTIONS;
+  visibilityStatus: BROWSER_VISIBILITY_STATUS;
+};
 
 export interface TokenResponse {
   id?: string;
@@ -100,7 +37,7 @@ export interface AuthorizeResponse {
 }
 
 export interface WeatherResponse {
-  units: 'imperial' | 'metric' | 'standard';
+  units: WEATHER_RESPONSE_UNITS;
   place: string;
   timezone: number;
   temp: number;
@@ -121,33 +58,6 @@ export interface ICResponse {
   host: [hostData: string];
 }
 
-export interface ICTOken {
+export interface ICToken {
   token: string;
-}
-
-export interface PersonResponse {
-  avatar?: string;
-  created: string;
-  displayName?: string;
-  emails: string[];
-  firstName?: string;
-  id: string;
-  lastActivity?: string;
-  lastModified?: string;
-  lastName?: string;
-  nickName?: string;
-  orgId?: string;
-  phoneNumbers?: { type: string; value: string }[];
-  status?:
-    | 'active'
-    | 'call'
-    | 'DoNotDisturb'
-    | 'inactive'
-    | 'meeting'
-    | 'OutOfOffice'
-    | 'pending'
-    | 'presenting'
-    | 'unknown';
-  type: 'person' | 'bot';
-  userName?: string;
 }
