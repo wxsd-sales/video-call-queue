@@ -13,10 +13,10 @@ export const GET = async (requestEvent: RequestEvent) => {
         strategy: LoadStrategy.JOINED
       })
       .then((r) => r?.demos.toJSON())
-      .then((r) => r?.map(({ user, ...demo }) => demo));
+      .then((r) => r?.map(({ ...demo }) => demo));
 
     return { status: 200, body: { demos } };
   }
 
-  return { status: 422 };
+  return { status: 302, headers: { Location: '/auth' } };
 };

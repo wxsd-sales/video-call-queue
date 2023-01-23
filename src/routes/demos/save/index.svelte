@@ -1,14 +1,15 @@
 <script lang="ts">
-  import DemoFields from '.Part0DemoFields.svelte';
-  import BackgroundFields from '.Part1BackgroundFields.svelte';
-  import BrandFields from '.Part2BrandFields.svelte';
-  import ButtonsFields from '.Part3ButtonsFields.svelte';
-  import GuestInviteFields from '.Part4GuestInviteFields.svelte';
-  import NewsFields from '.Part5NewsFields.svelte';
-  import WeatherFields from '.Part6WeatherFields.svelte';
+  import DemoFields from './.Part0DemoFields.svelte';
+  import BackgroundFields from './.Part1BackgroundFields.svelte';
+  import BrandFields from './.Part2BrandFields.svelte';
+  import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
+  import AuthenticationRequirement from './.Part4AuthenticationRequirementFields.svelte';
+  import WeatherFields from './.Part5WeatherFields.svelte';
+
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
+  import { MEETING_TYPE_OPTIONS } from '$lib/enums';
 
   export let form = undefined;
   export let name = undefined;
@@ -18,18 +19,19 @@
   export let logo = undefined;
   export let title = undefined;
   export let subtitle = undefined;
-  export let aText = undefined;
-  export let aLink = undefined;
-  export let bText = undefined;
-  export let bLink = undefined;
-  export let cText = undefined;
-  export let cLink = undefined;
-  export let destination = undefined;
-  export let url = undefined;
   export let cityId = undefined;
+  export let meetingTypeOptions: Array<MEETING_TYPE_OPTIONS>;
+  export let isSDK = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.BROWSER_SDK) : false;
+  export let isIC = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.INSTANT_CONNECT) : false;
+  export let isSIP = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.SIP_URI_DIALING) : false;
+  export let responderAuthIsRequired = undefined;
   export let units = undefined;
 
+  let showAuthWarningModal = false;
+  let showSIPWarningModal = false;
+
   const id = $page.url.searchParams.get('id');
+
   let formElement: HTMLFormElement;
 
   const toFileList = (file?: { bits: string; name: string; lastModified: number; type: string }) =>
@@ -70,11 +72,25 @@
     <BrandFields {title} {subtitle} />
   {/await}
   <hr />
-  <ButtonsFields {aText} {aLink} {bText} {bLink} {cText} {cLink} />
-  <hr />
-  <GuestInviteFields {destination} />
-  <hr />
-  <NewsFields {url} />
+  <MeetingTypesOptionsFields
+    {isSDK}
+    {isIC}
+    {isSIP}
+    {showSIPWarningModal}
+    on:showAuthWarningModal={(event) => {
+      showAuthWarningModal = event.detail.checkSIPBox;
+      if (showAuthWarningModal) showSIPWarningModal = false;
+    }}
+  />
+  <!-- <hr />
+   <AuthenticationRequirement
+    {responderAuthIsRequired}
+    {showAuthWarningModal}
+    on:showSIPWarningModal={(event) => {
+      showSIPWarningModal = event.detail.authCheckBox;
+      if (showSIPWarningModal) showAuthWarningModal = false;
+    }}
+  /> -->
   <hr />
   <WeatherFields {units} {cityId} />
   <hr />

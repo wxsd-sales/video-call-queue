@@ -34,7 +34,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (isProtectedRoute) {
     const db = await MikroORM.init({
       ...config,
-      ...{ entities: [entity.Session, entity.User, entity.Data, entity.Demo, entity.Activation] }
+      ...{ entities: [entity.Session, entity.User, entity.Data, entity.Demo] }
     }).then((r) => r.em.fork());
     const cookies = cookie.parse(event.request.headers.get('Cookie') ?? '');
     const session = cookies.sessionId

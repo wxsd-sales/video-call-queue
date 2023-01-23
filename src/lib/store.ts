@@ -1,6 +1,7 @@
-import { localStorage, sessionStorage, storage } from './shared/storage';
-import { StateKey } from './types';
+import { localStorage, sessionStorage } from './shared/storage';
+import { StateKey } from './enums';
+import type { TokenResponse } from './types';
 
-export const exampleWritable = storage<string>(StateKey.EXAMPLE_WRITABLE, 'example-writable-value');
-export const exampleSessionWritable = sessionStorage<string>(StateKey.EXAMPLE_SESSION_WRITABLE);
-export const exampleLocalWritable = localStorage<string>(StateKey.EXAMPLE_LOCAL_WRITABLE);
+export const tokenResponseStore = localStorage<TokenResponse>(StateKey.WEBEX_TOKEN);
+export const queueOrderStore = sessionStorage<number>(StateKey.QUEUE_ORDER);
+export const requesterIDStore = sessionStorage<string>(StateKey.REQUESTER_ID);

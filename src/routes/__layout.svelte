@@ -18,12 +18,7 @@
   export let email = undefined;
   export let isError = false;
 
-  let isNavVisible = !(
-    $page.url.pathname === base ||
-    $page.url.pathname === '/' ||
-    $page.url.pathname === '/index' ||
-    !isError
-  );
+  let isNavVisible = !($page.url.pathname === base || $page.url.pathname.includes('sessions') || !isError);
 
   let form: HTMLFormElement;
 
@@ -74,7 +69,7 @@
 </script>
 
 <svelte:head>
-  <title>RoomOS Device Widgets</title>
+  <title>Webex Video Call Queue</title>
 </svelte:head>
 
 <noscript id="javascript-warning" class="hero is-danger is-bold">
@@ -116,11 +111,11 @@
     <div class="navbar-brand">
       {#if email}
         <a class="navbar-item" href="/demos">
-          <img src="/favicon.png" alt="RoomOS Device Widgets" />
+          <img src="/favicon.png" alt="Webex Video Call Queue" />
         </a>
       {:else}
         <a class="navbar-item" href="/auth">
-          <img src="/favicon.png" alt="RoomOS Device Widgets" />
+          <img src="/favicon.png" alt="Webex Video Call Queue" />
         </a>
       {/if}
 
@@ -148,7 +143,10 @@
         {#if email == null}
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-fullwidth is-rounded is-primary is-light has-text-weight-bold" href="/auth">
+              <a
+                class="button is-fullwidth is-rounded is-primary is-light has-text-weight-bold"
+                href="/auth/webex/redirect"
+              >
                 <span class="icon">
                   <i class="mdi mdi-login" />
                 </span>
@@ -196,7 +194,7 @@
   <footer class="footer has-background-grey-lighter">
     <div class="content has-text-centered">
       <p>
-        <strong>RoomOS Device Widgets</strong> by
+        <strong>Video Call Queue</strong> by
         <a href="https://github.com/wxsd-sales" target="_blank" referrerpolicy="no-referrer">WXSD-Sales</a>.<br />
         &copy; {new Date().getUTCFullYear()} Webex by Cisco
       </p>

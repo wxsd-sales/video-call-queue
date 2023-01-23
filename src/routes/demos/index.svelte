@@ -1,20 +1,11 @@
 <script lang="ts">
-  export let demos = [];
+  import type { Demo } from 'src/database/entities';
+
+  export let demos: Array<Demo>;
 </script>
 
 <div class="container px-4 mb-6">
   <div class="columns is-vcentered">
-    <div class="column is-3">
-      <a
-        class="button is-fullwidth is-rounded is-primary is-light is-justify-content-space-between"
-        href="/demos/activate"
-      >
-        <span class="icon">
-          <i class="mdi mdi-wrench" />
-        </span>
-        <span>Activate</span>
-      </a>
-    </div>
     <div class="column is-3">
       <a class="button is-fullwidth is-rounded is-light is-justify-content-space-between" href="/demos/save">
         <span class="icon">
@@ -23,7 +14,7 @@
         <span>New</span>
       </a>
     </div>
-    <div class="column is-6 has-text-centered has-text-right-tablet">
+    <div class="column is-9 has-text-centered has-text-right-tablet">
       <p>Last refreshed at: {new Date().toLocaleString()}</p>
     </div>
   </div>
@@ -64,12 +55,12 @@
           <p class="level-right">{demo.uuid}</p>
         </div>
         <div class="level is-mobile mb-0">
-          <p class="level-left">updated</p>
-          <p class="level-right">{new Date(demo.updatedAt).toLocaleString()}</p>
+          <p class="level-left">Requester URL</p>
+          <a class="level-right" target="_blank" href={`/sessions/${demo.uuid}?role=requester`}>Link</a>
         </div>
         <div class="level is-mobile mb-0">
-          <p class="level-left">created</p>
-          <p class="level-right">{new Date(demo.createdAt).toLocaleString()}</p>
+          <p class="level-left">Responder URL</p>
+          <a class="level-right" target="_blank" href={`/sessions/${demo.uuid}?role=responder`}>Link</a>
         </div>
       </div>
     </div>

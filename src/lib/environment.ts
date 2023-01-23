@@ -26,21 +26,6 @@ export class Environment {
   public readonly APP_PREVIEW_PASSWORD: string;
 
   @IsUrl()
-  public readonly GOOGLE_NEWS_RSS_URL: string;
-
-  @IsUrl()
-  public readonly GUEST_DEMO_API_URL: string;
-
-  @IsNotEmpty()
-  public readonly GUEST_DEMO_CREATE_ENDPOINT: string;
-
-  @IsUrl()
-  public readonly IMI_WEBHOOK_URL: string;
-
-  @IsNotEmpty()
-  public readonly IMI_SMS_ENDPOINT: string;
-
-  @IsUrl()
   public readonly OPENWEATHERMAP_API_URL: string;
 
   @IsNotEmpty()
@@ -103,21 +88,37 @@ export class Environment {
   public readonly WEBEX_NOTIFICATION_CHANNEL_TOKEN: string;
 
   @IsUrl()
-  public readonly UPSTASH_REDIS_REST_URL: string;
+  public readonly MINDY_REST_URL: string;
+
+  @IsUrl()
+  public readonly INSTANT_CONNECT_REST_URL: string;
 
   @IsNotEmpty()
-  public readonly UPSTASH_REDIS_REST_TOKEN: string;
+  public readonly INSTANT_CONNECT_USER_TOKEN: string;
+
+  @IsNotEmpty()
+  public readonly INSTANT_CONNECT_AUD: string;
+
+  @IsNotEmpty()
+  public readonly INSTANT_CONNECT_ORG_ID: string;
+
+  @IsNotEmpty()
+  public readonly PUBLIC_INSTANT_CONNECT_TALK_URL: string;
+
+  @IsNotEmpty()
+  public readonly PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL: string;
+
+  @IsNotEmpty()
+  public readonly PUBLIC_NODE_SERVER_URL_SIP_DEMO: string;
+
+  @IsNotEmpty()
+  public readonly PUBLIC_SOAP_BOX_URL: string;
 
   constructor() {
     dotenvExpand.expand(dotenv.config());
     this.APP_URL = process.env.APP_URL || dev ? 'https://localhost:5173' : 'https://localhost:4173';
     this.APP_PREVIEW_EMAIL = process.env.APP_PREVIEW_EMAIL as string;
     this.APP_PREVIEW_PASSWORD = process.env.APP_PREVIEW_PASSWORD as string;
-    this.GOOGLE_NEWS_RSS_URL = process.env.GOOGLE_NEWS_RSS_URL as string;
-    this.GUEST_DEMO_API_URL = process.env.GUEST_DEMO_API_URL as string;
-    this.GUEST_DEMO_CREATE_ENDPOINT = process.env.GUEST_DEMO_CREATE_ENDPOINT as string;
-    this.IMI_WEBHOOK_URL = process.env.IMI_WEBHOOK_URL as string;
-    this.IMI_SMS_ENDPOINT = process.env.IMI_SMS_ENDPOINT as string;
     this.OPENWEATHERMAP_API_URL = process.env.OPENWEATHERMAP_API_URL as string;
     this.OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY as string;
     this.WEBEX_API_URL = process.env.WEBEX_API_URL as string;
@@ -138,8 +139,15 @@ export class Environment {
     this.WEBEX_BOT_TOKEN = process.env.WEBEX_BOT_TOKEN as string;
     this.WEBEX_NOTIFICATION_CHANNEL_ID = process.env.WEBEX_NOTIFICATION_CHANNEL_ID as string;
     this.WEBEX_NOTIFICATION_CHANNEL_TOKEN = process.env.WEBEX_NOTIFICATION_CHANNEL_TOKEN as string;
-    this.UPSTASH_REDIS_REST_URL = process.env.UPSTASH_REDIS_REST_URL as string;
-    this.UPSTASH_REDIS_REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN as string;
+    this.MINDY_REST_URL = process.env.MINDY_REST_URL as string;
+    this.INSTANT_CONNECT_REST_URL = process.env.INSTANT_CONNECT_REST_URL as string;
+    this.INSTANT_CONNECT_USER_TOKEN = process.env.INSTANT_CONNECT_USER_TOKEN as string;
+    this.INSTANT_CONNECT_AUD = process.env.INSTANT_CONNECT_AUD as string;
+    this.INSTANT_CONNECT_ORG_ID = process.env.INSTANT_CONNECT_ORG_ID as string;
+    this.PUBLIC_INSTANT_CONNECT_TALK_URL = process.env.PUBLIC_INSTANT_CONNECT_TALK_URL as string;
+    this.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL = process.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL as string;
+    this.PUBLIC_NODE_SERVER_URL_SIP_DEMO = process.env.PUBLIC_NODE_SERVER_URL_SIP_DEMO as string;
+    this.PUBLIC_SOAP_BOX_URL = process.env.PUBLIC_SOAP_BOX_URL as string;
   }
 }
 
