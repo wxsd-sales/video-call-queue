@@ -29,6 +29,7 @@
   let incomingMeetingURL: string = '';
 
   let meetingType: MEETING_TYPE_OPTIONS = meetingTypeOptions[0];
+  let displayMeetingOptions = meetingTypeOptions.length !== 1;
   let requestInfo: RequestInfo;
 
   const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: socketID } });
@@ -311,41 +312,43 @@
           class="control is-justify-content-space-around is-flex has-text-white is-size-6"
           style="margin: 1rem 0 0.25rem 0;"
         >
-          {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.BROWSER_SDK)}
-            <label class="radio">
-              <input
-                type="radio"
-                name="meeting"
-                value={MEETING_TYPE_OPTIONS.BROWSER_SDK}
-                checked={meetingType === MEETING_TYPE_OPTIONS.BROWSER_SDK}
-                on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.BROWSER_SDK)}
-              />
-              {isOnMobile ? 'SDK' : 'Meeting SDK'}
-            </label>
-          {/if}
-          {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
-            <label id="ic-checkbox" class="radio ml-4">
-              <input
-                type="radio"
-                name="meeting"
-                checked={meetingType === MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
-                value={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
-                on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
-              />
-              {isOnMobile ? 'IC' : 'Instant Connect'}
-            </label>
-          {/if}
-          {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
-            <label id="sip-checkbox" class="radio ml-4">
-              <input
-                type="radio"
-                name="meeting"
-                checked={meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
-                value={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
-                on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
-              />
-              {isOnMobile ? 'SIP' : 'SIP URI Dialing'}
-            </label>
+          {#if displayMeetingOptions}
+            {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.BROWSER_SDK)}
+              <label class="radio">
+                <input
+                  type="radio"
+                  name="meeting"
+                  value={MEETING_TYPE_OPTIONS.BROWSER_SDK}
+                  checked={meetingType === MEETING_TYPE_OPTIONS.BROWSER_SDK}
+                  on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.BROWSER_SDK)}
+                />
+                {isOnMobile ? 'SDK' : 'Meeting SDK'}
+              </label>
+            {/if}
+            {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
+              <label id="ic-checkbox" class="radio ml-4">
+                <input
+                  type="radio"
+                  name="meeting"
+                  checked={meetingType === MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
+                  value={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
+                  on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
+                />
+                {isOnMobile ? 'IC' : 'Instant Connect'}
+              </label>
+            {/if}
+            {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
+              <label id="sip-checkbox" class="radio ml-4">
+                <input
+                  type="radio"
+                  name="meeting"
+                  checked={meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
+                  value={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
+                  on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
+                />
+                {isOnMobile ? 'SIP' : 'SIP URI Dialing'}
+              </label>
+            {/if}
           {/if}
         </div>
         <div class="has-text-white has-text-centered mt-5" style="font-size: 0.65rem ">
