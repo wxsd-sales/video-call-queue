@@ -3,7 +3,6 @@
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
 
   import Modal from '$components/Modal/Modal.svelte';
-  import { BROWSER_SDK_GETTING_STARTED_URL, INSTANT_CONNECT_GETTING_STARTED_URL } from '$lib/constants';
 
   export let isSDK: boolean, isIC: boolean, isSIP: boolean, showSIPWarningModal: boolean;
 
@@ -49,7 +48,9 @@
     </label>
     <div class="help">
       <p>
-        For more information click <a target="_blank" href={BROWSER_SDK_GETTING_STARTED_URL}>here</a>
+        For more information click <a target="_blank" href={import.meta.env.PUBLIC_BROWSER_SDK_GETTING_STARTED_URL}
+          >here</a
+        >
       </p>
     </div>
   </div>
@@ -68,7 +69,9 @@
     </label>
     <div class="help">
       <p>
-        For more information click <a target="_blank" href={INSTANT_CONNECT_GETTING_STARTED_URL}>here</a>
+        For more information click <a target="_blank" href={import.meta.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL}
+          >here</a
+        >
       </p>
     </div>
   </div>
