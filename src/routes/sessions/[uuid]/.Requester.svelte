@@ -14,7 +14,9 @@
   import Modal from '$components/Modal/Modal.svelte';
 
   export let socketID: string;
-  export let meetingTypeOptions: Array<MEETING_TYPE_OPTIONS>;
+  export let isSDKAvailable: boolean;
+  export let isICAvailable: boolean;
+  export let isSIPAvailable: boolean;
 
   let requestSubmitted = false;
   let readyToJoin: boolean = false;
@@ -28,8 +30,12 @@
   let meetingURL: string = '';
   let incomingMeetingURL: string = '';
 
-  let meetingType: MEETING_TYPE_OPTIONS = meetingTypeOptions[0];
-  let displayMeetingOptions = meetingTypeOptions.length !== 1;
+  let meetingType: MEETING_TYPE_OPTIONS =
+    (isSDKAvailable && MEETING_TYPE_OPTIONS.BROWSER_SDK) ||
+    (isICAvailable && MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ||
+    ((isSIPAvailable && MEETING_TYPE_OPTIONS.SIP_URI_DIALING) as MEETING_TYPE_OPTIONS);
+
+  let displayMeetingOptions = isICAvailable && isSDKAvailable;
   let requestInfo: RequestInfo;
 
   const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: socketID } });
@@ -313,7 +319,7 @@
           style="margin: 1rem 0 0.25rem 0;"
         >
           {#if displayMeetingOptions}
-            {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.BROWSER_SDK)}
+            {#if isSDKAvailable}
               <label class="radio">
                 <input
                   type="radio"
@@ -325,7 +331,7 @@
                 {isOnMobile ? 'SDK' : 'Meeting SDK'}
               </label>
             {/if}
-            {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
+            {#if isICAvailable}
               <label id="ic-checkbox" class="radio ml-4">
                 <input
                   type="radio"
@@ -337,7 +343,7 @@
                 {isOnMobile ? 'IC' : 'Instant Connect'}
               </label>
             {/if}
-            {#if meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
+            {#if isSIPAvailable}
               <label id="sip-checkbox" class="radio ml-4">
                 <input
                   type="radio"

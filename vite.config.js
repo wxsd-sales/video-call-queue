@@ -5,6 +5,9 @@ import { resolve } from 'path';
 const config = {
   plugins: [sveltekit()],
   envPrefix: 'PUBLIC',
+  ssr: {
+    noExternal: ['@carbon/charts', 'carbon-components']
+  },
   resolve: {
     alias: {
       $components: resolve('./src/components'),

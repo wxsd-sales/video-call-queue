@@ -47,7 +47,9 @@ export const GET = async (requestEvent: RequestEvent) => {
           'weatherUnits',
           'weatherCityId',
           'responderAuthIsRequired',
-          'meetingTypeOptions'
+          'isSDK',
+          'isIC',
+          'isSIP'
         ],
         strategy: LoadStrategy.JOINED
       }

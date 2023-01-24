@@ -18,7 +18,6 @@ import { jsonRequest } from '$lib/shared/json-request';
 import { classTransformOptions, classValidationOptions } from '../../.utils';
 import env from '$lib/environment';
 import { LoadStrategy } from '@mikro-orm/core';
-import { MEETING_TYPE_OPTIONS } from '$lib/enums';
 
 /** @typedef {import('class-validator').ValidationError} ValidationError */
 
@@ -51,7 +50,9 @@ export const GET = async (requestEvent: RequestEvent) => {
               'weatherUnits',
               'weatherCityId',
               'responderAuthIsRequired',
-              'meetingTypeOptions'
+              'isSDK',
+              'isIC',
+              'isSIP'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -78,8 +79,10 @@ export const GET = async (requestEvent: RequestEvent) => {
             subtitle: r.brandSubtitle,
             cityId: r.weatherCityId,
             units: r.weatherUnits,
-            responderAuthIsRequired: r.responderAuthIsRequired,
-            meetingTypeOptions: r.meetingTypeOptions
+            authIsReq: r.responderAuthIsRequired,
+            isSDK: r.isSDK,
+            isIC: r.isIC,
+            isSIP: r.isSIP
           }
         }))
         .catch(() => ({
@@ -135,19 +138,20 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly subtitle!: string;
 
     @Expose()
-    @Transform(
-      ({ obj }: { obj: FormData }) => [
-        ...(obj.get(MEETING_TYPE_OPTIONS.BROWSER_SDK) ? [MEETING_TYPE_OPTIONS.BROWSER_SDK] : []),
-        ...(obj.get(MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ? [MEETING_TYPE_OPTIONS.INSTANT_CONNECT] : []),
-        ...(obj.get(MEETING_TYPE_OPTIONS.SIP_URI_DIALING) ? [MEETING_TYPE_OPTIONS.SIP_URI_DIALING] : [])
-      ],
-      { toClassOnly: true }
-    )
-    public readonly meetingTypes!: Array<MEETING_TYPE_OPTIONS>;
-
-    @Expose()
     @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('authIsReq')), { toClassOnly: true })
     public readonly authIsRequired!: boolean;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SDK')), { toClassOnly: true })
+    public readonly isSDK!: boolean;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('IC')), { toClassOnly: true })
+    public readonly isIC!: boolean;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SIP')), { toClassOnly: true })
+    public readonly isSIP!: boolean;
 
     @Expose()
     @IsIn(['imperial', 'metric', 'standard'])
@@ -166,6 +170,7 @@ export const POST = async (requestEvent: RequestEvent) => {
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 
+  console.log(formData);
   const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
     .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
     .then(() => true)
@@ -200,7 +205,9 @@ export const POST = async (requestEvent: RequestEvent) => {
         weatherUnits: formData.units,
         weatherCityId: formData.cityId,
         responderAuthIsRequired: formData.authIsRequired,
-        meetingTypeOptions: formData.meetingTypes
+        isSDK: formData.isSDK,
+        isIC: formData.isIC,
+        isSIP: formData.isSIP
       });
       await db.persistAndFlush(demo);
 
@@ -261,15 +268,16 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     public readonly subtitle!: string;
 
     @Expose()
-    @Transform(
-      ({ obj }: { obj: FormData }) => [
-        ...(obj.get(MEETING_TYPE_OPTIONS.BROWSER_SDK) ? [MEETING_TYPE_OPTIONS.BROWSER_SDK] : []),
-        ...(obj.get(MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ? [MEETING_TYPE_OPTIONS.INSTANT_CONNECT] : []),
-        ...(obj.get(MEETING_TYPE_OPTIONS.SIP_URI_DIALING) ? [MEETING_TYPE_OPTIONS.SIP_URI_DIALING] : [])
-      ],
-      { toClassOnly: true }
-    )
-    public readonly meetingTypes!: Array<MEETING_TYPE_OPTIONS>;
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SDK')), { toClassOnly: true })
+    public readonly isSDK!: boolean;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('IC')), { toClassOnly: true })
+    public readonly isIC!: boolean;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SIP')), { toClassOnly: true })
+    public readonly isSIP!: boolean;
 
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('authIsReq')), { toClassOnly: true })
@@ -303,7 +311,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
   const db = requestEvent.locals.db;
   const session = requestEvent.locals.session;
 
-  console.log(formData);
   const demoId = formData.id;
   return demoId != null
     ? await db
@@ -329,7 +336,9 @@ export const PATCH = async (requestEvent: RequestEvent) => {
               'weatherUnits',
               'weatherCityId',
               'responderAuthIsRequired',
-              'meetingTypeOptions'
+              'isSDK',
+              'isIC',
+              'isSIP'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -349,7 +358,9 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.brandLogo.name = formData.logo.name;
           r.brandLogo.lastModified = formData.logo.lastModified;
           r.responderAuthIsRequired = formData.authIsRequired;
-          r.meetingTypeOptions = formData.meetingTypes;
+          r.isSDK = formData.isSDK;
+          r.isIC = formData.isIC;
+          r.isSIP = formData.isSIP;
 
           await db.persistAndFlush(r);
 

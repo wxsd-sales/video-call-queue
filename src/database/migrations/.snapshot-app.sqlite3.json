@@ -397,14 +397,32 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "meeting_type_options": {
-          "name": "meeting_type_options",
-          "type": "text",
+        "is_sdk": {
+          "name": "is_sdk",
+          "type": "integer",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "text"
+          "mappedType": "integer"
+        },
+        "is_ic": {
+          "name": "is_ic",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "is_sip": {
+          "name": "is_sip",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
         }
       },
       "name": "demo",

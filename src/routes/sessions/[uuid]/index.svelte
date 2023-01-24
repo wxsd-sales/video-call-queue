@@ -81,7 +81,12 @@
             <Responder socketID={demo.uuid} />
           {/if}
         {:else}
-          <Requester socketID={demo.uuid} meetingTypeOptions={demo.meetingTypeOptions} />
+          <Requester
+            socketID={demo.uuid}
+            isSIPAvailable={demo.isSIP}
+            isSDKAvailable={demo.isSDK}
+            isICAvailable={demo.isIC}
+          />
         {/if}
       </div>
     </div>

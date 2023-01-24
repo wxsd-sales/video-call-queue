@@ -40,8 +40,14 @@ export class Demo extends BaseEntity {
   @Property({ type: types.boolean })
   responderAuthIsRequired!: boolean;
 
-  @Property({ type: types.array })
-  meetingTypeOptions!: Array<MEETING_TYPE_OPTIONS>;
+  @Property({ type: types.boolean })
+  isSDK: boolean;
+
+  @Property({ type: types.boolean })
+  isIC: boolean;
+
+  @Property({ type: types.boolean })
+  isSIP: boolean;
 
   constructor(obj: {
     user: User;
@@ -55,7 +61,9 @@ export class Demo extends BaseEntity {
     weatherUnits: 'imperial' | 'metric' | 'standard';
     weatherCityId: number;
     responderAuthIsRequired: boolean;
-    meetingTypeOptions: Array<MEETING_TYPE_OPTIONS>;
+    isSDK: boolean;
+    isIC: boolean;
+    isSIP: boolean;
   }) {
     super();
     this.user = obj.user;
@@ -69,6 +77,8 @@ export class Demo extends BaseEntity {
     this.weatherUnits = obj.weatherUnits;
     this.weatherCityId = obj.weatherCityId;
     this.responderAuthIsRequired = obj.responderAuthIsRequired;
-    this.meetingTypeOptions = obj.meetingTypeOptions;
+    this.isSDK = obj.isSDK;
+    this.isIC = obj.isIC;
+    this.isSIP = obj.isSIP;
   }
 }
