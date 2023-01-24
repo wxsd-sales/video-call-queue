@@ -22,6 +22,7 @@
         minlength="6"
         maxlength="64"
         placeholder="Video Calling Queue Demo"
+        bind:value={name}
       />
       <span class="icon is-left" />
     </div>
