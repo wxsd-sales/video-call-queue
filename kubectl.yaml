@@ -21,9 +21,9 @@ spec:
         app: call-queue-on-mobile
     spec:
       volumes:
-      - name: persistent-storage
-        persistentVolumeClaim:
-          claimName: call-queue-on-mobile-claim
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: call-queue-on-mobile-claim
       containers:
         - name: call-queue-on-mobile
           image: 191518685251.dkr.ecr.us-west-1.amazonaws.com/call-queue-on-mobile:latest
@@ -31,8 +31,8 @@ spec:
           ports:
             - containerPort: 3000
           volumeMounts:
-          - name: persistent-storage
-            mountPath: /app/.data 
+            - name: persistent-storage
+              mountPath: /app/.data
 ---
 apiVersion: v1
 kind: Service
