@@ -29,7 +29,7 @@
   <div class="hero-body">
     <div class="columns">
       <div class="column is-4">
-        <div class="subtitle is-size-4">Demos By Meeting Types</div>
+        <div class="subtitle is-size-4"># Demos / Meeting Types</div>
       </div>
       <div class="column is-8">
         <DonutChart data={meetingOptionsData} options={donutCenteredOptions} />
@@ -38,37 +38,40 @@
     <hr />
     <div class="columns">
       <div class="column is-4">
-        <div class="subtitle is-size-4">Number of Demos per User</div>
+        <div class="subtitle is-size-4"># Demos / Registered Users</div>
       </div>
       <div class="column is-8">
         <CirclePackChart data={userDemosData} options={donutCenteredOptions} />
       </div>
     </div>
-  </div>
-  <hr />
-  <div class="columns">
-    <div class="column is-5">
-      <div class="subtitle is-size-4">Number Of Registered Users Per Day</div>
-    </div>
-    <div class="column is-7">
-      <LineChart
-        data={numberOfUsers}
-        options={{
-          axes: {
-            bottom: {
-              mapsTo: 'date',
-              scaleType: 'time'
+    <hr />
+    <div class="columns">
+      <div class="column is-5">
+        <div class="subtitle is-size-4"># Demos & Registered Users / Day</div>
+      </div>
+      <div class="column is-7">
+        <LineChart
+          data={numberOfUsers}
+          options={{
+            timeScale: {
+              showDayName: true
             },
-            left: {
-              mapsTo: 'value',
-              title: 'Number of Registered Users',
-              scaleType: 'linear'
-            }
-          },
-          curve: 'curveMonotoneX',
-          height: '400px'
-        }}
-      />
+            axes: {
+              bottom: {
+                mapsTo: 'date',
+                scaleType: 'time'
+              },
+              left: {
+                mapsTo: 'value',
+                title: 'Number of Registered Users',
+                scaleType: 'linear'
+              }
+            },
+            curve: 'curveMonotoneX',
+            height: '400px'
+          }}
+        />
+      </div>
     </div>
   </div>
 </div>
