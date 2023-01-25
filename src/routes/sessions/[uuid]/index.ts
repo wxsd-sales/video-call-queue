@@ -65,6 +65,6 @@ export const GET = async (requestEvent: RequestEvent) => {
         return { status: 200, body: { demo, role: query.role } };
       }
 
-      return { status: 404 };
+      return { status: 302, headers: { Location: '/auth' } };
     });
 };

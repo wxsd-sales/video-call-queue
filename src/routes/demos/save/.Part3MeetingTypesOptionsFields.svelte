@@ -34,6 +34,7 @@
   </div>
   <!-- A -->
   <div class="column is-one-half">
+    <label class="label" for="subtitle">Options <sup class="has-text-danger" title="required">*</sup></label>
     <label class="checkbox">
       <input
         type="checkbox"
@@ -54,8 +55,9 @@
       </p>
     </div>
   </div>
-  <div class="column is-one-half">
+  <div class="column is-one-half is-flex is-flex-direction-column is-justify-content-flex-end">
     <label class="checkbox">
+      <label class="label" for="subtitle"> <sup class="has-text-danger" title="required" /> </label>
       <input
         type="checkbox"
         bind:checked={isIC}
