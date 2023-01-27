@@ -11,6 +11,7 @@
   import * as CONST from './constants';
   import Modal from '$components/Modal/Modal.svelte';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
+  import supportImg from '$lib/assets/support.svg';
 
   export let socketID;
 
@@ -24,6 +25,7 @@
   let showModal = false;
 
   let meetingURL = '';
+  let title = 'Request Queue';
 
   let iframe: HTMLIFrameElement;
   // let isOnDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
@@ -150,13 +152,12 @@
 
   const startICSession = async () => {
     const {
-      guest: [guestData],
-      host: [hostData]
+      host: [hostData],
+      guest: [guestData]
     } = await postInstantConnectJEResponse('calling-queue-demo');
-    const { token: guestToken } = await getInstantConnectTokenResponse(guestData);
-    const { token: hostToken } = await getInstantConnectTokenResponse(hostData);
+    const { token: hostToken } = await getInstantConnectTokenResponse(hostData.cipher);
 
-    meetingURL = `${import.meta.env.PUBLIC_INSTANT_CONNECT_TALK_URL}?int=jose&v=1&data=${hostData}`;
+    meetingURL = `${import.meta.env.PUBLIC_INSTANT_CONNECT_TALK_URL}?int=jose&v=1&data=${hostData.cipher}`;
     joinSession = true;
     joinButtonIsLoading = false;
 
@@ -165,7 +166,7 @@
       set: CONST.IC_SESSION,
       key: selectedRequest.id,
       data: {
-        link: `${import.meta.env.PUBLIC_INSTANT_CONNECT_TALK_URL}?int=jose&v=1&data=${guestData}`
+        link: `${import.meta.env.PUBLIC_INSTANT_CONNECT_TALK_URL}?int=jose&v=1&data=${guestData.cipher}`
       },
       id: CONST.SET
     });
@@ -276,7 +277,7 @@
     }
 
     socketIO.emit(CONST.MESSAGE, {
-      data: { sessionStatus: CONST.ACTIVE },
+      data: { ...selectedRequest, sessionStatus: CONST.ACTIVE },
       key: selectedRequest.id,
       set: CONST.QUEUE,
       command: CONST.HSET
@@ -316,12 +317,17 @@
   });
 </script>
 
-<div class="columns">
-  <div class="column is-6">
-    <h1 class="is-size-3 has-text-white">Request Queue</h1>
+<div class="columns  is-mobile is-align-items-center">
+  <div class="column auto">
+    <h1 class="is-size-3 has-text-white">Responder View</h1>
+  </div>
+  <div class="column is-3 is-flex is-justify-content-flex-end">
+    <figure class="image is-64x64">
+      <img src={supportImg} />
+    </figure>
   </div>
 </div>
-<hr />
+<hr class="mt-4" />
 <div class="is-flex is-fullheight is-align-items-center is-justify-content-center" style="overflow: auto">
   <iframe
     title="meeting"
@@ -347,7 +353,7 @@
         </div>
       {/if}
     {:else}
-      <div class="box has-text-centered is-translucent-black p-0" style="height: 40%">
+      <div class="box has-text-centered is-translucent-black p-0">
         <div class="is-flex is-justify-content-flex-end m-2">
           <span
             class="icon has-text-danger is-clickable"
@@ -396,10 +402,3 @@
     </div>
   </div>
 </Modal>
-
-<style lang="scss">
-  .queue {
-    overflow: scroll;
-    height: 40rem;
-  }
-</style>

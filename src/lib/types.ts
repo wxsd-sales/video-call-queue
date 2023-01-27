@@ -54,8 +54,8 @@ export interface MindyResponse {
 }
 
 export interface ICResponse {
-  guest: [guestData: string];
-  host: [hostData: string];
+  host: [{cipher: string}];
+  guest: [{cipher: string}];
 }
 
 export interface ICToken {

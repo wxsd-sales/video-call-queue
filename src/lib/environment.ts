@@ -92,6 +92,9 @@ export class Environment {
 
   @IsUrl()
   public readonly INSTANT_CONNECT_REST_URL: string;
+  
+  @IsUrl()
+  public readonly INSTANT_CONNECT_LEGACY_REST_URL: string;
 
   @IsNotEmpty()
   public readonly INSTANT_CONNECT_USER_TOKEN: string;
@@ -113,21 +116,6 @@ export class Environment {
 
   @IsNotEmpty()
   public readonly PUBLIC_SOAP_BOX_URL: string;
-
-  @IsUrl()
-  public readonly MINDY_REST_URL: string;
-
-  @IsUrl()
-  public readonly INSTANT_CONNECT_REST_URL: string;
-
-  @IsNotEmpty()
-  public readonly INSTANT_CONNECT_USER_TOKEN: string;
-
-  @IsNotEmpty()
-  public readonly INSTANT_CONNECT_AUD: string;
-
-  @IsNotEmpty()
-  public readonly INSTANT_CONNECT_ORG_ID: string;
 
   constructor() {
     dotenvExpand.expand(dotenv.config());
@@ -155,6 +143,7 @@ export class Environment {
     this.WEBEX_NOTIFICATION_CHANNEL_ID = process.env.WEBEX_NOTIFICATION_CHANNEL_ID as string;
     this.WEBEX_NOTIFICATION_CHANNEL_TOKEN = process.env.WEBEX_NOTIFICATION_CHANNEL_TOKEN as string;
     this.MINDY_REST_URL = process.env.MINDY_REST_URL as string;
+    this.INSTANT_CONNECT_LEGACY_REST_URL = process.env.INSTANT_CONNECT_LEGACY_REST_URL as string;
     this.INSTANT_CONNECT_REST_URL = process.env.INSTANT_CONNECT_REST_URL as string;
     this.INSTANT_CONNECT_USER_TOKEN = process.env.INSTANT_CONNECT_USER_TOKEN as string;
     this.INSTANT_CONNECT_AUD = process.env.INSTANT_CONNECT_AUD as string;

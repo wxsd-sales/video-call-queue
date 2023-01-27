@@ -170,7 +170,6 @@ export const POST = async (requestEvent: RequestEvent) => {
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 
-  console.log(formData);
   const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
     .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
     .then(() => true)

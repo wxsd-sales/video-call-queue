@@ -10,6 +10,7 @@
 
   import { BROWSER_VISIBILITY_STATUS, MEETING_TYPE_OPTIONS, SESSION_STATUS } from '$lib/enums';
   import type { RequestInfo } from '$lib/types';
+  import supportImg from '$lib/assets/support.svg';
 
   import Modal from '$components/Modal/Modal.svelte';
 
@@ -25,7 +26,6 @@
   let iframeIsLoading: boolean = false;
   let meetingInSession: boolean = false;
   let isSip: boolean = false;
-  let isOnMobile: boolean = browser && window.screen.availWidth < 480;
 
   let meetingURL: string = '';
   let incomingMeetingURL: string = '';
@@ -171,6 +171,7 @@
 
       case CONST.LIST_QUEUE:
         requestSubmitted = payload.queue.some((q) => q.value === $requesterIDStore);
+
         break;
     }
   });
@@ -232,7 +233,6 @@
     displayIframe = true;
 
     meetingURL = url;
-
     // if (isSip) {
     //   meetingInSession = true;
     // }
@@ -246,11 +246,6 @@
     });
 
     if (browser) {
-      // Register a listener to change content on mobile sized screens
-      window.addEventListener(CONST.SCREEN_RESIZE_EVENT, function () {
-        isOnMobile = window.screen.availWidth < CONST.MIN_DESKTOP_WIDTH;
-      });
-
       // Register a listener to trigger an event if the content of the tab has become visible or hidden
       window.addEventListener(CONST.VISIBILITY_CHANGE, () =>
         sendBrowserVisibilityStatus(
@@ -267,12 +262,17 @@
   });
 </script>
 
-<div class="columns">
-  <div class="column">
-    <h1 class="is-size-3 has-text-white">Submit Request</h1>
+<div class="columns is-align-items-center is-mobile">
+  <div class="column auto">
+    <h1 class="is-size-3  has-text-white">Requester View</h1>
+  </div>
+  <div class="column is-3 is-flex is-justify-content-flex-end">
+    <figure class="image is-64x64">
+      <img src={supportImg} />
+    </figure>
   </div>
 </div>
-<hr />
+<hr class="mt-4" />
 <div class="is-flex is-justify-content-center is-align-items-center is-fullheight ">
   <span class="bulma-loader-mixin" class:is-hidden={!iframeIsLoading} style="position:absolute" />
   <iframe
@@ -328,7 +328,8 @@
                   checked={meetingType === MEETING_TYPE_OPTIONS.BROWSER_SDK}
                   on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.BROWSER_SDK)}
                 />
-                {isOnMobile ? 'SDK' : 'Meeting SDK'}
+                <span class="is-hidden-mobile"> Meeting </span>
+                <span>SDK</span>
               </label>
             {/if}
             {#if isICAvailable}
@@ -340,7 +341,8 @@
                   value={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
                   on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
                 />
-                {isOnMobile ? 'IC' : 'Instant Connect'}
+                <span class="is-hidden-mobile">Instance Connect</span>
+                <span class="is-hidden-tablet">IC</span>
               </label>
             {/if}
             {#if isSIPAvailable}
@@ -352,7 +354,8 @@
                   value={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
                   on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
                 />
-                {isOnMobile ? 'SIP' : 'SIP URI Dialing'}
+                <span>SIP</span>
+                <span class="is-hidden-mobile"> URI DIALING </span>
               </label>
             {/if}
           {/if}

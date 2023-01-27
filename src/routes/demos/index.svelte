@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { Demo } from 'src/database/entities';
+  import { browser } from '$app/env';
+
+  import CopyLink from '$components/CopyLink/CopyLink.svelte';
 
   export let demos: Array<Demo>;
+
+  const url = browser && `${window.location.protocol}//${browser && window.location.host}/sessions`;
 </script>
 
 <div class="container px-4 mb-6">
@@ -44,24 +49,16 @@
           <span class="icon">
             <i class="mdi mdi-delete" />
           </span>
-          <span>Delete</span>
+          <div>Delete</div>
         </button>
       </form>
     </div>
-    <div class="columns">
-      <div class="column is-12">
-        <div class="level is-mobile mb-0">
-          <p class="level-left">id</p>
-          <p class="level-right">{demo.uuid}</p>
-        </div>
-        <div class="level is-mobile mb-0">
-          <p class="level-left">Requester URL</p>
-          <a class="level-right" target="_blank" href={`/sessions/${demo.uuid}?role=requester`}>Link</a>
-        </div>
-        <div class="level is-mobile mb-0">
-          <p class="level-left">Responder URL</p>
-          <a class="level-right" target="_blank" href={`/sessions/${demo.uuid}?role=responder`}>Link</a>
-        </div>
+    <div class="columns is-multiline is-flex-direction-column">
+      <div class="column is-full">
+        <CopyLink url={`${url}/${demo.uuid}/?role=requester`} label={'Requester View Link'} />
+      </div>
+      <div class="column is-full">
+        <CopyLink url={`${url}/${demo.uuid}/?role=responder`} label={'Responder View Link'} />
       </div>
     </div>
   {/each}
