@@ -10,16 +10,6 @@ This is a proof-of-concept application that generates customized web application
     </a>
 </p>
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (TOC:collapse=true&collapseText=Click to expand) -->
-<details>
-<summary>Table of Contents (click to expand)</summary>
-    
-  * [Overview](#overview)
-  * [Setup](#setup)
-  * [Support](#support)
-
-</details>
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 ## Overview
 
