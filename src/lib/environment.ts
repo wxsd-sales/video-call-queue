@@ -92,7 +92,7 @@ export class Environment {
 
   @IsUrl()
   public readonly INSTANT_CONNECT_REST_URL: string;
-  
+
   @IsUrl()
   public readonly INSTANT_CONNECT_LEGACY_REST_URL: string;
 
