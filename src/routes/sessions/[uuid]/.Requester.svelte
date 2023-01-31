@@ -109,7 +109,7 @@
         callback(CONST.SIP_LEAVE_SESSION);
       }
 
-      if (payload.command === CONST.HSET) {
+      if (payload.command === CONST.HSET && requesterID === payload.data.requesterID) {
         callback(CONST.UPDATE_REQUEST, { data: payload.data });
       }
     });
@@ -120,6 +120,7 @@
       case CONST.SDK_JOIN_SESSION:
         readyToJoin = true;
         incomingMeetingURL = `${payload.meetingUrl}&autoDial=true&embedSize=desktop&sessionId=${$requesterIDStore}`;
+        requestSubmitted = false;
         break;
 
       case CONST.SDK_LEAVE_SESSION:
@@ -133,6 +134,7 @@
       case CONST.IC_JOIN_SESSION:
         readyToJoin = true;
         incomingMeetingURL = payload.meetingUrl;
+        requestSubmitted = false;
         break;
 
       case CONST.IC_LEAVE_SESSION:
@@ -190,12 +192,14 @@
    */
   const sendBrowserVisibilityStatus = (visibilityStatus: BROWSER_VISIBILITY_STATUS) => {
     // Update visibility only if the meeting is NOT in session
-    socketIO.emit(CONST.MESSAGE, {
-      data: { ...requestInfo, visibilityStatus },
-      key: $requesterIDStore,
-      set: CONST.QUEUE,
-      command: CONST.HSET
-    });
+    if (requestSubmitted) {
+      socketIO.emit(CONST.MESSAGE, {
+        data: { ...requestInfo, visibilityStatus },
+        key: $requesterIDStore,
+        set: CONST.QUEUE,
+        command: CONST.HSET
+      });
+    }
   };
 
   /** Cancels the request and removes it from the queue */
@@ -270,13 +274,13 @@
   });
 </script>
 
-<div class="columns is-align-items-center is-mobile">
+<div class="columns mb-2 is-align-items-center is-mobile">
   <div class="column auto">
     <h1 class="is-size-3  has-text-white">Requester View</h1>
   </div>
   <div class="column is-3 is-flex is-justify-content-flex-end" />
 </div>
-<hr class="mt-4" />
+<hr class="mt-3" />
 <div class="is-flex is-justify-content-center is-align-items-center is-fullheight ">
   <span class="bulma-loader-mixin" class:is-hidden={!iframeIsLoading} style="position:absolute" />
   <iframe
@@ -345,7 +349,7 @@
                   value={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
                   on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
                 />
-                <span class="is-hidden-mobile">Instance Connect</span>
+                <span class="is-hidden-mobile">Instant Connect</span>
                 <span class="is-hidden-tablet">IC</span>
               </label>
             {/if}

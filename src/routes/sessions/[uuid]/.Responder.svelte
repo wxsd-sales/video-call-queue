@@ -316,9 +316,9 @@
       }
     } else {
       displayQueue = false;
-      selectedRequest = target;
       sessionStatus = SESSION_STATUS.VIEW_REQUEST;
     }
+    selectedRequest = target;
   };
 
   onMount(async () => {

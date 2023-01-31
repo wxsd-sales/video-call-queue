@@ -19,10 +19,11 @@
         <div class="message-header is-hidden" />
         <div class="message-body content">
           <p>
-            Generate custom support queue systems to provide video Webex engined calling platforms compatible on variety
-            of clients (e.g. Mobiles, Cisco Devices & Desktops). To learn more about our support queue system, please
-            watch the video below:
+            Demonstrate a branded WebRTC call queue! Applicable to a broad set of B2C use-cases. Connect banking
+            consumers to mortgage specialists, or clinicians from patient rooms; this tool will help you explore the
+            art-of-the-possible through Webex programmability!
           </p>
+          <p>Please watch the video below for a quick walk-through:</p>
         </div>
       </article>
     </div>
