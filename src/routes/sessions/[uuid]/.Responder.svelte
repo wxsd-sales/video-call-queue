@@ -11,12 +11,19 @@
   import * as CONST from './constants';
   import Modal from '$components/Modal/Modal.svelte';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-  import supportImg from '$lib/assets/support.svg';
+  import { PUBLIC_WEBEX_DEV_PORTAL_URL } from '$env/static/public';
 
   export let socketID;
 
+  enum SESSION_STATUS {
+    VIEW_REQUEST = 'Request Under Review',
+    INIT_SESSION = 'Initiating a Session',
+    SESSION_IN_PROGRESS = 'Session in Progress'
+  }
+
   let queue: Array<RequestInfo> = [];
   let selectedRequest: RequestInfo;
+  let sessionStatus: SESSION_STATUS;
 
   let displayQueue = true;
   let joinSession = false;
@@ -110,6 +117,7 @@
         joinButtonIsLoading = false;
         iframeIsLoading = false;
         joinSession = false;
+        selectedRequest = undefined;
         break;
 
       case CONST.UPDATE_QUEUE:
@@ -262,6 +270,7 @@
 
   const startSession = async () => {
     joinButtonIsLoading = true;
+    sessionStatus = SESSION_STATUS.INIT_SESSION;
     const { meetingType } = selectedRequest;
 
     switch (meetingType) {
@@ -276,6 +285,7 @@
         return;
     }
 
+    sessionStatus = SESSION_STATUS.SESSION_IN_PROGRESS;
     socketIO.emit(CONST.MESSAGE, {
       data: { ...selectedRequest, sessionStatus: CONST.ACTIVE },
       key: selectedRequest.id,
@@ -294,20 +304,21 @@
     });
 
     queue = queue.filter((q) => q.id !== selectedRequester.id);
+    selectedRequest = undefined;
   };
 
-  const handleClick = (selectedRequester) => {
-    if (selectedRequester.command) {
-      if (selectedRequester.command === CLOSE_REQUEST) {
+  const handleClick = (target) => {
+    if (target.command) {
+      if (target.command === CLOSE_REQUEST) {
         showModal = true;
-      } else if (selectedRequester.command === FORCE_CLOSE_REQUEST) {
-        removeQueue(selectedRequester);
+      } else if (target.command === FORCE_CLOSE_REQUEST) {
+        removeQueue(target);
       }
     } else {
       displayQueue = false;
+      selectedRequest = target;
+      sessionStatus = SESSION_STATUS.VIEW_REQUEST;
     }
-
-    selectedRequest = selectedRequester;
   };
 
   onMount(async () => {
@@ -317,17 +328,47 @@
   });
 </script>
 
-<div class="columns  is-mobile is-align-items-center">
-  <div class="column auto">
+<div class="columns mb-2 is-align-items-center mb-1">
+  <div class="column is-7">
     <h1 class="is-size-3 has-text-white">Responder View</h1>
   </div>
-  <div class="column is-3 is-flex is-justify-content-flex-end">
-    <figure class="image is-64x64">
-      <img src={supportImg} />
-    </figure>
+  <div class="column is-5 is-size-6 is-hidden-mobile" style="height: 5rem;">
+    {#if selectedRequest}
+      <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
+        <div>Session ID:</div>
+        <div class="has-text-success">
+          {selectedRequest.id.split('-')[4]}
+        </div>
+      </div>
+      <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
+        <div>Session Status:</div>
+        <div
+          class={sessionStatus === SESSION_STATUS.VIEW_REQUEST
+            ? 'has-text-warning-dark'
+            : sessionStatus === SESSION_STATUS.INIT_SESSION
+            ? 'has-text-warning'
+            : 'has-text-danger'}
+        >
+          {sessionStatus}
+        </div>
+      </div>
+      <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
+        <div>Session Provider:</div>
+        <div class="has-text-link">
+          {#if selectedRequest.meetingType === MEETING_TYPE_OPTIONS.BROWSER_SDK}
+            <a target="_blank" href={`${import.meta.env.PUBLIC_WEBEX_DEV_PORTAL_URL}/docs/sdks/browser`}
+              >Webex Browser Meeting SDK</a
+            >
+          {:else}
+            <a target="_blank" href={import.meta.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_UR}>Webex Instant Connect</a
+            >
+          {/if}
+        </div>
+      </div>
+    {/if}
   </div>
 </div>
-<hr class="mt-4" />
+<hr class="mt-3" />
 <div class="is-flex is-fullheight is-align-items-center is-justify-content-center" style="overflow: auto">
   <iframe
     title="meeting"
@@ -358,6 +399,7 @@
           <span
             class="icon has-text-danger is-clickable"
             on:click={() => {
+              selectedRequest = undefined;
               displayQueue = true;
             }}
           >

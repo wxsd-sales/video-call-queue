@@ -38,6 +38,7 @@ export const IC_JOIN_SESSION = 'ic_join_session';
 export const IC_LEAVE_SESSION = 'ic_leave_session';
 export const SIP_JOIN_SESSION = 'sip_join_session';
 export const SIP_LEAVE_SESSION = 'sip_leave_session';
+export const UPDATE_REQUEST = 'update_request';
 
 export const CLOSE_REQUEST = 'close-request';
 export const FORCE_CLOSE_REQUEST = 'force-close-request';

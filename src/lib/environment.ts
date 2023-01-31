@@ -116,6 +116,9 @@ export class Environment {
 
   @IsNotEmpty()
   public readonly PUBLIC_SOAP_BOX_URL: string;
+  
+  @IsNotEmpty()
+  public readonly PUBLIC_WEBEX_DEV_PORTAL_URL: string;
 
   constructor() {
     dotenvExpand.expand(dotenv.config());
@@ -152,6 +155,7 @@ export class Environment {
     this.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL = process.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL as string;
     this.PUBLIC_NODE_SERVER_URL_SIP_DEMO = process.env.PUBLIC_NODE_SERVER_URL_SIP_DEMO as string;
     this.PUBLIC_SOAP_BOX_URL = process.env.PUBLIC_SOAP_BOX_URL as string;
+    this.PUBLIC_WEBEX_DEV_PORTAL_URL = process.env.PUBLIC_WEBEX_DEV_PORTAL_URL as string;
   }
 }
 

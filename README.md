@@ -10,7 +10,6 @@ This is a proof-of-concept application that generates customized web application
     </a>
 </p>
 
-
 ## Overview
 
 As you see in the figure above, there is a list of request for a responder to manage or setup a call with. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. responder could either cancel the request or accept and start a session with the requester. After the session had ended, both responder and the requester will be redirected to the initial view.

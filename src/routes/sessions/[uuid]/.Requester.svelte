@@ -10,7 +10,6 @@
 
   import { BROWSER_VISIBILITY_STATUS, MEETING_TYPE_OPTIONS, SESSION_STATUS } from '$lib/enums';
   import type { RequestInfo } from '$lib/types';
-  import supportImg from '$lib/assets/support.svg';
 
   import Modal from '$components/Modal/Modal.svelte';
 
@@ -109,6 +108,10 @@
       if (payload.set === 'REMOVE_SIP_ADDRESS' && requesterID === payload.data.gradNurseID) {
         callback(CONST.SIP_LEAVE_SESSION);
       }
+
+      if (payload.command === CONST.HSET) {
+        callback(CONST.UPDATE_REQUEST, { data: payload.data });
+      }
     });
   };
 
@@ -173,6 +176,10 @@
         requestSubmitted = payload.queue.some((q) => q.value === $requesterIDStore);
 
         break;
+
+      case CONST.UPDATE_REQUEST:
+        requestInfo = payload.data;
+        break;
     }
   });
 
@@ -182,6 +189,7 @@
    * @param visibilityStatus
    */
   const sendBrowserVisibilityStatus = (visibilityStatus: BROWSER_VISIBILITY_STATUS) => {
+    // Update visibility only if the meeting is NOT in session
     socketIO.emit(CONST.MESSAGE, {
       data: { ...requestInfo, visibilityStatus },
       key: $requesterIDStore,
@@ -266,11 +274,7 @@
   <div class="column auto">
     <h1 class="is-size-3  has-text-white">Requester View</h1>
   </div>
-  <div class="column is-3 is-flex is-justify-content-flex-end">
-    <figure class="image is-64x64">
-      <img src={supportImg} />
-    </figure>
-  </div>
+  <div class="column is-3 is-flex is-justify-content-flex-end" />
 </div>
 <hr class="mt-4" />
 <div class="is-flex is-justify-content-center is-align-items-center is-fullheight ">
