@@ -116,7 +116,7 @@ export class Environment {
 
   @IsNotEmpty()
   public readonly PUBLIC_SOAP_BOX_URL: string;
-  
+
   @IsNotEmpty()
   public readonly PUBLIC_WEBEX_DEV_PORTAL_URL: string;
 
