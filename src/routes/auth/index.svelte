@@ -23,21 +23,14 @@
             consumers to mortgage specialists, or clinicians from patient rooms; this tool will help you explore the
             art-of-the-possible through Webex programmability!
           </p>
-          <p>Please watch the video below for a quick walk-through:</p>
+          <p>
+            Please watch the <span
+              ><a target="_blank" href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3">vidcast</a
+              ></span
+            > for a quick walk-through.
+          </p>
         </div>
       </article>
-    </div>
-    <div style="margin: 1rem; padding-bottom:60.25%; position:relative; display:block; width: 100%">
-      <iframe
-        src="https://app.vidcast.io/share/embed/d5289588-9810-4e4a-9ea5-b85b61816cc3"
-        width="100%"
-        height="100%"
-        title="VCQ Demo Builder.mp4"
-        frameborder="0"
-        loading="lazy"
-        allowfullscreen
-        style="position:absolute; top:0; left: 0"
-      />
     </div>
     <div class="column is-12">
       <a
