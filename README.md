@@ -16,8 +16,9 @@ This is a proof-of-concept application that generates customized web application
 
 - [Overview](#overview)
 - [High-Level Architecture](#high-level-architecture)
-  - [Browser Meeting SDK](#browser-meeting-sdk)
-  - [Instant Connect Solution](#instnat-connect-solution)
+   - [Prerequisites](#prerequisites)
+   - [Browser Meeting SDK](#browser-meeting-sdk)
+   - [Instant Connect Solution](#instnat-connect-solution)
 - [Setup](#setup)
 - [Built With](#built-with)
 - [Demo](#demo)
@@ -27,13 +28,21 @@ This is a proof-of-concept application that generates customized web application
 
 # Overview
 
-As you see in the figure above, there is a list of request for a responder to manage or setup a call with. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. responder could either cancel the request or accept and start a session with the requester. After the session had ended, both responder and the requester will be redirected to the initial view.
+This web application contains provide a support queue system that could be embedded inside an E2C use case and it contains two views: Requester & Responder views. As you see in the figure above, there is a list of requests for a responder to manage or setup a call with. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. Responder could either cancel the request or accept and start a session with the requester. After the session had ended, both responder and the requester will be redirected to the initial view.
 
 <br />
 
 # High Level Architecture
 
-This PoC has leveraged a few microservices behind the scene to provide a LIFO orderly queue system to manage requests and establish a WebRTC connections between the responder and requester.
+## Prerequisites
+This PoC leverages a few services behind the scene to provide a LIFO orderly queue system to manage requests and establish a WebRTC connections between the responder and requester. Here is the list of services that are required before launching the application. Make sure to review our env.example file to input the right values before running the app locally.
+<ol>
+<li><a href="https://github.com/wxsd-sales/soapbox" target="_blank">SoapBox</a> - A websocket message broker link must be provided to establish a WSS connection between the responder and requester</li>
+<li><a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank">Guest Demo</a> - To generate and embed the meeting experience into support flow</li>
+<li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank">Mindy Bot</a> - To manage guest users and to perform space and memberships creations</li>
+<li><a href="https://instant.webex.com/" target="_blank">Webex Instant Connect</a> - To embed Webex IC flow into the support flow, Instant Connect must be activated</li>
+</ol>
+
 
 ## Browser Meeting SDK
 
@@ -46,7 +55,7 @@ Establishes a WebSocket connection to SoapBox to publish the request data and su
 <ol>
 <li>Establishes a WebSocket connection to SoapBox to register queue related events</li>
 <li>Sends HTTPs POST request to Mindy BOT</li>
-<li>Mindy BOT Node Service
+<li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank" >Mindy Bot</a> Node Service
    <ol>
       <li> Creates two guest tokens</li>
       <li> Create an Space</li>
@@ -112,8 +121,7 @@ Open a new terminal window and follow the instructions below to setup the projec
    - Your registration must have the following [Webex REST API scopes](https://developer.webex.com/docs/integrations#scopes):
      | Scope | Description |
      |---------------------------|----------------------------------------------------------------------------------|
-     | spark-admin:devices_read | See details for any device in your organization |
-     | spark-admin:devices_write | Create, update and delete devices and device configurations in your organization |
+     | spark-people | See details for any device in your organization |
      | spark:kms | Permission to interact with encrypted content |
    - Use these Redirect URIs:
      - `https://localhost/auth/webex/callback`
@@ -121,24 +129,13 @@ Open a new terminal window and follow the instructions below to setup the projec
    - Take note of your Client ID and Client Secret. Assign these values to the `WEBEX_AUTHORIZATION_CODE_CLIENT_ID`
      and `WEBEX_AUTHORIZATION_CODE_CLIENT_SECRET` environment variables within the `.env` file respectively.
 
-4. Review and follow to [Register your Integration on Webex](https://developer.webex.com/docs/integrations#registering-your-integration) guide.
-
-   - Your registration must have the following [Webex REST API scopes](https://developer.webex.com/docs/integrations#scopes):
-     | Scope | Description |
-     |-------------------------|-----------------------------------------------|
-     | spark:people_read | Access to read your user's company directory |
-     | spark:kms | Permission to interact with encrypted content |
-   - Use this Redirect URI: `https://oauth-helper-a.wbx2.com/helperservice/v1/actions/device/callback`
-   - Take note of your Client ID and Client Secret. Assign these values to the `WEBEX_DEVICE_CODE_CLIENT_ID`
-     and `WEBEX_DEVICE_CODE_CLIENT_SECRET` environment variables within the `.env` file respectively.
-
-5. Review and follow the [Creating a Webex Bot](https://developer.webex.com/docs/bots#creating-a-webex-bot) guide.
+4. Review and follow the [Creating a Webex Bot](https://developer.webex.com/docs/bots#creating-a-webex-bot) guide.
    Take note of your Bot ID and Bot access token. Assign these values to the `WEBEX_BOT_ID` and
    `WEBEX_BOT_TOKEN` environment variables within the `.env` file respectively.
 
-6. Set other environment variables as needed in the `.env` file.
+5. Set other environment variables as needed in the `.env` file.
 
-7. Start the application using:
+6. Start the application using:
    ```
    docker-compose up
    ```
@@ -156,13 +153,7 @@ Lastly, navigate to `http://localhost` in your browser and follow instructions.
 
 <br />
 
-# Trouble Shooting
-
-In case of not receiving the request on the responder's view, the fastest approach to fix the issue would be to restart the `soapbox-redis` instance in lens platform. This would resolve the issue by clearing out the queue which might have been populated in an incorrect order.
-
 <!-- CONTRIBUTING -->
-<br />
-
 # Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
