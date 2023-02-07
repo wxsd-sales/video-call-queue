@@ -16,9 +16,9 @@ This is a proof-of-concept application that generates customized web application
 
 - [Overview](#overview)
 - [High-Level Architecture](#high-level-architecture)
-   - [Prerequisites](#prerequisites)
-   - [Browser Meeting SDK](#browser-meeting-sdk)
-   - [Instant Connect Solution](#instnat-connect-solution)
+  - [Prerequisites](#prerequisites)
+  - [Browser Meeting SDK](#browser-meeting-sdk)
+  - [Instant Connect Solution](#instnat-connect-solution)
 - [Setup](#setup)
 - [Built With](#built-with)
 - [Demo](#demo)
@@ -35,14 +35,15 @@ This web application contains provide a support queue system that could be embed
 # High Level Architecture
 
 ## Prerequisites
+
 This PoC leverages a few services behind the scene to provide a LIFO orderly queue system to manage requests and establish a WebRTC connections between the responder and requester. Here is the list of services that are required before launching the application. Make sure to review our env.example file to input the right values before running the app locally.
+
 <ol>
 <li><a href="https://github.com/wxsd-sales/soapbox" target="_blank">SoapBox</a> - A websocket message broker link must be provided to establish a WSS connection between the responder and requester</li>
 <li><a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank">Guest Demo</a> - To generate and embed the meeting experience into support flow</li>
 <li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank">Mindy Bot</a> - To manage guest users and to perform space and memberships creations</li>
 <li><a href="https://instant.webex.com/" target="_blank">Webex Instant Connect</a> - To embed Webex IC flow into the support flow, Instant Connect must be activated</li>
 </ol>
-
 
 ## Browser Meeting SDK
 
@@ -154,6 +155,7 @@ Lastly, navigate to `http://localhost` in your browser and follow instructions.
 <br />
 
 <!-- CONTRIBUTING -->
+
 # Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
