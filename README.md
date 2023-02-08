@@ -70,7 +70,7 @@ Establishes a WebSocket connection to SoapBox to publish the request data and su
 </li>
 </ol>
 <p align="center">
-   <img src="static/flows/VCQ/Slide1.png" alt="video-call-queue"/>
+   <img src="static/readme/SDK.jpg" alt="video-call-queue"/>
 </p>
 
 <br />
@@ -92,7 +92,7 @@ Establishes a WebSocket connection to SoapBox to publish the request data and su
 </li>
 </ol>
 <p align="center">
-   <img src="static/flows/VCQ/Slide1.png" alt="video-call-queue"/>
+   <img src="static/readme/IC.jpg" alt="video-call-queue"/>
 </p>
 
 <br />
