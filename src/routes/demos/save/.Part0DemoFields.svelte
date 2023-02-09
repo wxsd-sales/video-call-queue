@@ -23,7 +23,7 @@
   </div>
   <div class="column is-full">
     <label class="label" for="name">Name <sup class="has-text-danger" title="required">*</sup></label>
-    <div class="control has-icons-left">
+    <div class="control ">
       <input
         name="name"
         id="name"

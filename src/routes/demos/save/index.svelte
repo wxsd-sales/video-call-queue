@@ -3,7 +3,7 @@
   import BackgroundFields from './.Part1BackgroundFields.svelte';
   import BrandFields from './.Part2BrandFields.svelte';
   import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
-  import AuthenticationRequirement from './.Part4AuthenticationRequirementFields.svelte';
+  import WebexVideoCallingQueueSipConfiguration from './.Part4WebexVideoCallingQueueSIPConfiguration.svelte';
   import WeatherFields from './.Part5WeatherFields.svelte';
 
   import { page } from '$app/stores';
@@ -24,11 +24,9 @@
   export let isSDK = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.BROWSER_SDK) : false;
   export let isIC = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.INSTANT_CONNECT) : false;
   export let isSIP = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.SIP_URI_DIALING) : false;
-  export let responderAuthIsRequired = undefined;
   export let units = undefined;
 
-  let showAuthWarningModal = false;
-  let showSIPWarningModal = false;
+  let displaySipSection = false;
 
   const id = $page.url.searchParams.get('id');
 
@@ -72,25 +70,7 @@
     <BrandFields {title} {subtitle} />
   {/await}
   <hr />
-  <MeetingTypesOptionsFields
-    {isSDK}
-    {isIC}
-    {isSIP}
-    {showSIPWarningModal}
-    on:showAuthWarningModal={(event) => {
-      showAuthWarningModal = event.detail.checkSIPBox;
-      if (showAuthWarningModal) showSIPWarningModal = false;
-    }}
-  />
-  <!-- <hr />
-   <AuthenticationRequirement
-    {responderAuthIsRequired}
-    {showAuthWarningModal}
-    on:showSIPWarningModal={(event) => {
-      showSIPWarningModal = event.detail.authCheckBox;
-      if (showSIPWarningModal) showAuthWarningModal = false;
-    }}
-  /> -->
+  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} />
   <hr />
   <WeatherFields {units} {cityId} />
   <hr />
