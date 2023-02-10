@@ -267,24 +267,6 @@
             : BROWSER_VISIBILITY_STATUS.ACTIVE
         )
       );
-
-      window.addEventListener('onunload', () => {
-        socketIO.emit(CONST.MESSAGE, {
-          data: { ...requestInfo },
-          key: $requesterIDStore,
-          set: CONST.QUEUE,
-          command: CONST.HSET
-        });
-      });
-
-      window.addEventListener('onbeforeunload', () => {
-        socketIO.emit(CONST.MESSAGE, {
-          data: { ...requestInfo },
-          key: $requesterIDStore,
-          set: CONST.QUEUE,
-          command: CONST.HSET
-        });
-      });
     }
 
     return () => {
