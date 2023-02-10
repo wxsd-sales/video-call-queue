@@ -1,9 +1,8 @@
-# Webex WebRTC Video Call Queue
+# Webex WebRTC Video Call Queue 
 
-**Create a fully customized WebRTC video call queue system.**
+**Create a fully customized WebRTC video call queue.**
 
-This is a proof-of-concept application that generates customized web application links to create a WebRTC video call queue system with two options: our built-in [Guest Demo](https://github.com/wxsd-sales/wxsd-guest-demo) or [Instant Connect](https://instant.webex.com/) solution.
-
+This is a proof-of-concept application which generates a customized looking queue links to establish Webex backed WebRTC video calls between the requester and responder. 
 <p align="center">
    <a href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3" target="_blank">
        <img src="static/readme/videoQueue.gif" alt="video-call-queue"/>
@@ -28,15 +27,19 @@ This is a proof-of-concept application that generates customized web application
 
 # Overview
 
-This web application contains provide a support queue system that could be embedded inside an E2C use case and it contains two views: Requester & Responder views. As you see in the figure above, there is a list of requests for a responder to manage or setup a call with. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. Responder could either cancel the request or accept and start a session with the requester. After the session had ended, both responder and the requester will be redirected to the initial view.
+This web application provides a support queue system that could be embedded in E2C use cases and contains two views: Requester & Responder views. As you see in the figure above, there is a list of requests for a responder to manage or address to. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. Responder is able to skip or address the request by starting a session with the requester. This PoC is designed to address some of the use cases mentioned below:
 
+
+ <i>"I need a WebRTC video solution embedded in our built-in native app to connect customers to experts." </i>
+ <i>"I need a branded WebRTC supported video call queue solution to connect two parties without asking them to login."</i>
+ <i>"I need a click-to-call support feature embedded in my Cisco board Pro to connect incoming lobby guests to lobby ambassadors"</i>
 <br />
 
 # High Level Architecture
 
 ## Prerequisites
 
-This PoC leverages a few services behind the scene to provide a LIFO orderly queue system to manage requests and establish a WebRTC connections between the responder and requester. Here is the list of services that are required before launching the application. Make sure to review our env.example file to input the right values before running the app locally.
+This PoC leverages a few services behind the scene to provide a FIFO orderly queue system to manage requests and establish a WebRTC connections between the responder and requester. Here is the list of services that are required before launching the application. Make sure to review our env.example file to input the right values before running the app locally.
 
 <ol>
 <li><a href="https://github.com/wxsd-sales/soapbox" target="_blank">SoapBox</a> - A websocket message broker link must be provided to establish a WSS connection between the responder and requester</li>
@@ -54,17 +57,18 @@ Establishes a WebSocket connection to SoapBox to publish the request data and su
 ### Responder Flow
 
 <ol>
-<li>Establishes a WebSocket connection to SoapBox to register queue related events</li>
-<li>Sends HTTPs POST request to Mindy BOT</li>
+<li>Establish a WebSocket connection to SoapBox to register queue events</li>
+<li>Send HTTPs POST request to Mindy BOT</li>
 <li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank" >Mindy Bot</a> Node Service
    <ol>
-      <li> Creates two guest tokens</li>
+      <li> Issues JWTs</li>
       <li> Create an Space</li>
-      <li> Adds the guests to the Space</li>
-      <li> Sends a POST request to our <a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank" >Guest Demo</a> PoC</li>
+      <li> Create Space memberships with newly generated guest tokens</li>
+      <li> Retrieve a meeting link using <a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank" >Guest Demo</a> API</li>
+      <li> Update registered soapbox session with meeting details</li>
    </ol>
 </li>
-<li> Guest Demo PoC publishes the meeting information back to the responder client</li>
+<li> Responder and requester clients receive the meeting information from the SoapBox
 <li> Responder Client initiates Browser Meeting SDK to register Meeting related events </li>
 <li> Responder Client publishes queue <strong>pop</strong> & meeting related events back to requester client </li>
 </li>
