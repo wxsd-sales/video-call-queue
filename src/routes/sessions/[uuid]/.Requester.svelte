@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
   import type { Socket } from 'socket.io-client';
+  import { v4 as uuidv4 } from 'uuid';
 
   import { browser } from '$app/env';
 
@@ -39,7 +40,7 @@
 
   const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: socketID } });
 
-  $requesterIDStore = $requesterIDStore ? $requesterIDStore : crypto.randomUUID();
+  $requesterIDStore = $requesterIDStore ? $requesterIDStore : uuidv4();
 
   /**
    * Socket handler to listen and sort all events and pass them to the UI

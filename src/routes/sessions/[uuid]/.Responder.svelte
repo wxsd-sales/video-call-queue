@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
+  import { v4 as uuidv4 } from 'uuid';
 
   import { CLOSE_REQUEST, FORCE_CLOSE_REQUEST } from './constants';
   import type { RequestInfo } from '$lib/types';
@@ -161,7 +162,7 @@
       meetingURL = selectedRequest.meetingLink;
     } else {
       const { redirect } = await postMindyResponse(selectedRequest.id);
-      meetingURL = `${redirect}&autoDial=true&embedSize=desktop&sessionId=${crypto.randomUUID()}`;
+      meetingURL = `${redirect}&autoDial=true&embedSize=desktop&sessionId=${uuidv4()}`;
     }
     joinSession = true;
     joinButtonIsLoading = false;
