@@ -78,6 +78,7 @@
     "useTsNode": true
   },
   "dependencies": {
+    "prismjs": "^1.29.0",
     "uuid": "^9.0.0"
   }
 }

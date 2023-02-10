@@ -4,6 +4,7 @@
 
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
 
+  import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
 
   export let isSDK: boolean;
@@ -166,3 +167,9 @@
     </div>
   {/if}
 </div>
+
+<!-- <Modal isActive>
+  <div class="modal-content is-translucent-black" style="padding: 1.5rem 0.5rem; width: 22rem;">
+    <CodeSnippet language="javascript" />
+  </div>
+</Modal> -->
