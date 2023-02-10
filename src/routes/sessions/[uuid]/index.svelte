@@ -29,8 +29,6 @@
 
   const getWeatherResponse = (id: number, units: string) =>
     httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
-
-  // const isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
 </script>
 
 <svelte:head>

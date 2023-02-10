@@ -7,12 +7,15 @@
   import { browser } from '$app/env';
 
   import { queueOrderStore, requesterIDStore } from '$lib/store';
+  import { v4 as uuidv4 } from 'uuid';
   import * as CONST from './constants';
 
   import { BROWSER_VISIBILITY_STATUS, MEETING_TYPE_OPTIONS, SESSION_STATUS } from '$lib/enums';
+  import { NOTIFICATION_TYPES } from '$components/Notification/enums';
   import type { RequestInfo } from '$lib/types';
 
   import Modal from '$components/Modal/Modal.svelte';
+  import Notification from '$components/Notification/Notification.svelte';
 
   export let socketID: string;
   export let isSDKAvailable: boolean;
@@ -26,9 +29,12 @@
   let iframeIsLoading: boolean = false;
   let meetingInSession: boolean = false;
   let isSip: boolean = false;
-
+  let displaySIPErrorNotification = false;
+  let displayICErrorNotification = false;
   let meetingURL: string = '';
   let incomingMeetingURL: string = '';
+  let disableJoinButton = false;
+  let disableSIPOption = false;
 
   let meetingType: MEETING_TYPE_OPTIONS =
     (isSDKAvailable && MEETING_TYPE_OPTIONS.BROWSER_SDK) ||
@@ -39,6 +45,7 @@
   let requestInfo: RequestInfo;
 
   const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: socketID } });
+  const isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
 
   $requesterIDStore = $requesterIDStore ? $requesterIDStore : uuidv4();
 
@@ -101,16 +108,6 @@
         callback(CONST.IC_LEAVE_SESSION);
       }
 
-      //todo : fix the event name
-      if (payload.set === 'SIP_ADDRESS' && requesterID === payload.data.id) {
-        callback(CONST.SIP_JOIN_SESSION, { meetingUrl: payload.data.link });
-      }
-
-      //todo : fix the event name
-      if (payload.set === 'REMOVE_SIP_ADDRESS' && requesterID === payload.data.gradNurseID) {
-        callback(CONST.SIP_LEAVE_SESSION);
-      }
-
       if (payload.command === CONST.HSET && requesterID === payload.data.requesterID) {
         callback(CONST.UPDATE_REQUEST, { data: payload.data });
       }
@@ -143,20 +140,6 @@
         displayIframe = false;
         readyToJoin = false;
         iframeIsLoading = false;
-        cancelRequest();
-        break;
-
-      case CONST.SIP_JOIN_SESSION:
-        readyToJoin = true;
-        meetingURL = payload.meetingUrl;
-        isSip = true;
-        break;
-
-      case CONST.SIP_LEAVE_SESSION:
-        displayIframe = false;
-        readyToJoin = false;
-        iframeIsLoading = false;
-        meetingInSession = false;
         cancelRequest();
         break;
 
@@ -219,6 +202,11 @@
 
   /** Submits a request and append it to the queue */
   const submitRequest = () => {
+    if (meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING) {
+      location.href = `sip:11121`;
+      return;
+    }
+
     requestInfo = {
       id: $requesterIDStore,
       visibilityStatus: BROWSER_VISIBILITY_STATUS.ACTIVE,
@@ -247,9 +235,6 @@
     displayIframe = true;
 
     meetingURL = url;
-    // if (isSip) {
-    //   meetingInSession = true;
-    // }
   };
 
   onMount(() => {
@@ -269,6 +254,14 @@
         )
       );
     }
+
+    if (!isDevice && isSIPAvailable) {
+      displaySIPErrorNotification = true;
+      disableJoinButton = true;
+      disableSIPOption = true;
+    }
+
+    if (isDevice && isICAvailable) displayICErrorNotification = true;
 
     return () => {
       socketIO.disconnect();
@@ -321,6 +314,7 @@
         <button
           class="button is-size-5 is-primary is-centered mb-5"
           style="margin-top: 1.75rem;"
+          disabled={disableJoinButton && isSIPAvailable && !isICAvailable && !isSDKAvailable}
           on:click={submitRequest}
           >Request Assistance
         </button>
@@ -347,12 +341,20 @@
                 <input
                   type="radio"
                   name="meeting"
+                  disabled={isDevice}
                   checked={meetingType === MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
                   value={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
                   on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
                 />
-                <span class="is-hidden-mobile">Instant Connect</span>
-                <span class="is-hidden-tablet">IC</span>
+                {#if isDevice}
+                  <s class="has-text-grey">
+                    <span class="is-hidden-mobile">Instant Connect</span>
+                    <span class="is-hidden-tablet">IC</span>
+                  </s>
+                {:else}
+                  <span class="is-hidden-mobile">Instant Connect</span>
+                  <span class="is-hidden-tablet">IC</span>
+                {/if}
               </label>
             {/if}
             {#if isSIPAvailable}
@@ -360,12 +362,20 @@
                 <input
                   type="radio"
                   name="meeting"
+                  disabled={disableSIPOption}
                   checked={meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
                   value={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
                   on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.SIP_URI_DIALING)}
                 />
-                <span>SIP</span>
-                <span class="is-hidden-mobile"> URI DIALING </span>
+                {#if disableSIPOption}
+                  <s class="has-text-grey">
+                    <span>SIP</span>
+                    <span class="is-hidden-mobile "> URI Dialing </span>
+                  </s>
+                {:else}
+                  <span>SIP</span>
+                  <span class="is-hidden-mobile "> URI Dialing </span>
+                {/if}
               </label>
             {/if}
           {/if}
@@ -377,6 +387,16 @@
     </div>
   {/if}
 </div>
+
+<Notification type={NOTIFICATION_TYPES.ERROR} display={displaySIPErrorNotification}>
+  In order to experience our <strong>SIP URI Dialing</strong> flow, you must launch this demo on roomOS devices in kiosk
+  mode with proper macro setup enabled on the device to enable WxC video calling queue. For more information please
+  visit our <a>page</a>.
+</Notification>
+
+<Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification}>
+  Instant Connect flow is not currently functional on roomOS device in kiosk mode.
+</Notification>
 
 <Modal isActive={showModal}>
   <div class="modal-content is-translucent-black" style="padding: 1.5rem 0.5rem; width: 22rem;">
