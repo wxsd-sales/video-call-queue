@@ -11,7 +11,7 @@
   import * as CONST from './constants';
   import Modal from '$components/Modal/Modal.svelte';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-  import { PUBLIC_WEBEX_DEV_PORTAL_URL } from '$env/static/public';
+  import { session } from '$app/stores';
 
   export let socketID;
 
@@ -82,7 +82,8 @@
         callback(CONST.UPDATE_QUEUE, {
           requesterID: payload.key,
           visibilityStatus: payload.data.visibilityStatus,
-          sessionStatus: payload.data.sessionStatus
+          sessionStatus: payload.data.sessionStatus,
+          meetingLink: payload.data.meetingLink
         });
       }
     });
@@ -129,6 +130,10 @@
             if (payload.sessionStatus) {
               item.sessionStatus = payload.sessionStatus;
             }
+
+            if (payload.meetingLink) {
+              item.meetingLink = payload.meetingLink;
+            }
           }
           return item;
         });
@@ -143,7 +148,8 @@
             id: q.value,
             visibilityStatus: requestInfoJSON.visibilityStatus,
             sessionStatus: requestInfoJSON.sessionStatus,
-            meetingType: requestInfoJSON.meetingType
+            meetingType: requestInfoJSON.meetingType,
+            meetingLink: requestInfoJSON.meetingLink
           };
         });
         break;
@@ -151,8 +157,12 @@
   });
 
   const startGuestDemoSession = async () => {
-    const { redirect } = await postMindyResponse(selectedRequest.id);
-    meetingURL = `${redirect}&autoDial=true&embedSize=desktop&sessionId=${crypto.randomUUID()}`;
+    if (selectedRequest.sessionStatus === 'active') {
+      meetingURL = selectedRequest.meetingLink;
+    } else {
+      const { redirect } = await postMindyResponse(selectedRequest.id);
+      meetingURL = `${redirect}&autoDial=true&embedSize=desktop&sessionId=${crypto.randomUUID()}`;
+    }
     joinSession = true;
     joinButtonIsLoading = false;
     iframeIsLoading = true;
@@ -180,39 +190,10 @@
     });
 
     await monitorMeeting(hostToken);
+    return meetingURL;
   };
 
-  // const startSIPSession = async () => {
-  //   try {
-  //     joinSession = true;
-  //     joinButtonIsLoading = false;
-  //     iframeIsLoading = true;
-  //     const {
-  //       data: { hostToken, sipAddress }
-  //     } = await axios({
-  //       method: 'post',
-  //       url: import.meta.env.PUBLIC_NODE_SERVER_URL_SIP_DEMO,
-  //       data: {
-  //         guid: selectedGradNurse.ID
-  //       }
-  //     });
-  //     await monitorMeeting(hostToken, sipAddress);
-  //     meetingURL = `sip:${sipAddress}`;
-  //     iframeIsLoading = false;
-  //     HCA_MAIN_SOCKET.emit('message', {
-  //       command: 'set',
-  //       set: 'SIP_ADDRESS',
-  //       data: {
-  //         gradNurseID: selectedGradNurse.ID,
-  //         link: meetingURL
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const monitorMeeting = async (token, sip = '') => {
+  const monitorMeeting = async (token) => {
     const webexSDK = new window.Webex({
       credentials: {
         access_token: token
@@ -220,37 +201,6 @@
     });
 
     await webexSDK.meetings.register();
-
-    if (sip !== '') {
-      const meeting = await webexSDK.meetings.create(sip);
-      await meeting.join();
-      meeting.members.on(CONST.SDK_MEMBERS_UPDATE, async ({ delta, full }) => {
-        const newMembers = Object.values({ ...full, ...delta.updated, ...delta.added });
-        newMembers.forEach((nm) => {
-          if (nm.isInLobby) {
-            meeting.members.admitMembers([nm.id]);
-          }
-        });
-
-        const members = Object.values({ ...full, ...delta.updated, ...delta.added });
-        const guestHasLeft = members.some((member) => member.isGuest && member.status === 'NOT_IN_MEETING');
-
-        if (guestHasLeft) {
-          meetingURL = '';
-          displayQueue = true;
-          joinButtonIsLoading = false;
-          joinSession = false;
-
-          socketIO.emit(CONST.MESSAGE, {
-            command: CONST.SET,
-            set: 'REMOVE_SIP_ADDRESS',
-            data: {
-              gradNurseID: selectedRequest.ID
-            }
-          });
-        }
-      });
-    }
 
     webexSDK.meetings.on(CONST.SDK_MEETING_REMOVED, () => {
       meetingURL = '';
@@ -287,7 +237,7 @@
 
     sessionStatus = SESSION_STATUS.SESSION_IN_PROGRESS;
     socketIO.emit(CONST.MESSAGE, {
-      data: { ...selectedRequest, sessionStatus: CONST.ACTIVE },
+      data: { ...selectedRequest, sessionStatus: CONST.ACTIVE, meetingLink: meetingURL },
       key: selectedRequest.id,
       set: CONST.QUEUE,
       command: CONST.HSET
@@ -377,7 +327,7 @@
     class:is-hidden={!joinSession}
     bind:this={iframe}
     src={meetingURL}
-    allow="camera;microphone"
+    allow="camera;microphone; fullscreen;display-capture"
     on:load={() => {
       iframeIsLoading = false;
     }}
@@ -397,10 +347,14 @@
       <div class="box has-text-centered is-translucent-black p-0">
         <div class="is-flex is-justify-content-flex-end m-2">
           <span
-            class="icon has-text-danger is-clickable"
+            class={`icon ${!joinButtonIsLoading ? 'has-text-danger' : 'has-text-gray'} ${
+              !joinButtonIsLoading && 'is-clickable'
+            }`}
             on:click={() => {
-              selectedRequest = undefined;
-              displayQueue = true;
+              if (!joinButtonIsLoading) {
+                selectedRequest = undefined;
+                displayQueue = true;
+              }
             }}
           >
             <i class="mdi mdi-24px mdi-close" />

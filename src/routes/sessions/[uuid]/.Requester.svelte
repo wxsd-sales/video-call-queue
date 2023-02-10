@@ -76,6 +76,7 @@
 
       if (payload.room === requesterID) {
         if (payload.data.event === CONST.SDK_MEETING_JOIN) {
+          console.log('ARASH', payload.data.payload);
           callback(CONST.SDK_JOIN_SESSION, { meetingUrl: payload.data.payload });
         }
 
@@ -266,6 +267,24 @@
             : BROWSER_VISIBILITY_STATUS.ACTIVE
         )
       );
+
+      window.addEventListener('onunload', () => {
+        socketIO.emit(CONST.MESSAGE, {
+          data: { ...requestInfo },
+          key: $requesterIDStore,
+          set: CONST.QUEUE,
+          command: CONST.HSET
+        });
+      });
+
+      window.addEventListener('onbeforeunload', () => {
+        socketIO.emit(CONST.MESSAGE, {
+          data: { ...requestInfo },
+          key: $requesterIDStore,
+          set: CONST.QUEUE,
+          command: CONST.HSET
+        });
+      });
     }
 
     return () => {
@@ -289,7 +308,7 @@
     title="meeting"
     src={meetingURL}
     class:is-hidden={!displayIframe && !meetingInSession}
-    allow="camera;microphone"
+    allow="camera;microphone; fullscreen;display-capture"
     on:load={() => {
       iframeIsLoading = false;
     }}
