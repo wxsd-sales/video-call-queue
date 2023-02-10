@@ -1,8 +1,9 @@
-# Webex WebRTC Video Call Queue 
+# Webex WebRTC Video Call Queue
 
 **Create a fully customized WebRTC video call queue.**
 
-This is a proof-of-concept application which generates a customized looking queue links to establish Webex backed WebRTC video calls between the requester and responder. 
+This is a proof-of-concept application which generates a customized looking queue links to establish Webex backed WebRTC video calls between the requester and responder.
+
 <p align="center">
    <a href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3" target="_blank">
        <img src="static/readme/videoQueue.gif" alt="video-call-queue"/>
@@ -29,10 +30,9 @@ This is a proof-of-concept application which generates a customized looking queu
 
 This web application provides a support queue system that could be embedded in E2C use cases and contains two views: Requester & Responder views. As you see in the figure above, there is a list of requests for a responder to manage or address to. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. Responder is able to skip or address the request by starting a session with the requester. This PoC is designed to address some of the use cases mentioned below:
 
-
- <i>"I need a WebRTC video solution embedded in our built-in native app to connect customers to experts." </i>
- <i>"I need a branded WebRTC supported video call queue solution to connect two parties without asking them to login."</i>
- <i>"I need a click-to-call support feature embedded in my Cisco board Pro to connect incoming lobby guests to lobby ambassadors"</i>
+<i>"I need a WebRTC video solution embedded in our built-in native app to connect customers to experts." </i> <br/>
+<i>"I need a branded WebRTC supported video call queue solution to connect two parties without asking them to login."</i> <br/>
+<i>"I need a click-to-call support feature embedded in my Cisco board Pro to connect incoming lobby guests to lobby ambassadors"</i> <br/>
 <br />
 
 # High Level Architecture
