@@ -1,5 +1,5 @@
-export const generateMacro = (videoLink: string, extensionNumber: number) => 
- `
+export const generateMacro = (videoLink: string, extensionNumber: number) =>
+  `
 /*********************************************************************
 Copyright (c) 2022 Cisco and/or its affiliates.
 This software is licensed to you under the terms of the Cisco Sample
@@ -166,4 +166,4 @@ function createPanel(button, i) {
   )
     .catch(e => console.log('Error saving panel: ' + e.message))
 }
-`
+`;

@@ -309,7 +309,7 @@ export const PATCH = async (requestEvent: RequestEvent) => {
 
     @Expose()
     @IsInt()
-    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber')),  { toClassOnly: true })
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber')), { toClassOnly: true })
     public readonly extensionNumber!: number;
 
     @Expose()
