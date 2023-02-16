@@ -7,7 +7,6 @@
   import { browser } from '$app/env';
 
   import { queueOrderStore, requesterIDStore } from '$lib/store';
-  import { v4 as uuidv4 } from 'uuid';
   import * as CONST from './constants';
 
   import { BROWSER_VISIBILITY_STATUS, MEETING_TYPE_OPTIONS, SESSION_STATUS } from '$lib/enums';
@@ -25,10 +24,8 @@
   let requestSubmitted = false;
   let readyToJoin: boolean = false;
   let displayIframe: boolean = false;
-  let showModal: boolean = false;
   let iframeIsLoading: boolean = false;
   let meetingInSession: boolean = false;
-  let isSip: boolean = false;
   let displaySIPErrorNotification = false;
   let displayICErrorNotification = false;
   let meetingURL: string = '';
@@ -397,20 +394,3 @@
 <Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification}>
   Instant Connect flow is not currently functional on roomOS device in kiosk mode.
 </Notification>
-
-<Modal isActive={showModal}>
-  <div class="modal-content is-translucent-black" style="padding: 1.5rem 0.5rem; width: 22rem;">
-    <div class="has-text-white has-text-centered">
-      <div class="subtitle is-size-5 has-text-white mb-2 ">Your request has been canceled</div>
-      <div class="subtitle is-size-5 has-text-white">Please try again.</div>
-    </div>
-    <div class="is-flex is-justify-content-center mt-4">
-      <button
-        class="button is-success"
-        on:click={() => {
-          showModal = false;
-        }}>Acknowledge</button
-      >
-    </div>
-  </div>
-</Modal>

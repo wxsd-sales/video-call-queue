@@ -1,23 +1,27 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import { slide } from 'svelte/transition';
-
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
+
+  import { generateMacro } from '../../../static/macros/WxCQ.js';
+
+  import { touched, isFormValid, validity, form as formInput } from './utils/form';
 
   export let isSDK: boolean;
   export let isIC: boolean;
   export let isSIP: boolean;
-  export let videoLink: string;
+  export let videoLink = 'https://wxsd-sales.github.io/video-queue-macro/example-content';
   export let extensionNumber: number;
 
   let isNotRequired = isSDK || isIC || isSIP;
   let SDKCheckBoxElement: HTMLInputElement;
   let ICCheckBoxElement: HTMLInputElement;
   let SIPCheckBoxElement: HTMLInputElement;
+  let showModal = false;
+  let generateIsLoading = false;
 
+  $: code = generateMacro(videoLink, extensionNumber);
   /**
    * All checkboxes required statues may disable if only one checkbox is checked.
    *
@@ -26,8 +30,6 @@
   const handleCheckboxesRequiredStatus = () => {
     isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked || SIPCheckBoxElement.checked;
   };
-
-  const dispatch = createEventDispatcher();
 </script>
 
 <div class="columns is-multiline">
@@ -106,7 +108,7 @@
   </div>
 
   {#if isSIP}
-    <div transition:slide class="columns ml-4 mr-4 is-multiline">
+    <div use:formInput transition:slide class="columns ml-4 mr-4 is-multiline">
       <div class="column is-full">
         <hr />
         <h3 class="title is-size-5">Video SIP Call Queue Macro Builder</h3>
@@ -120,11 +122,12 @@
         <div class="control has-icons-left">
           <input
             name="extensionNumber"
-            id="extension-number"
+            id="extensionNumber"
             class="input"
             type="number"
             placeholder="1111"
             bind:value={extensionNumber}
+            required
           />
           <span class="icon is-left">
             <i class="mdi mdi-phone" />
@@ -142,22 +145,40 @@
         <div class="control has-icons-left">
           <input
             name="videoLink"
-            id="video-link"
+            id="extensionNumber"
             class="input"
-            type="text"
-            placeholder="https://socketeer.glitch.me/kiosk-voh.html"
+            class:is-danger={$touched?.videoLink && $validity.videoLink?.invalid}
+            type="url"
+            placeholder="https://wxsd-sales.github.io/video-queue-macro/example-content"
             bind:value={videoLink}
+            required
           />
           <span class="icon is-left">
             <i class="mdi mdi-play" />
           </span>
         </div>
         <div class="help">
-          <p>Commercial video source to play while holding in queue.</p>
+          {#if $touched?.videoLink && $validity.videoLink?.invalid}
+            <p class="has-text-danger">Please provide a valid URL.</p>
+          {:else}
+            <p>Commercial video source to play while holding in queue.</p>
+          {/if}
         </div>
       </div>
       <div class="column is-flex p-0 is-justify-content-flex-end">
-        <button class="button is-small is-rounded is-primary is-light m-2 ">
+        <button
+          disabled={!$isFormValid}
+          class:is-loading={generateIsLoading}
+          type="button"
+          class="button is-small is-rounded is-primary is-light m-2 "
+          on:click={() => {
+            generateIsLoading = true;
+            setTimeout(() => {
+              generateIsLoading = false;
+              showModal = true;
+            }, 1000);
+          }}
+        >
           <span class="icon">
             <i class="mdi mdi-cog" />
           </span>
@@ -168,8 +189,17 @@
   {/if}
 </div>
 
-<!-- <Modal isActive>
-  <div class="modal-content is-translucent-black" style="padding: 1.5rem 0.5rem; width: 22rem;">
-    <CodeSnippet language="javascript" />
+<Modal bind:isActive={showModal}>
+  <div class="modal-content snippet is-translucent-black">
+    <CodeSnippet {code} language="javascript" filename="VCQMacro.js" />
   </div>
-</Modal> -->
+</Modal>
+
+<style>
+  .snippet {
+    height: 50rem;
+    padding: 1.5rem;
+    width: 100%;
+    border-radius: 1rem;
+  }
+</style>

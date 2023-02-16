@@ -52,7 +52,9 @@ export const GET = async (requestEvent: RequestEvent) => {
               'responderAuthIsRequired',
               'isSDK',
               'isIC',
-              'isSIP'
+              'isSIP',
+              'extensionNumber',
+              'videoLink'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -82,7 +84,9 @@ export const GET = async (requestEvent: RequestEvent) => {
             authIsReq: r.responderAuthIsRequired,
             isSDK: r.isSDK,
             isIC: r.isIC,
-            isSIP: r.isSIP
+            isSIP: r.isSIP,
+            extensionNumber: r.extensionNumber,
+            videoLink: r.videoLink
           }
         }))
         .catch(() => ({
@@ -162,6 +166,15 @@ export const POST = async (requestEvent: RequestEvent) => {
     @IsInt()
     @Transform(({ obj }: { obj: FormData }) => Number(obj.get('cityId')), { toClassOnly: true })
     public readonly cityId!: number;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber')), { toClassOnly: true })
+    public readonly extensionNumber!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
+    public readonly videoLink!: string;
   }
 
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
@@ -206,7 +219,9 @@ export const POST = async (requestEvent: RequestEvent) => {
         responderAuthIsRequired: formData.authIsRequired,
         isSDK: formData.isSDK,
         isIC: formData.isIC,
-        isSIP: formData.isSIP
+        isSIP: formData.isSIP,
+        videoLink: formData.videoLink,
+        extensionNumber: formData.extensionNumber
       });
       await db.persistAndFlush(demo);
 
@@ -291,6 +306,15 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     @IsInt()
     @Transform(({ obj }: { obj: FormData }) => Number(obj.get('cityId')), { toClassOnly: true })
     public readonly cityId!: number;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber')),  { toClassOnly: true })
+    public readonly extensionNumber!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
+    public readonly videoLink!: string;
   }
 
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
@@ -337,7 +361,9 @@ export const PATCH = async (requestEvent: RequestEvent) => {
               'responderAuthIsRequired',
               'isSDK',
               'isIC',
-              'isSIP'
+              'isSIP',
+              'videoLink',
+              'extensionNumber'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -360,6 +386,8 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.isSDK = formData.isSDK;
           r.isIC = formData.isIC;
           r.isSIP = formData.isSIP;
+          r.videoLink = formData.videoLink;
+          r.extensionNumber = formData.extensionNumber;
 
           await db.persistAndFlush(r);
 

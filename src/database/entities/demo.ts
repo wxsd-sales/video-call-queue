@@ -49,6 +49,12 @@ export class Demo extends BaseEntity {
   @Property({ type: types.boolean })
   isSIP: boolean;
 
+  @Property({ type: types.integer, nullable: true })
+  extensionNumber: number;
+
+  @Property({ type: types.string, nullable: true })
+  videoLink: string;
+
   constructor(obj: {
     user: User;
     name: string;
@@ -64,6 +70,8 @@ export class Demo extends BaseEntity {
     isSDK: boolean;
     isIC: boolean;
     isSIP: boolean;
+    extensionNumber: number;
+    videoLink: string;
   }) {
     super();
     this.user = obj.user;
@@ -80,5 +88,7 @@ export class Demo extends BaseEntity {
     this.isSDK = obj.isSDK;
     this.isIC = obj.isIC;
     this.isSIP = obj.isSIP;
+    this.extensionNumber = obj.extensionNumber;
+    this.videoLink = obj.videoLink;
   }
 }

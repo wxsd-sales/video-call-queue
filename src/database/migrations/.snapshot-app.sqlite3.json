@@ -77,7 +77,9 @@
       "indexes": [
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -133,7 +135,9 @@
       "indexes": [
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -235,7 +239,9 @@
       "name": "session",
       "indexes": [
         {
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "composite": false,
           "keyName": "session_user_uuid_index",
           "primary": false,
@@ -243,7 +249,9 @@
         },
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -253,9 +261,13 @@
       "foreignKeys": {
         "session_user_uuid_foreign": {
           "constraintName": "session_user_uuid_foreign",
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "localTableName": "session",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "user",
           "deleteRule": "no action",
           "updateRule": "cascade"
@@ -423,26 +435,50 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "extension_number": {
+          "name": "extension_number",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "video_link": {
+          "name": "video_link",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
         }
       },
       "name": "demo",
       "indexes": [
         {
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "composite": false,
           "keyName": "demo_user_uuid_index",
           "primary": false,
           "unique": false
         },
         {
-          "columnNames": ["background_poster_uuid"],
+          "columnNames": [
+            "background_poster_uuid"
+          ],
           "composite": false,
           "keyName": "demo_background_poster_uuid_index",
           "primary": false,
           "unique": false
         },
         {
-          "columnNames": ["brand_logo_uuid"],
+          "columnNames": [
+            "brand_logo_uuid"
+          ],
           "composite": false,
           "keyName": "demo_brand_logo_uuid_index",
           "primary": false,
@@ -450,7 +486,9 @@
         },
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -460,27 +498,39 @@
       "foreignKeys": {
         "demo_user_uuid_foreign": {
           "constraintName": "demo_user_uuid_foreign",
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "user",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
         "demo_background_poster_uuid_foreign": {
           "constraintName": "demo_background_poster_uuid_foreign",
-          "columnNames": ["background_poster_uuid"],
+          "columnNames": [
+            "background_poster_uuid"
+          ],
           "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "data",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
         "demo_brand_logo_uuid_foreign": {
           "constraintName": "demo_brand_logo_uuid_foreign",
-          "columnNames": ["brand_logo_uuid"],
+          "columnNames": [
+            "brand_logo_uuid"
+          ],
           "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "data",
           "deleteRule": "cascade",
           "updateRule": "cascade"

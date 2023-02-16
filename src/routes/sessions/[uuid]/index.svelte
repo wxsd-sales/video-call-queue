@@ -137,24 +137,6 @@
     box-shadow: none !important;
   }
 
-  #device-code :global(hr) {
-    background-color: hsl(0deg, 0%, 71%);
-  }
-
-  #device-code :global(nav.navbar > div.navbar-menu) {
-    background-color: transparent;
-  }
-
-  #device-code :global(div.navbar-item) {
-    @extend .px-0;
-  }
-
-  #device-code > :global(div.favourite-contacts-container) {
-    height: calc(3.7 * (30px + 8px + 24px + 24px) - 25.2px);
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
   #app-model :global(.modal-content) {
     @extend .p-2;
     @extend .is-translucent-black;

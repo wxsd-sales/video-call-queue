@@ -3,13 +3,12 @@
   import BackgroundFields from './.Part1BackgroundFields.svelte';
   import BrandFields from './.Part2BrandFields.svelte';
   import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
-  import WebexVideoCallingQueueSipConfiguration from './.Part4WebexVideoCallingQueueSIPConfiguration.svelte';
   import WeatherFields from './.Part5WeatherFields.svelte';
 
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { MEETING_TYPE_OPTIONS } from '$lib/enums';
+  import { form as formInput, isFormValid } from './utils/form';
 
   export let form = undefined;
   export let name = undefined;
@@ -20,13 +19,12 @@
   export let title = undefined;
   export let subtitle = undefined;
   export let cityId = undefined;
-  export let meetingTypeOptions: Array<MEETING_TYPE_OPTIONS>;
-  export let isSDK = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.BROWSER_SDK) : false;
-  export let isIC = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.INSTANT_CONNECT) : false;
-  export let isSIP = meetingTypeOptions ? meetingTypeOptions.includes(MEETING_TYPE_OPTIONS.SIP_URI_DIALING) : false;
+  export let isSDK = false;
+  export let isIC = false;
+  export let isSIP = false;
   export let units = undefined;
-
-  let displaySipSection = false;
+  export let videoLink = undefined;
+  export let extensionNumber = undefined;
 
   const id = $page.url.searchParams.get('id');
 
@@ -50,6 +48,7 @@
 
 <form
   id="demo-create"
+  use:formInput
   class="container px-4 mb-6"
   action={'./save' + (id == null ? '' : '?_method=PATCH')}
   method="post"
@@ -70,7 +69,8 @@
     <BrandFields {title} {subtitle} />
   {/await}
   <hr />
-  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} />
+  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {extensionNumber} {videoLink} />
+
   <hr />
   <WeatherFields {units} {cityId} />
   <hr />
@@ -82,7 +82,7 @@
       </div>
     {/if}
     <div class="column is-12">
-      <button class="button is-medium is-rounded is-success is-fullwidth" type="submit">
+      <button class="button is-medium is-rounded is-success is-fullwidth" type="submit" disabled={!$isFormValid}>
         <span class="icon">
           <i class="mdi mdi-content-save-plus" />
         </span>
