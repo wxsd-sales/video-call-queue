@@ -1,4 +1,4 @@
-export const generateMacro = (videoLink: string, extensionNumber: number) =>
+export const generateMacro = (videoLink = 'https://wxsd-sales.github.io/video-queue-macro/example-content/', extensionNumber: number) =>
   `
 /*********************************************************************
 Copyright (c) 2022 Cisco and/or its affiliates.
@@ -13,15 +13,15 @@ IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied.
 ***********************************************************************
 * 
-* Author:              Harish Chawla
-*                    	Leader, Systems Engineering 
-*                    	hachawla@cisco.com
-*                    	Cisco Systems
+* Author:             Harish Chawla
+*                     Leader, Systems Engineering 
+*                     hachawla@cisco.com
+*                     Cisco Systems
 * 
-* Co-Author:           William Mills
-*                    	Technical Solutions Specialist 
-*                    	wimills@cisco.com
-*                    	Cisco Systems
+* Co-Author:          William Mills
+*                     Technical Solutions Specialist 
+*                     wimills@cisco.com
+*                     Cisco Systems
 * 
 * Version: 1-0-0
 * Released: 02/08/23
@@ -30,9 +30,8 @@ or implied.
 * waiting in a Webex Calling call queue:
 * 
 * Features:
-* 1. Provides easily configurable & self creating speed dial buttons
-* 2. Supports multiple call queues & video content display
-* 3. Can auto hide/unhide Call control UI in and out of call
+* 1. Supports multiple call queues & video content display
+* 2. Can auto hide/unhide Call control UI in and out of call
 * 
 * Requirements:
 * 1. Webex Device must be provisioned with a Webex Calling subscription
@@ -55,15 +54,15 @@ const config = {
       name: 'Call For Assistance',
       icon: 'Concierge',
       color: '#0000ff',
-      target: '1111'
+      target: '${extensionNumber}'
     }
     // Add your additional speed dial buttons here
   ],
   queues: [       // Array of queues to monitor and display commercials
     {
       title: 'Please wait 😊', // The title which is display when in modal mode
-      number: '1111', // Number to monitor
-      url: 'https://wxsd-sales.github.io/video-queue-macro/example-content/',  // URL to display
+      number: '${extensionNumber}', // Number to monitor
+      url: '${videoLink}',  // URL to display
       mode: 'Fullscreen',       // Fullscreen | Modal
       target: 'OSD'     // OSD | Controller
     }
@@ -126,5 +125,4 @@ function setUIVisibility(state){
   console.log('Setting UI Visibility to: ' + state)
   xapi.Config.UserInterface.Features.HideAll.set(state ? 'False' : 'True');
 }
-
-  `;
+`;
