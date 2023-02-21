@@ -1,4 +1,7 @@
-export const generateMacro = (videoLink = 'https://wxsd-sales.github.io/video-queue-macro/example-content/', extensionNumber: number) =>
+export const generateMacro = (
+  videoLink = 'https://wxsd-sales.github.io/video-queue-macro/example-content/',
+  extensionNumber: number
+) =>
   `
 /*********************************************************************
 Copyright (c) 2022 Cisco and/or its affiliates.
