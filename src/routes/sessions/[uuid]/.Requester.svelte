@@ -38,7 +38,7 @@
     (isICAvailable && MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ||
     ((isSIPAvailable && MEETING_TYPE_OPTIONS.SIP_URI_DIALING) as MEETING_TYPE_OPTIONS);
 
-  let displayMeetingOptions = isICAvailable && isSDKAvailable;
+  let displayMeetingOptions = isSDKAvailable ? isICAvailable || isSIPAvailable : isICAvailable && isSIPAvailable;
   let requestInfo: RequestInfo;
 
   const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: socketID } });

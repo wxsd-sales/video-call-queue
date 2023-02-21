@@ -162,7 +162,7 @@
       </div>
       <div class="column is-half">
         <label class="label" for="city-id"
-          >Commercial Video Source <sup class="has-text-danger" title="required">*</sup></label
+          >Video Commercial Source <sup class="has-text-danger" title="required">*</sup></label
         >
         <div class="control has-icons-left">
           <input
