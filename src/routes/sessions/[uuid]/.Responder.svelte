@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
   import { v4 as uuidv4 } from 'uuid';
+  import { browser } from '$app/env';
 
   import { CLOSE_REQUEST, FORCE_CLOSE_REQUEST } from './constants';
   import type { RequestInfo } from '$lib/types';
@@ -12,7 +13,6 @@
   import * as CONST from './constants';
   import Modal from '$components/Modal/Modal.svelte';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-  import { session } from '$app/stores';
 
   export let socketID;
 
@@ -50,6 +50,7 @@
   const getInstantConnectTokenResponse = (data: string) =>
     httpApiRequest.get('instant-connect/space', { data }).then((r) => r.json() as Promise<TYPES.ICToken>);
 
+  const isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
   /**
    * Socket handler to listen and sort all events and pass them to the UI
    *
@@ -277,6 +278,8 @@
       socketIO.emit(CONST.MESSAGE, { command: CONST.LIST, set: CONST.QUEUE, id: CONST.INIT_LIST, key: CONST.LIST });
     });
   });
+
+  $: queue = isDevice ? queue.filter((item) => item.meetingType !== MEETING_TYPE_OPTIONS.INSTANT_CONNECT) : queue;
 </script>
 
 <div class="columns mb-2 is-align-items-center mb-1">
