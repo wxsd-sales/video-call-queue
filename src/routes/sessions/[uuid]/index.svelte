@@ -19,14 +19,6 @@
 
   const httpApiRequest = jsonRequest('/api');
 
-  const getAuthorizeResponse = () =>
-    httpApiRequest.post('device-code/webex/authorize').then((r) => r.json() as Promise<TYPES.AuthorizeResponse>);
-
-  const getTokenResponse = (deviceCode: string) =>
-    httpApiRequest
-      .post('device-code/webex/token', { deviceCode })
-      .then((r) => r.json() as Promise<TYPES.TokenResponse>);
-
   const getWeatherResponse = (id: number, units: string) =>
     httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
 </script>
@@ -61,29 +53,14 @@
       <!--lhs start-->
       <div id="sessions" class="box is-flex is-flex-direction-column  is-translucent-black">
         {#if role === 'responder'}
-          {#if demo.responderAuthIsRequired}
-            {#if !$tokenResponseStore}
-              <div style="margin-top: 20%">
-                <DeviceCode
-                  title="Favorites"
-                  isMinimal={false}
-                  {getAuthorizeResponse}
-                  {getTokenResponse}
-                  on:newTokenResponse={(e) => tokenResponseStore.set(e.detail)}
-                />
-              </div>
-            {:else}
-              <Responder socketID={demo.uuid} />
-            {/if}
-          {:else}
-            <Responder socketID={demo.uuid} />
-          {/if}
+          <Responder socketID={demo.uuid} />
         {:else}
           <Requester
             socketID={demo.uuid}
             isSIPAvailable={demo.isSIP}
             isSDKAvailable={demo.isSDK}
             isICAvailable={demo.isIC}
+            extensionNumber={demo.extensionNumber}
           />
         {/if}
       </div>

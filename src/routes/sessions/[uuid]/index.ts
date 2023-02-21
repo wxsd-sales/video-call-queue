@@ -46,10 +46,10 @@ export const GET = async (requestEvent: RequestEvent) => {
           'brandLogo.type',
           'weatherUnits',
           'weatherCityId',
-          'responderAuthIsRequired',
           'isSDK',
           'isIC',
-          'isSIP'
+          'isSIP',
+          'extensionNumber'
         ],
         strategy: LoadStrategy.JOINED
       }

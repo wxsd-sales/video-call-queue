@@ -13,13 +13,13 @@
   import { NOTIFICATION_TYPES } from '$components/Notification/enums';
   import type { RequestInfo } from '$lib/types';
 
-  import Modal from '$components/Modal/Modal.svelte';
   import Notification from '$components/Notification/Notification.svelte';
 
   export let socketID: string;
   export let isSDKAvailable: boolean;
   export let isICAvailable: boolean;
   export let isSIPAvailable: boolean;
+  export let extensionNumber: number;
 
   let requestSubmitted = false;
   let readyToJoin: boolean = false;
@@ -81,7 +81,6 @@
 
       if (payload.room === requesterID) {
         if (payload.data.event === CONST.SDK_MEETING_JOIN) {
-          console.log('ARASH', payload.data.payload);
           callback(CONST.SDK_JOIN_SESSION, { meetingUrl: payload.data.payload });
         }
 
@@ -200,7 +199,7 @@
   /** Submits a request and append it to the queue */
   const submitRequest = () => {
     if (meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING) {
-      location.href = `sip:11121`;
+      location.href = `sip:${extensionNumber}`;
       return;
     }
 
@@ -386,11 +385,16 @@
 </div>
 
 <Notification type={NOTIFICATION_TYPES.ERROR} display={displaySIPErrorNotification}>
-  In order to experience our <strong>SIP URI Dialing</strong> flow, you must launch this demo on roomOS devices in kiosk
-  mode with proper macro setup enabled on the device to enable WxC video calling queue. For more information please
-  visit our <a>page</a>.
+  In order to experience our <strong>SIP URI Dialing</strong> flow, you must launch this demo on Cisco roomOS devices in
+  kiosk mode with proper macro setup enabled on the device and enable WxC video calling queue. For more information
+  please visit our
+  <a
+    target="_blank"
+    href="https://cisco.sharepoint.com/sites/WXSD-WebexSolutionsDevelopment/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version%2FCisco%20Device%20Kiosk%20using%20Macros%20%26%20Webex%20Calling%20Group%20Call%20Management%2Epdf&parent=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version&p=true&ga=1"
+    >page</a
+  >.
 </Notification>
 
 <Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification}>
-  Instant Connect flow is not currently functional on roomOS device in kiosk mode.
+  Instant Connect feature is not currently available on Cisco roomOS device in kiosk mode.
 </Notification>

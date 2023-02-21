@@ -12,37 +12,37 @@ writing, software distributed under the License is distributed on an "AS
 IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied.
 ***********************************************************************
- * 
- * Author:              Harish Chawla
- *                    	Leader, Systems Engineering 
- *                    	hachawla@cisco.com
- *                    	Cisco Systems
- * 
- * Co-Author:           William Mills
- *                    	Technical Solutions Specialist 
- *                    	wimills@cisco.com
- *                    	Cisco Systems
- * 
- * Version: 1-0-0
- * Released: 02/08/23
- * 
- * This is a Webex Device Macro which displays a video while 
- * waiting in a Webex Calling call queue:
- * 
- * Features:
- * 1. Provides easily configurable & self creating speed dial buttons
- * 2. Supports multiple call queues & video content display
- * 3. Can auto hide/unhide Call control UI in and out of call
- * 
- * Requirements:
- * 1. Webex Device must be provisioned with a Webex Calling subscription
- * 2. A call queue must be setup on control hub and its number added to the macro
- * 3. Agents must be added to the call queue so the call can be answered
- * 
- * Full Readme and source code available on Github:
- * https://github.com/wxsd-sales/video-queue-macro
- * 
- ********************************************************/
+* 
+* Author:              Harish Chawla
+*                    	Leader, Systems Engineering 
+*                    	hachawla@cisco.com
+*                    	Cisco Systems
+* 
+* Co-Author:           William Mills
+*                    	Technical Solutions Specialist 
+*                    	wimills@cisco.com
+*                    	Cisco Systems
+* 
+* Version: 1-0-0
+* Released: 02/08/23
+* 
+* This is a Webex Device Macro which displays a video while 
+* waiting in a Webex Calling call queue:
+* 
+* Features:
+* 1. Provides easily configurable & self creating speed dial buttons
+* 2. Supports multiple call queues & video content display
+* 3. Can auto hide/unhide Call control UI in and out of call
+* 
+* Requirements:
+* 1. Webex Device must be provisioned with a Webex Calling subscription
+* 2. A call queue must be setup on control hub and its number added to the macro
+* 3. Agents must be added to the call queue so the call can be answered
+* 
+* Full Readme and source code available on Github:
+* https://github.com/wxsd-sales/video-queue-macro
+* 
+********************************************************/
 import xapi from 'xapi';
 
 /*********************************************************
@@ -55,15 +55,15 @@ const config = {
       name: 'Call For Assistance',
       icon: 'Concierge',
       color: '#0000ff',
-      target: '${extensionNumber}'
+      target: '1111'
     }
     // Add your additional speed dial buttons here
   ],
   queues: [       // Array of queues to monitor and display commercials
     {
       title: 'Please wait 😊', // The title which is display when in modal mode
-      number: '${extensionNumber}', // Number to monitor
-      url: '${videoLink}',  // URL to display
+      number: '1111', // Number to monitor
+      url: 'https://wxsd-sales.github.io/video-queue-macro/example-content/',  // URL to display
       mode: 'Fullscreen',       // Fullscreen | Modal
       target: 'OSD'     // OSD | Controller
     }
@@ -79,11 +79,7 @@ const config = {
  * Below contains all macros functions
 **********************************************************/
 
-//Create our speed dial buttons
-config.buttons.forEach((button, i) => createPanel(button, i))
-
 // Subscribe to Events & Status changes
-xapi.Event.UserInterface.Extensions.Panel.Clicked.on(processClicks)
 xapi.Status.SystemUnit.State.NumberOfActiveCalls.on(processCallCount);
 xapi.Status.Call.RemoteNumber.on(processRemoteNumber)
 
@@ -91,9 +87,9 @@ xapi.Status.Call.RemoteNumber.on(processRemoteNumber)
 xapi.Status.SystemUnit.State.NumberOfActiveCalls.get()
 .then(r => processCallCount(r))
 
-function processCallCount(event) {
+async function processCallCount(event) {
   console.log('Number of calls: ' + event)
-  if(event === Number('0')) {
+  if(event == '0') {
     hideCommercial();
     setUIVisibility(!config.hideUI)
   } else {
@@ -114,18 +110,8 @@ function processRemoteNumber(event){
   showCommercial(match)
 }
 
-function processClicks(event) {
-  // Ignore all button presses which don't begin with our panelId
-  if (!event.PanelId.startsWith(config.panelId)) return;
-  // Get the panelId number and match to our button array.
-  const index = event.PanelId.substr(config.panelId.length);
-  console.log(\`Button[\${ config.buttons[index].name }]clicked\`)
-  // Dial the target associated with button
-  dial(config.buttons[index].target)
-}
-
 function showCommercial({title, url, mode, target }) {
-  console.log(\`Opening Webview on[\${ target }]- Title: \${ title } | Mode: \${ mode } | Url: \${ url } \`)
+  console.log(\`Opening Webview on[\${ target }]- Title: \${ title } | Mode: \${ mode } | Url: $\{ url } \`)
   xapi.Command.UserInterface.WebView.Display(
     { Mode: mode, Target: target, Title: title, Url: url })
     .catch(e => console.log('Error opening webview: ' + e.message))
@@ -141,29 +127,4 @@ function setUIVisibility(state){
   xapi.Config.UserInterface.Features.HideAll.set(state ? 'False' : 'True');
 }
 
-function dial(number) {
-  console.log(\`Dialing number[\${ number }]\`);
-  xapi.Command.Dial({ Number: number })
-  .catch(e=> console.log(\`Unable to dial[\${ number }]- Error: \${ e.message } \`))
-}
-
-function createPanel(button, i) {
-  const panel = \`
-    <Extensions>
-      <Panel>
-        <Type>Statusbar</Type>
-        <Location>HomeScreen</Location>
-        <Icon>\${button.icon}</Icon>
-        <Color>\${button.color}</Color>
-        <Name>\${button.name}</Name>
-        <ActivityType>Custom</ActivityType>
-      </Panel>
-    </Extensions > \`
-
-  xapi.Command.UserInterface.Extensions.Panel.Save(
-    { PanelId: config.panelId + i },
-    panel
-  )
-    .catch(e => console.log('Error saving panel: ' + e.message))
-}
-`;
+  `;

@@ -109,12 +109,32 @@
 
   {#if isSIP}
     <div use:formInput transition:slide class="columns ml-4 mr-4 is-multiline">
-      <div class="column is-full">
+      <div class="column is-full ">
         <hr />
         <h3 class="title is-size-5">Video SIP Call Queue Macro Builder</h3>
       </div>
-      <div class="column is-full content mb-0">
-        <p>Provide a list of video call options for a requester to choose from.</p>
+      <div class="column is-full content mb-3">
+        <p>
+          <span class="is-italic"> SIP URI Dialing</span> feature will only be available on Cisco roomOS devices. This
+          feature also requires users to create a call queue under
+          <a target="_blank" href="https://admin.webex.com/calling/features/callQueue"
+            >Webex Control Hub Call Management</a
+          > section, and enable a macro - which could be auto generated here - on their devices.
+        </p>
+
+        <p class="help">
+          * If you are not familiar with video call queue feature on devices powered by Webex Calling, we highly
+          recommend you to watch this <a
+            target="_blank"
+            href="https://app.vidcast.io/share/05285d39-75a7-429e-81d0-61911a931973">vidcast</a
+          >
+          and follow the steps mentioned in our
+          <a
+            target="_blank"
+            href="https://cisco.sharepoint.com/sites/WXSD-WebexSolutionsDevelopment/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version%2FCisco%20Device%20Kiosk%20using%20Macros%20%26%20Webex%20Calling%20Group%20Call%20Management%2Epdf&parent=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version&p=true&ga=1"
+            >setup guide</a
+          >.
+        </p>
       </div>
 
       <div class="column is-half">
@@ -141,7 +161,9 @@
         </div>
       </div>
       <div class="column is-half">
-        <label class="label" for="city-id">Video Source <sup class="has-text-danger" title="required">*</sup></label>
+        <label class="label" for="city-id"
+          >Commercial Video Source <sup class="has-text-danger" title="required">*</sup></label
+        >
         <div class="control has-icons-left">
           <input
             name="videoLink"
