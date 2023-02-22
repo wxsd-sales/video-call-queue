@@ -28,6 +28,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   const ipAddress = prerendering ? 'unknown' : event.clientAddress;
   const userAgent = event.request.headers.get('User-Agent') ?? undefined;
   const isProtectedRoute = event.url.pathname !== '/' && !event.url.pathname.startsWith('/api');
+  let isDemoUrlValid = false;
 
   let response: Response;
 
@@ -52,10 +53,15 @@ export const handle: Handle = async ({ event, resolve }) => {
       session?.isExpired === true ||
       (session.user?.uuid != null && session.lastActivityAt < d1.getTime() - 60 * 60 * 1000 * 2);
 
+    if (event.url.pathname.startsWith('/sessions/')) {
+      const demoID = event.url.pathname.split('/')[2];
+      isDemoUrlValid = await db.findOne(entity.Demo, { uuid: demoID }) === null ? false : true;
+    }
+
     if (isSessionInvalid) {
       const session = createSession(userAgent, ipAddress, d1.getTime());
       await db.persistAndFlush(session).then(() => (event.locals.session = session) && (event.locals.db = db));
-      response = createLoginRedirect(session.uuid);
+      response = isDemoUrlValid ? await resolve(event) : createLoginRedirect(session.uuid);
     } else {
       session.ipAddress = ipAddress;
       session.userAgent = userAgent;

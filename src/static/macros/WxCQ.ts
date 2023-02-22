@@ -52,15 +52,6 @@ import xapi from 'xapi';
 **********************************************************/
 
 const config = {
-  buttons: [        // Array of buttons, will be auto added to the device
-    {
-      name: 'Call For Assistance',
-      icon: 'Concierge',
-      color: '#0000ff',
-      target: '${extensionNumber}'
-    }
-    // Add your additional speed dial buttons here
-  ],
   queues: [       // Array of queues to monitor and display commercials
     {
       title: 'Please wait 😊', // The title which is display when in modal mode
@@ -73,7 +64,6 @@ const config = {
   ],
   hideUI: true, // true = hide out of call controls, false = show controls
   hideIncallUI: false,  // true = hide in call call controls, false = show controls
-  panelId: 'call-queue',  // Our base Panel Id for all speed dial buttons
 }
 
 

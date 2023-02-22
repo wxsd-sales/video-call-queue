@@ -6,13 +6,11 @@
   import Brand from '$components/Brand/Brand.svelte';
   import Clock from '$components/Clock/Clock.svelte';
   import Weather from '$components/Weather/Weather.svelte';
-  import DeviceCode from '$components/DeviceCode/DeviceCode.svelte';
 
   import Responder from './.Responder.svelte';
   import Requester from './.Requester.svelte';
 
   import type { Demo } from 'src/database/entities';
-  import { tokenResponseStore } from '$lib/store';
 
   export let demo: Demo;
   export let role: string;

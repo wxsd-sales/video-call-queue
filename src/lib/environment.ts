@@ -120,6 +120,9 @@ export class Environment {
   @IsNotEmpty()
   public readonly PUBLIC_WEBEX_DEV_PORTAL_URL: string;
 
+  @IsUrl()
+  public readonly PUBLIC_TUNNEL: string;
+
   constructor() {
     dotenvExpand.expand(dotenv.config());
     this.APP_URL = process.env.APP_URL || dev ? 'https://localhost:5173' : 'https://localhost:4173';
@@ -156,6 +159,7 @@ export class Environment {
     this.PUBLIC_NODE_SERVER_URL_SIP_DEMO = process.env.PUBLIC_NODE_SERVER_URL_SIP_DEMO as string;
     this.PUBLIC_SOAP_BOX_URL = process.env.PUBLIC_SOAP_BOX_URL as string;
     this.PUBLIC_WEBEX_DEV_PORTAL_URL = process.env.PUBLIC_WEBEX_DEV_PORTAL_URL as string;
+    this.PUBLIC_TUNNEL = process.env.PUBLIC_TUNNEL as string;
   }
 }
 
