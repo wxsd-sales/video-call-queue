@@ -14,6 +14,7 @@
   import type { RequestInfo } from '$lib/types';
 
   import Notification from '$components/Notification/Notification.svelte';
+  import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
 
   export let socketID: string;
   export let isSDKAvailable: boolean;
@@ -388,11 +389,7 @@
   In order to experience our <strong>SIP URI Dialing</strong> flow, you must launch this demo on Cisco roomOS devices in
   kiosk mode with proper macro setup enabled on the device and enable WxC video calling queue. For more information
   please visit our
-  <a
-    target="_blank"
-    href="https://cisco.sharepoint.com/sites/WXSD-WebexSolutionsDevelopment/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version%2FCisco%20Device%20Kiosk%20using%20Macros%20%26%20Webex%20Calling%20Group%20Call%20Management%2Epdf&parent=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version&p=true&ga=1"
-    >page</a
-  >.
+  <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>page</a>.
 </Notification>
 
 <Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification}>

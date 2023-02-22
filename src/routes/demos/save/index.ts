@@ -5,6 +5,7 @@ import {
   IsIn,
   IsInt,
   IsNotEmpty,
+  IsUrl,
   IsUUID,
   Max,
   MaxLength,
@@ -173,6 +174,7 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly extensionNumber!: number;
 
     @Expose()
+    @IsUrl()
     @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
     public readonly videoLink!: string;
   }
@@ -313,6 +315,7 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     public readonly extensionNumber!: number;
 
     @Expose()
+    @IsUrl()
     @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
     public readonly videoLink!: string;
   }

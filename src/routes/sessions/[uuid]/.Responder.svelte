@@ -13,6 +13,7 @@
   import * as CONST from './constants';
   import Modal from '$components/Modal/Modal.svelte';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
+  import { showModalStore } from '$lib/store';
 
   export let socketID;
 
@@ -30,7 +31,6 @@
   let joinSession = false;
   let joinButtonIsLoading = false;
   let iframeIsLoading = false;
-  let showModal = false;
 
   let meetingURL = '';
   let title = 'Request Queue';
@@ -262,7 +262,7 @@
   const handleClick = (target) => {
     if (target.command) {
       if (target.command === CLOSE_REQUEST) {
-        showModal = true;
+        $showModalStore = true;
       } else if (target.command === FORCE_CLOSE_REQUEST) {
         removeQueue(target);
       }
@@ -378,7 +378,7 @@
   {/if}
 </div>
 
-<Modal isActive={showModal}>
+<Modal>
   <div class="modal-content is-translucent-black" style="padding: 1.75rem 0.5rem; width: 22rem;">
     <div class="has-text-white has-text-centered">
       <div class="subtitle is-size-5 has-text-white mb-2 ">You are about to cancel this request.</div>
@@ -390,13 +390,13 @@
         class="button is-primary mr-6"
         on:click={() => {
           removeQueue(selectedRequest);
-          showModal = false;
+          $showModalStore = false;
         }}>Yes</button
       >
       <button
         class="button is-danger"
         on:click={() => {
-          showModal = false;
+          $showModalStore = false;
         }}>No</button
       >
     </div>

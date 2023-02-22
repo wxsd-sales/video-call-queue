@@ -3,12 +3,12 @@
   import BackgroundFields from './.Part1BackgroundFields.svelte';
   import BrandFields from './.Part2BrandFields.svelte';
   import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
-  import WeatherFields from './.Part5WeatherFields.svelte';
+  import WeatherFields from './.Part4WeatherFields.svelte';
 
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { form as formInput, isFormValid } from './utils/form';
+  import { form as formInput } from './utils/form';
 
   export let form = undefined;
   export let name = undefined;
@@ -82,7 +82,7 @@
       </div>
     {/if}
     <div class="column is-12">
-      <button class="button is-medium is-rounded is-success is-fullwidth" type="submit" disabled={!$isFormValid}>
+      <button class="button is-medium is-rounded is-success is-fullwidth" type="submit">
         <span class="icon">
           <i class="mdi mdi-content-save-plus" />
         </span>

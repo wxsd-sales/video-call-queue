@@ -1,12 +1,14 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
+  import { showModalStore } from '$lib/store';
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
 
   import { generateMacro } from '../../../static/macros/WxCQ.js';
 
   import { touched, isFormValid, validity, form as formInput } from './utils/form';
+  import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
 
   export let isSDK: boolean;
   export let isIC: boolean;
@@ -18,7 +20,6 @@
   let SDKCheckBoxElement: HTMLInputElement;
   let ICCheckBoxElement: HTMLInputElement;
   let SIPCheckBoxElement: HTMLInputElement;
-  let showModal = false;
   let generateIsLoading = false;
 
   $: code = generateMacro(videoLink, extensionNumber);
@@ -110,30 +111,21 @@
   {#if isSIP}
     <div use:formInput transition:slide class="columns ml-4 mr-4 is-multiline">
       <div class="column is-full ">
-        <hr />
-        <h3 class="title is-size-5">Video SIP Call Queue Macro Builder</h3>
+        <h3 class="mt-6 title is-size-5">Video SIP Call Queue Macro Builder</h3>
       </div>
       <div class="column is-full content mb-3">
         <p>
           <span class="is-italic"> SIP URI Dialing</span> feature will only be available on Cisco roomOS devices. This
           feature also requires users to create a call queue under
-          <a target="_blank" href="https://admin.webex.com/calling/features/callQueue"
-            >Webex Control Hub Call Management</a
+          <a target="_blank" href={`${CONTROL_HUB_URL}/calling/features/callQueue`}>Webex control hub call management</a
           > section, and enable a macro - which could be auto generated here - on their devices.
         </p>
 
         <p class="help">
           * If you are not familiar with video call queue feature on devices powered by Webex Calling, we highly
-          recommend you to watch this <a
-            target="_blank"
-            href="https://app.vidcast.io/share/05285d39-75a7-429e-81d0-61911a931973">vidcast</a
-          >
+          recommend you to watch this <a target="_blank" href={DEVICE_CALL_QUEUE_VIDCAST}>vidcast</a>
           and follow the steps mentioned in our
-          <a
-            target="_blank"
-            href="https://cisco.sharepoint.com/sites/WXSD-WebexSolutionsDevelopment/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version%2FCisco%20Device%20Kiosk%20using%20Macros%20%26%20Webex%20Calling%20Group%20Call%20Management%2Epdf&parent=%2Fsites%2FWXSD%2DWebexSolutionsDevelopment%2FShared%20Documents%2FDemos%2FVideo%20Device%20Kisosk%20on%20WxC%2FOld%20version&p=true&ga=1"
-            >setup guide</a
-          >.
+          <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>setup guide</a>.
         </p>
       </div>
 
@@ -156,7 +148,7 @@
         <div class="help">
           <p>
             Extension number to call the queue. This number must be be configured inside
-            <a href="https://admin.webex.com" target="_blank">Control hub</a>.
+            <a href={CONTROL_HUB_URL} target="_blank">Control hub</a>.
           </p>
         </div>
       </div>
@@ -197,7 +189,7 @@
             generateIsLoading = true;
             setTimeout(() => {
               generateIsLoading = false;
-              showModal = true;
+              $showModalStore = true;
             }, 1000);
           }}
         >
@@ -211,7 +203,7 @@
   {/if}
 </div>
 
-<Modal bind:isActive={showModal}>
+<Modal>
   <div class="modal-content snippet is-translucent-black">
     <CodeSnippet {code} language="javascript" filename="VCQMacro.js" />
   </div>

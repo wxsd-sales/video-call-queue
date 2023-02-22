@@ -7,8 +7,9 @@ export const GET = async (requestEvent: RequestEvent) => {
     return { status: 302, headers: { Location: '/demos' } };
   }
 
+  console.log(requestEvent);
   const responseType = 'code';
-  const redirectUri = requestEvent.url.origin + `/auth/webex/callback`;
+  const redirectUri = 'https://vcq.ngrok.io' + `/auth/webex/callback`;
   const state = requestEvent.locals.session?.uuid;
 
   const clientId = env.WEBEX_AUTHORIZATION_CODE_CLIENT_ID;
