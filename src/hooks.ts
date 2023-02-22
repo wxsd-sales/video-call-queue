@@ -55,7 +55,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     if (event.url.pathname.startsWith('/sessions/')) {
       const demoID = event.url.pathname.split('/')[2];
-      isDemoUrlValid = await db.findOne(entity.Demo, { uuid: demoID }) === null ? false : true;
+      isDemoUrlValid = (await db.findOne(entity.Demo, { uuid: demoID })) === null ? false : true;
     }
 
     if (isSessionInvalid) {

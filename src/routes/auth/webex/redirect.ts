@@ -7,7 +7,6 @@ export const GET = async (requestEvent: RequestEvent) => {
     return { status: 302, headers: { Location: '/demos' } };
   }
 
-  
   const responseType = 'code';
   const redirectUri = (env.PUBLIC_TUNNEL || requestEvent.url.origin) + `/auth/webex/callback`;
   const state = requestEvent.locals.session?.uuid;

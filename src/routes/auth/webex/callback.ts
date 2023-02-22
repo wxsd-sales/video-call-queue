@@ -17,7 +17,7 @@ export const GET = async (requestEvent: RequestEvent) => {
 
   const grantType = 'authorization_code';
   const code = requestEvent.url.searchParams.get('code');
-  const redirectUri = (env.PUBLIC_TUNNEL || requestEvent.url.origin ) + requestEvent.url.pathname;
+  const redirectUri = (env.PUBLIC_TUNNEL || requestEvent.url.origin) + requestEvent.url.pathname;
   const state = requestEvent.url.searchParams.get('state');
 
   if (state !== requestEvent.locals.session?.uuid) {
