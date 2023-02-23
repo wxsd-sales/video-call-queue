@@ -110,7 +110,9 @@ Establishes a WebSocket connection to SoapBox to publish the request data and su
 User dials into call queue in kiosk mode with SIP protocol handler feature enabled on the device, to connect to the responder in FIFO orderly manner.
 
 ### Responder Flow
+
 Responder will receive incoming calls once they are available, Responder could also transfer the call back in the queue or end the call.
+
 <p align="center">
    <img src="static/readme/SIP.png" alt="video-call-queue"/>
 </p>
