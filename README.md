@@ -19,6 +19,7 @@ This is a proof-of-concept application which generates a customized looking queu
   - [Prerequisites](#prerequisites)
   - [Browser Meeting SDK](#browser-meeting-sdk)
   - [Instant Connect Solution](#instnat-connect-solution)
+  - [SIP URI Dialing](#sip-uri-dialing)
 - [Setup](#setup)
 - [Built With](#built-with)
 - [Demo](#demo)
@@ -46,6 +47,7 @@ This PoC leverages a few services behind the scene to provide a FIFO orderly que
 <li><a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank">Guest Demo</a> - To generate and embed the meeting experience into support flow</li>
 <li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank">Mindy Bot</a> - To manage guest users and to perform space and memberships creations</li>
 <li><a href="https://instant.webex.com/" target="_blank">Webex Instant Connect</a> - To embed Webex IC flow into the support flow, Instant Connect must be activated</li>
+<li><a href="https://cisco.sharepoint.com/:b:/s/WXSD-WebexSolutionsDevelopment/EQJu96KU411LpGw16KdT4ewBwZsAOl7NEH_Tnprt6UX4tA" target="_blank">Webex Calling Queue on Cisco Devices</a> - To create a support queue experience on Cisco Device using macros & Webex calling group call management</li>
 </ol>
 
 ## Browser Meeting SDK
@@ -97,6 +99,20 @@ Establishes a WebSocket connection to SoapBox to publish the request data and su
 </ol>
 <p align="center">
    <img src="static/readme/IC.jpg" alt="video-call-queue"/>
+</p>
+
+<br />
+
+## SIP URI Dialing
+
+### Requester Flow
+
+User dials into call queue in kiosk mode with SIP protocol handler feature enabled on the device, to connect to the responder in FIFO orderly manner.
+
+### Responder Flow
+Responder will receive incoming calls once they are available, Responder could also transfer the call back in the queue or end the call.
+<p align="center">
+   <img src="static/readme/SIP.png" alt="video-call-queue"/>
 </p>
 
 <br />
