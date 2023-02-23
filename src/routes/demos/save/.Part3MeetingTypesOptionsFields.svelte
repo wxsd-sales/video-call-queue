@@ -118,7 +118,10 @@
           <span class="is-italic"> SIP URI Dialing</span> feature will only be available on Cisco roomOS devices. This
           feature also requires users to create a call queue under
           <a target="_blank" href={`${CONTROL_HUB_URL}/calling/features/callQueue`}>Webex control hub call management</a
-          > section, and enable a macro - which could be auto generated here - on their devices.
+          >
+          section, and enable a macro - which could be auto generated here - on their devices*. Please also note that
+          <code>SipUrlHandler</code> toggle must be enabled for this flow. For more information on how to enable this
+          toggle please click <a href="https://roomos.cisco.com/doc/TechDocs/KioskMode#placing-a-call">here</a>.
         </p>
 
         <p class="help">

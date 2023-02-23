@@ -18,13 +18,6 @@ export class Environment {
   @IsUrl(Environment.appUrlConfig)
   public readonly APP_URL: string;
 
-  @IsEmail()
-  public readonly APP_PREVIEW_EMAIL: string;
-
-  @IsString()
-  @MinLength(8)
-  public readonly APP_PREVIEW_PASSWORD: string;
-
   @IsUrl()
   public readonly OPENWEATHERMAP_API_URL: string;
 
@@ -126,8 +119,6 @@ export class Environment {
   constructor() {
     dotenvExpand.expand(dotenv.config());
     this.APP_URL = process.env.APP_URL || dev ? 'https://localhost:5173' : 'https://localhost:4173';
-    this.APP_PREVIEW_EMAIL = process.env.APP_PREVIEW_EMAIL as string;
-    this.APP_PREVIEW_PASSWORD = process.env.APP_PREVIEW_PASSWORD as string;
     this.OPENWEATHERMAP_API_URL = process.env.OPENWEATHERMAP_API_URL as string;
     this.OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY as string;
     this.WEBEX_API_URL = process.env.WEBEX_API_URL as string;
