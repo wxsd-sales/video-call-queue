@@ -62,7 +62,6 @@ const config = {
     }
     // Add your additional queue monitoring settings here
   ],
-  hideUI: true, // true = hide out of call controls, false = show controls
   hideIncallUI: false,  // true = hide in call call controls, false = show controls
 }
 
