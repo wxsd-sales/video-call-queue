@@ -5,7 +5,7 @@
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
 
-  import { generateMacro } from '../../../static/macros/WxCQ.js';
+  import { generateMacro } from '$lib/static/macro/WxCQ.js';
 
   import { touched, isFormValid, validity, form as formInput } from './utils/form';
   import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
