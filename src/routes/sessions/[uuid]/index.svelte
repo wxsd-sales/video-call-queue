@@ -49,7 +49,7 @@
   <div id="body-widgets" class="hero-body p-1">
     <div class="container">
       <!--lhs start-->
-      <div id="sessions" class="box is-flex is-flex-direction-column  is-translucent-black">
+      <div id="sessions" class="">
         {#if role === 'responder'}
           <Responder socketID={demo.uuid} />
         {:else}

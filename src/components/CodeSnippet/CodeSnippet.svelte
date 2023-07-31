@@ -87,4 +87,8 @@
     overflow: auto;
     height: 100%;
   }
+
+  div.code > .token {
+    display: initial !important;
+  }
 </style>

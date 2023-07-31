@@ -1,19 +1,26 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
+  import { createEventDispatcher, onMount } from 'svelte';
   import type { NOTIFICATION_TYPES } from './enums';
 
   export let type: NOTIFICATION_TYPES;
   export let display = false;
+  export let hideClose = false;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 {#if display}
   <div in:slide out:slide class={`notif  notification is-${type}`}>
-    <button
-      class="delete"
-      on:click={() => {
-        display = false;
-      }}
-    />
+    {#if !hideClose}
+      <button
+        class="delete"
+        on:click={() => {
+          display = false;
+          dispatch('click', {});
+        }}
+      />
+    {/if}
     <slot />
   </div>
 {/if}

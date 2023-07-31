@@ -174,7 +174,7 @@
     const {
       host: [hostData],
       guest: [guestData]
-    } = await postInstantConnectJEResponse('calling-queue-demo');
+    } = await postInstantConnectJEResponse(uuidv4());
     const { token: hostToken } = await getInstantConnectTokenResponse(hostData.cipher);
 
     meetingURL = `${import.meta.env.PUBLIC_INSTANT_CONNECT_TALK_URL}?int=jose&v=1&data=${hostData.cipher}`;
@@ -283,10 +283,7 @@
 </script>
 
 <div class="columns mb-2 is-align-items-center mb-1">
-  <div class="column is-7">
-    <h1 class="is-size-3 has-text-white">Responder View</h1>
-  </div>
-  <div class="column is-5 is-size-6 is-hidden-mobile" style="height: 5rem;">
+  <div class="column is-12 is-5 is-size-6 is-hidden-mobile" style="height: 5rem;">
     {#if selectedRequest}
       <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
         <div>Session ID:</div>
@@ -322,8 +319,10 @@
     {/if}
   </div>
 </div>
-<hr class="mt-3" />
-<div class="is-flex is-fullheight is-align-items-center is-justify-content-center" style="overflow: auto">
+<div
+  class="is-flex  is-align-items-center is-justify-content-center"
+  style="overflow: auto; height: calc(100% - 50px); "
+>
   <iframe
     title="meeting"
     width="100%"

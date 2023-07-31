@@ -72,11 +72,26 @@ const config = {
 
 // Subscribe to Events & Status changes
 xapi.Status.SystemUnit.State.NumberOfActiveCalls.on(processCallCount);
-xapi.Status.Call.RemoteNumber.on(processRemoteNumber)
+xapi.Status.Call.RemoteNumber.on(processRemoteNumber);
+xapi.Status.UserInterface.WebView.on(processWebViews);
+
 
 // Initially check the number of calls to set the UI config
 xapi.Status.SystemUnit.State.NumberOfActiveCalls.get()
 .then(r => processCallCount(r))
+
+async function processWebViews(event) {
+  if (!event.hasOwnProperty('URL')) return;
+  const url = event.URL;
+  const id = event.id;
+
+  const hash = url.split('#')[Number('1')]
+
+  if (hash == 'dial') {
+    xapi.Command.Dial({Number: config.queues[Number('0')].number})
+    return;
+  }
+}
 
 async function processCallCount(event) {
   console.log('Number of calls: ' + event)

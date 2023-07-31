@@ -1,6 +1,6 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { JSONObject } from '@sveltejs/kit/types/private';
-import type { PersonResponse, TokenResponse } from '$lib/types';
+import type { TokenResponse } from '$lib/types';
 import { urlEncodedRequest } from '$lib/shared/urlencoded-request';
 import { webexHttpPeopleResource } from '$lib/webex/http-wrapper';
 import { Session, User } from '../../../database/entities';
@@ -17,7 +17,7 @@ export const GET = async (requestEvent: RequestEvent) => {
 
   const grantType = 'authorization_code';
   const code = requestEvent.url.searchParams.get('code');
-  const redirectUri = (env.PUBLIC_TUNNEL || requestEvent.url.origin) + requestEvent.url.pathname;
+  const redirectUri = (requestEvent.url.origin || env.PUBLIC_TUNNEL) + requestEvent.url.pathname;
   const state = requestEvent.url.searchParams.get('state');
 
   if (state !== requestEvent.locals.session?.uuid) {

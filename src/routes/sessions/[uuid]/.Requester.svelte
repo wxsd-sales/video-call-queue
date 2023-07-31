@@ -22,6 +22,7 @@
   export let isSIPAvailable: boolean;
   export let extensionNumber: number;
 
+  const INITIAL_TIMER = 6;
   let requestSubmitted = false;
   let readyToJoin: boolean = false;
   let displayIframe: boolean = false;
@@ -29,10 +30,14 @@
   let meetingInSession: boolean = false;
   let displaySIPErrorNotification = false;
   let displayICErrorNotification = false;
+  let displayNewSIPErrorNotification = false;
   let meetingURL: string = '';
   let incomingMeetingURL: string = '';
   let disableJoinButton = false;
   let disableSIPOption = false;
+  let isLoading = false;
+  let SIPrequestIsSubmitted = false;
+  let timer = INITIAL_TIMER;
 
   let meetingType: MEETING_TYPE_OPTIONS =
     (isSDKAvailable && MEETING_TYPE_OPTIONS.BROWSER_SDK) ||
@@ -200,7 +205,27 @@
   /** Submits a request and append it to the queue */
   const submitRequest = () => {
     if (meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING) {
-      location.href = `sip:${extensionNumber}`;
+      SIPrequestIsSubmitted = true;
+      window.location.hash = 'dial';
+      window.location.hash = '';
+
+      isLoading = true;
+
+      setTimeout(() => {
+        isLoading = false;
+        displayNewSIPErrorNotification = true;
+      }, 1000);
+
+      const interval = setInterval(() => {
+        timer--;
+
+        if (!timer) {
+          clearInterval(interval);
+          timer = INITIAL_TIMER;
+          displayNewSIPErrorNotification = false;
+        }
+      }, 1000);
+
       return;
     }
 
@@ -243,13 +268,16 @@
 
     if (browser) {
       // Register a listener to trigger an event if the content of the tab has become visible or hidden
-      window.addEventListener(CONST.VISIBILITY_CHANGE, () =>
+      window.addEventListener(CONST.VISIBILITY_CHANGE, () => {
+        if (SIPrequestIsSubmitted) {
+        }
+
         sendBrowserVisibilityStatus(
           document.visibilityState === CONST.VISIBILITY_HIDDEN
             ? BROWSER_VISIBILITY_STATUS.INACTIVE
             : BROWSER_VISIBILITY_STATUS.ACTIVE
-        )
-      );
+        );
+      });
     }
 
     if (!isDevice && isSIPAvailable) {
@@ -267,12 +295,8 @@
 </script>
 
 <div class="columns mb-2 is-align-items-center is-mobile">
-  <div class="column auto">
-    <h1 class="is-size-3  has-text-white">Requester View</h1>
-  </div>
   <div class="column is-3 is-flex is-justify-content-flex-end" />
 </div>
-<hr class="mt-3" />
 <div class="is-flex is-justify-content-center is-align-items-center is-fullheight ">
   <span class="bulma-loader-mixin" class:is-hidden={!iframeIsLoading} style="position:absolute" />
   <iframe
@@ -309,11 +333,11 @@
       {:else}
         <div class="title has-text-white  has-text-centered is-size-4">Looking for Assistance?</div>
         <button
-          class="button is-size-5 is-primary is-centered mb-5"
+          class="button is-size-5 is-primary is-centered mb-5 {isLoading && 'is-loading'}"
           style="margin-top: 1.75rem;"
           disabled={disableJoinButton && isSIPAvailable && !isICAvailable && !isSDKAvailable}
           on:click={submitRequest}
-          >Request Assistance
+          >Click Here
         </button>
         <div
           class="control is-justify-content-space-around is-flex has-text-white is-size-6"
@@ -394,4 +418,21 @@
 
 <Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification}>
   Instant Connect feature is not currently available on Cisco roomOS device in kiosk mode.
+</Notification>
+
+<Notification type={NOTIFICATION_TYPES.WARNING} display={displayNewSIPErrorNotification} hideClose>
+  <div class="is-flex is-flex-direction-column">
+    <p>
+      A new macro available inside our demo generator is recommended to be enabled and saved in your device. Please
+      acknowledge before dialing.
+    </p>
+    <button
+      class="button is-warning is-light mt-4"
+      on:click={() => {
+        location.href = `sip:${extensionNumber}`;
+        displayNewSIPErrorNotification = false;
+      }}>Acknowledge</button
+    >
+    <p class="is-size-7 pt-2 is-align-self-center">* This notification automatically closes in {timer} seconds.</p>
+  </div>
 </Notification>
