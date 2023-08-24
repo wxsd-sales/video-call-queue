@@ -84,7 +84,9 @@
       </div>
     </div>
     <div class="columns mb-5 mt-4">
-      <div class="column has-text-left-desktop has-text-white ">You have a new support meeting request</div>
+      <div class="column has-text-left-desktop has-text-centered-mobile has-text-white ">
+        You have a new support meeting request
+      </div>
     </div>
     <div class="columns pb-0 has-text-white has-text-center time" style="font-size: 0.75rem;">
       <div
@@ -98,9 +100,9 @@
       </div>
       <div class="column">
         {#if requestInfo.sessionStatus === 'inactive'}
-          <div>Your request will auto expire in: {minutes} mins {seconds}s</div>
+          <div class="has-text-centered-mobile">Your request will auto expire in: {minutes} mins {seconds}s</div>
         {/if}
-        <div>
+        <div class="has-text-centered-mobile">
           Please use the <span class="has-text-danger">X</span> icon to manually cancel this request
         </div>
       </div>
@@ -116,29 +118,7 @@
     .time {
       text-align: right !important;
     }
-    .item {
-      width: 45rem;
-    }
   }
-
-  @media screen and (min-width: 1024px) {
-    .item {
-      width: 55rem;
-    }
-  }
-
-  @media screen and (min-width: 1216px) {
-    .item {
-      width: 68rem;
-    }
-  }
-
-  @media screen and (min-width: 1408px) {
-    .item {
-      width: 75rem;
-    }
-  }
-
   .close {
     display: flex;
     justify-content: flex-end;

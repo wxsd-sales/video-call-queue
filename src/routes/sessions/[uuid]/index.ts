@@ -16,6 +16,9 @@ export const GET = async (requestEvent: RequestEvent) => {
     @Expose()
     @IsNotEmpty()
     public readonly role!: 'responder' | 'requester';
+
+    @Expose()
+    public readonly embeddable!: false;
   }
 
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
@@ -62,7 +65,7 @@ export const GET = async (requestEvent: RequestEvent) => {
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
 
         (demo as JSONObject)['responderAuthIsRequired'] = demo.responderAuthIsRequired === 1;
-        return { status: 200, body: { demo, role: query.role } };
+        return { status: 200, body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') } };
       }
 
       return { status: 302, headers: { Location: '/auth' } };

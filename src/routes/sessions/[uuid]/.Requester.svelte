@@ -21,6 +21,7 @@
   export let isICAvailable: boolean;
   export let isSIPAvailable: boolean;
   export let extensionNumber: number;
+  export let embeddable: boolean;
 
   const INITIAL_TIMER = 6;
   let requestSubmitted = false;
@@ -205,26 +206,36 @@
   /** Submits a request and append it to the queue */
   const submitRequest = () => {
     if (meetingType === MEETING_TYPE_OPTIONS.SIP_URI_DIALING) {
+      const isInIframe = window.self !== window.top;
       SIPrequestIsSubmitted = true;
       window.location.hash = 'dial';
       window.location.hash = '';
 
-      isLoading = true;
+      if (isInIframe) {
+        isLoading = true;
+        location.href = `sip:${extensionNumber}`;
 
-      setTimeout(() => {
-        isLoading = false;
-        displayNewSIPErrorNotification = true;
-      }, 1000);
+        setTimeout(() => {
+          isLoading = false;
+        }, 2000);
+      } else {
+        isLoading = true;
 
-      const interval = setInterval(() => {
-        timer--;
+        setTimeout(() => {
+          isLoading = false;
+          displayNewSIPErrorNotification = true;
+        }, 1000);
 
-        if (!timer) {
-          clearInterval(interval);
-          timer = INITIAL_TIMER;
-          displayNewSIPErrorNotification = false;
-        }
-      }, 1000);
+        const interval = setInterval(() => {
+          timer--;
+
+          if (!timer) {
+            clearInterval(interval);
+            timer = INITIAL_TIMER;
+            displayNewSIPErrorNotification = false;
+          }
+        }, 1000);
+      }
 
       return;
     }
@@ -299,49 +310,68 @@
 </div>
 <div class="is-flex is-justify-content-center is-align-items-center is-fullheight ">
   <span class="bulma-loader-mixin" class:is-hidden={!iframeIsLoading} style="position:absolute" />
-  <iframe
-    width="100%"
-    height="100%"
-    title="meeting"
-    src={meetingURL}
-    class:is-hidden={!displayIframe && !meetingInSession}
-    allow="camera;microphone; fullscreen;display-capture"
-    on:load={() => {
-      iframeIsLoading = false;
-    }}
-  />
+  {#if displayIframe}
+    <div style="{embeddable ? 'height: 43rem' : 'height: 48rem'}; width:100%">
+      <iframe
+        width="100%"
+        height="100%"
+        title="meeting"
+        src={meetingURL}
+        class:is-hidden={!displayIframe && !meetingInSession}
+        allow="camera;microphone; fullscreen;display-capture"
+        on:load={() => {
+          iframeIsLoading = false;
+        }}
+      />
+    </div>
+  {/if}
   {#if meetingInSession}
     <div class="flash box is-flex is-flex-direction-column is-translucent-black pb-5" style="padding: 2rem;">
       <div class=" title has-text-white is-size-5 mb-4">Meeting In Session!</div>
     </div>
   {/if}
   {#if !displayIframe}
-    <div class="box is-flex is-flex-direction-column is-translucent-black pb-5" style="padding: 2.5rem;">
+    <div
+      class="box is-flex is-flex-direction-column is-translucent-black pb-5"
+      class:embeddable
+      style={embeddable ? 'padding: 1.5rem' : 'padding: 2.5rem'}
+    >
       {#if readyToJoin}
-        <div class="has-text-centered has-text-white is-size-5 mb-4">Representative is Now Available!</div>
-        <button class="button is-size-5 mt-6 is-primary is-centered" on:click={() => joinSession(incomingMeetingURL)}
+        <div class="has-text-centered has-text-white {embeddable ? 'is-size-6' : 'is-size-5'} mb-4">
+          Representative is Now Available!
+        </div>
+        <button
+          class="button {embeddable ? 'is-size-6' : 'is-size-5'} mt-6 is-primary is-centered"
+          on:click={() => joinSession(incomingMeetingURL)}
           >Join Support Session
         </button>
       {:else if requestSubmitted}
-        <div class="is-size-5 has-text-white has-text-centered">
+        <div class="{embeddable ? 'is-size-6' : 'is-size-5'} has-text-white has-text-centered">
           Your request has been queued. A representative will reach out shortly.
         </div>
         <span class="has-text-white has-text-centered flash" style="margin-top: 1.5rem; font-size: 0.9rem;">
           {$queueOrderStore === 0 ? 'You are next!' : `There are ${$queueOrderStore} additional requests ahead of you.`}
         </span>
-        <button class="button is-size-5 mt-6 is-danger is-centered" on:click={cancelRequest}>Cancel Request </button>
-      {:else}
-        <div class="title has-text-white  has-text-centered is-size-4">Looking for Assistance?</div>
         <button
-          class="button is-size-5 is-primary is-centered mb-5 {isLoading && 'is-loading'}"
-          style="margin-top: 1.75rem;"
+          class="button {embeddable ? 'is-size-6' : 'is-size-5'} mt-6 is-danger is-centered"
+          on:click={cancelRequest}
+          >Cancel Request
+        </button>
+      {:else}
+        <div class="title has-text-white  has-text-centered {embeddable ? 'is-size-5' : 'is-size-4'} ">
+          Looking for Assistance?
+        </div>
+        <button
+          class="button {embeddable ? 'is-size-6' : 'is-size-5'} is-primary is-centered mb-5 {isLoading &&
+            'is-loading'}"
+          style={embeddable ? 'margin-top: 1.25rem;' : 'margin-top: 1.75rem;'}
           disabled={disableJoinButton && isSIPAvailable && !isICAvailable && !isSDKAvailable}
           on:click={submitRequest}
           >Click Here
         </button>
         <div
           class="control is-justify-content-space-around is-flex has-text-white is-size-6"
-          style="margin: 1rem 0 0.25rem 0;"
+          style={embeddable ? 'margin: 0.5rem 0 0 0;' : 'margin: 1rem 0 0.25rem 0'}
         >
           {#if displayMeetingOptions}
             {#if isSDKAvailable}
@@ -370,11 +400,11 @@
                 {#if isDevice}
                   <s class="has-text-grey">
                     <span class="is-hidden-mobile">Instant Connect</span>
-                    <span class="is-hidden-tablet">IC</span>
+                    <span class="is-hidden-tablet  ">IC</span>
                   </s>
                 {:else}
                   <span class="is-hidden-mobile">Instant Connect</span>
-                  <span class="is-hidden-tablet">IC</span>
+                  <span class="is-hidden-tablet  ">IC</span>
                 {/if}
               </label>
             {/if}
@@ -409,14 +439,14 @@
   {/if}
 </div>
 
-<Notification type={NOTIFICATION_TYPES.ERROR} display={displaySIPErrorNotification}>
+<Notification type={NOTIFICATION_TYPES.ERROR} display={displaySIPErrorNotification} embeddable>
   In order to experience our <strong>SIP URI Dialing</strong> flow, you must launch this demo on Cisco roomOS devices in
   kiosk mode with proper macro setup enabled on the device and enable WxC video calling queue. For more information
   please visit our
   <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>page</a>.
 </Notification>
 
-<Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification}>
+<Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification} embeddable>
   Instant Connect feature is not currently available on Cisco roomOS device in kiosk mode.
 </Notification>
 

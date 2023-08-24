@@ -16,6 +16,7 @@
   import { showModalStore } from '$lib/store';
 
   export let socketID;
+  export let embeddable: boolean;
 
   enum SESSION_STATUS {
     VIEW_REQUEST = 'Request Under Review',
@@ -282,99 +283,106 @@
   $: queue = isDevice ? queue.filter((item) => item.meetingType !== MEETING_TYPE_OPTIONS.INSTANT_CONNECT) : queue;
 </script>
 
-<div class="columns mb-2 is-align-items-center mb-1">
-  <div class="column is-12 is-5 is-size-6 is-hidden-mobile" style="height: 5rem;">
-    {#if selectedRequest}
-      <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
-        <div>Session ID:</div>
-        <div class="has-text-success">
-          {selectedRequest.id.split('-')[4]}
+<div style={embeddable ? 'height: 43rem' : 'height: 48rem'}>
+  <div class="columns mb-2 is-align-items-center mb-1 ">
+    <div class="column is-12 is-5 is-size-6 is-hidden-mobile" style="height: 5rem;">
+      {#if selectedRequest}
+        <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
+          <div>Session ID:</div>
+          <div class="has-text-success">
+            {selectedRequest.id.split('-')[4]}
+          </div>
         </div>
-      </div>
-      <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
-        <div>Session Status:</div>
-        <div
-          class={sessionStatus === SESSION_STATUS.VIEW_REQUEST
-            ? 'has-text-warning-dark'
-            : sessionStatus === SESSION_STATUS.INIT_SESSION
-            ? 'has-text-warning'
-            : 'has-text-danger'}
-        >
-          {sessionStatus}
+        <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
+          <div>Session Status:</div>
+          <div
+            class={sessionStatus === SESSION_STATUS.VIEW_REQUEST
+              ? 'has-text-warning-dark'
+              : sessionStatus === SESSION_STATUS.INIT_SESSION
+              ? 'has-text-warning'
+              : 'has-text-danger'}
+          >
+            {sessionStatus}
+          </div>
         </div>
-      </div>
-      <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
-        <div>Session Provider:</div>
-        <div class="has-text-link">
-          {#if selectedRequest.meetingType === MEETING_TYPE_OPTIONS.BROWSER_SDK}
-            <a target="_blank" href={`${import.meta.env.PUBLIC_WEBEX_DEV_PORTAL_URL}/docs/sdks/browser`}
-              >Webex Browser Meeting SDK</a
-            >
-          {:else}
-            <a target="_blank" href={import.meta.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_UR}>Webex Instant Connect</a
-            >
-          {/if}
-        </div>
-      </div>
-    {/if}
-  </div>
-</div>
-<div
-  class="is-flex  is-align-items-center is-justify-content-center"
-  style="overflow: auto; height: calc(100% - 50px); "
->
-  <iframe
-    title="meeting"
-    width="100%"
-    height="100%"
-    class:is-hidden={!joinSession}
-    bind:this={iframe}
-    src={meetingURL}
-    allow="camera;microphone; fullscreen;display-capture"
-    on:load={() => {
-      iframeIsLoading = false;
-    }}
-  />
-  {#if !joinSession}
-    {#if displayQueue}
-      {#if queue.length === 0}
-        <p class="is-flex subtitle has-text-white has-text-centered">There are no requests.</p>
-      {:else}
-        <div class="is-flex is-flex-direction-column" style="height: 100%;">
-          {#each queue as q}
-            <QueueItem onClick={handleClick} requestInfo={q} />
-          {/each}
+        <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
+          <div>Session Provider:</div>
+          <div class="has-text-link">
+            {#if selectedRequest.meetingType === MEETING_TYPE_OPTIONS.BROWSER_SDK}
+              <a target="_blank" href={`${import.meta.env.PUBLIC_WEBEX_DEV_PORTAL_URL}/docs/sdks/browser`}
+                >Webex Browser Meeting SDK</a
+              >
+            {:else}
+              <a target="_blank" href={import.meta.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_UR}
+                >Webex Instant Connect</a
+              >
+            {/if}
+          </div>
         </div>
       {/if}
-    {:else}
-      <div class="box has-text-centered is-translucent-black p-0">
-        <div class="is-flex is-justify-content-flex-end m-2">
-          <span
-            class={`icon ${!joinButtonIsLoading ? 'has-text-danger' : 'has-text-gray'} ${
-              !joinButtonIsLoading && 'is-clickable'
-            }`}
-            on:click={() => {
-              if (!joinButtonIsLoading) {
-                selectedRequest = undefined;
-                displayQueue = true;
-              }
-            }}
-          >
-            <i class="mdi mdi-24px mdi-close" />
-          </span>
-        </div>
-        <div style="padding: 0 1.5rem 1.5rem 1.5rem">
-          <div class="subtitle has-text-white has-text-centered is-size-4">Start Support Session</div>
-          <button
-            class="button is-size-5 mt-5 is-primary is-centered"
-            class:is-loading={joinButtonIsLoading}
-            on:click={startSession}
-            >Join Session
-          </button>
-        </div>
+    </div>
+  </div>
+  <div
+    class="is-flex  is-align-items-center is-justify-content-center"
+    style="overflow: auto; height: calc(100% - 50px); "
+  >
+    {#if joinSession}
+      <div style="height: 48rem; width: 100%;">
+        <iframe
+          title="meeting"
+          width="100%"
+          height="100%"
+          class:is-hidden={!joinSession}
+          bind:this={iframe}
+          src={meetingURL}
+          allow="camera;microphone; fullscreen;display-capture"
+          on:load={() => {
+            iframeIsLoading = false;
+          }}
+        />
       </div>
     {/if}
-  {/if}
+    {#if !joinSession}
+      {#if displayQueue}
+        {#if queue.length === 0}
+          <p class="is-flex subtitle has-text-white has-text-centered">There are no requests.</p>
+        {:else}
+          <div class="is-flex is-flex-direction-column mt-4" style="height: 100%; width: calc(100% - 2rem)">
+            {#each queue as q}
+              <QueueItem onClick={handleClick} requestInfo={q} />
+            {/each}
+          </div>
+        {/if}
+      {:else}
+        <div class="box has-text-centered is-translucent-black p-0">
+          <div class="is-flex is-justify-content-flex-end m-2">
+            <span
+              class={`icon ${!joinButtonIsLoading ? 'has-text-danger' : 'has-text-gray'} ${
+                !joinButtonIsLoading && 'is-clickable'
+              }`}
+              on:click={() => {
+                if (!joinButtonIsLoading) {
+                  selectedRequest = undefined;
+                  displayQueue = true;
+                }
+              }}
+            >
+              <i class="mdi mdi-24px mdi-close" />
+            </span>
+          </div>
+          <div style="padding: 0 1.5rem 1.5rem 1.5rem">
+            <div class="subtitle has-text-white has-text-centered is-size-4">Start Support Session</div>
+            <button
+              class="button is-size-5 mt-5 is-primary is-centered"
+              class:is-loading={joinButtonIsLoading}
+              on:click={startSession}
+              >Join Session
+            </button>
+          </div>
+        </div>
+      {/if}
+    {/if}
+  </div>
 </div>
 
 <Modal>
@@ -401,3 +409,9 @@
     </div>
   </div>
 </Modal>
+
+<style>
+  .responder {
+    height: 48rem;
+  }
+</style>

@@ -4,13 +4,42 @@
   export let url: string;
   export let label: string;
 
-  let isLoading = false;
+  let isCopyLoading = false;
+  let isEmbedLoading = false;
+
+  let isEmbedded = false;
+  let isCopied = false;
 
   const copyUrl = () => {
     browser &&
-      Promise.resolve((isLoading = true))
+      Promise.resolve((isCopyLoading = true))
         .then(() => navigator.clipboard.writeText(url))
-        .finally(() => setTimeout(() => (isLoading = false), 400));
+        .finally(() =>
+          setTimeout(() => {
+            isCopyLoading = false;
+            isCopied = true;
+
+            setTimeout(() => {
+              isCopied = false;
+            }, 1000);
+          }, 400)
+        );
+  };
+
+  const copyEmbedUrl = () => {
+    browser &&
+      Promise.resolve((isEmbedLoading = true))
+        .then(() => navigator.clipboard.writeText(`${url}&embeddable`))
+        .finally(() =>
+          setTimeout(() => {
+            isEmbedLoading = false;
+            isEmbedded = true;
+
+            setTimeout(() => {
+              isEmbedded = false;
+            }, 1000);
+          }, 400)
+        );
   };
 </script>
 
@@ -36,13 +65,35 @@
         />
       </div>
       <div class="control">
-        <button class="button is-success   is-small" class:is-loading={isLoading} on:click={() => copyUrl()}>
-          <span>Copy</span>
+        <button
+          class="button customButton is-success is-small"
+          class:is-loading={isCopyLoading}
+          on:click={() => copyUrl()}
+        >
+          <span>{isCopied ? 'Copied' : 'Copy'}</span>
           <span class="icon">
-            <i class="mdi mdi-content-copy" />
+            <i class="mdi mdi-{isCopied ? 'check' : 'content-copy'}" />
+          </span>
+        </button>
+      </div>
+      <div class="control">
+        <button
+          class="button customButton is-danger is-small"
+          class:is-loading={isEmbedLoading}
+          on:click={() => copyEmbedUrl()}
+        >
+          <span>{isEmbedded ? 'Copied' : 'Embed'}</span>
+          <span class="icon">
+            <i class="mdi mdi-{isEmbedded ? 'check' : 'code-tags'}" />
           </span>
         </button>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .customButton {
+    width: 5rem;
+  }
+</style>

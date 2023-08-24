@@ -5,8 +5,9 @@
 
   export let meetingOptionsData;
   export let userDemosData;
-  export let numberOfUsers;
+  export let numberOfAll;
 
+  console.log(numberOfAll);
   export const donutCenteredOptions = {
     resizable: true,
     legend: {
@@ -47,11 +48,11 @@
     <hr />
     <div class="columns">
       <div class="column is-5">
-        <div class="subtitle is-size-4"># Demos & Registered Users / Day</div>
+        <div class="subtitle is-size-4"># Demos & Registered Users Per Day</div>
       </div>
       <div class="column is-7">
         <LineChart
-          data={numberOfUsers}
+          data={numberOfAll}
           options={{
             timeScale: {
               showDayName: true

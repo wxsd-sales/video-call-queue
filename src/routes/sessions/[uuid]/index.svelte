@@ -14,6 +14,7 @@
 
   export let demo: Demo;
   export let role: string;
+  export let embeddable: boolean;
 
   const httpApiRequest = jsonRequest('/api');
 
@@ -27,31 +28,33 @@
 
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
 <section id="hero" class="hero is-fullheight has-text-white is-dark">
-  <!-- hero-head start -->
-  <div id="head-widgets" class="hero-head">
-    <nav class="navbar is-translucent-black">
-      <div class="container is-block">
-        <div class="columns m-0">
-          <div id="brand" class="column is-7 is-flex is-align-self-center">
-            <Brand title={demo.brandLogo} subtitle={demo.brandSubtitle} />
-          </div>
-          <div id="weather" class="column is-5 is-align-self-center">
-            <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
-              <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
-            </Weather>
+  {#if !embeddable}
+    <!-- hero-head start -->
+    <div id="head-widgets" class="hero-head">
+      <nav class="navbar is-translucent-black">
+        <div class="container is-block">
+          <div class="columns m-0">
+            <div id="brand" class="column is-7 is-flex is-align-self-center">
+              <Brand title={demo.brandLogo} subtitle={demo.brandSubtitle} />
+            </div>
+            <div id="weather" class="column is-5 is-align-self-center">
+              <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
+                <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
+              </Weather>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
-  </div>
+      </nav>
+    </div>
+  {/if}
   <!-- hero-head end -->
   <!-- hero-body start -->
   <div id="body-widgets" class="hero-body p-1">
     <div class="container">
       <!--lhs start-->
-      <div id="sessions" class="">
+      <div id="is-flex is-align-items-center is-justify-content-center" class:embeddable>
         {#if role === 'responder'}
-          <Responder socketID={demo.uuid} />
+          <Responder socketID={demo.uuid} {embeddable} />
         {:else}
           <Requester
             socketID={demo.uuid}
@@ -59,6 +62,7 @@
             isSDKAvailable={demo.isSDK}
             isICAvailable={demo.isIC}
             extensionNumber={demo.extensionNumber}
+            {embeddable}
           />
         {/if}
       </div>
@@ -66,23 +70,25 @@
   </div>
   <!-- hero-body end -->
   <!-- hero-foot start -->
-  <div id="foot-widgets" class="hero-foot mx-2 p-2">
-    <nav class="tabs">
-      <div class="container">
-        <div class="is-flex is-justify-content-flex-end ">
-          <div class="has-text-centered has-text-weight-medium">
-            <p>
-              Made with
-              <span class="icon-text has-text-danger">
-                <i class="mdi mdi-heart" />
-              </span>
-              by the WXSD team (wxsd@external.cisco.com)
-            </p>
+  {#if !embeddable}
+    <div id="foot-widgets" class="hero-foot mx-2 p-2">
+      <nav class="tabs">
+        <div class="container">
+          <div class="is-flex is-justify-content-flex-end ">
+            <div class="has-text-centered has-text-weight-medium">
+              <p>
+                Made with
+                <span class="icon-text has-text-danger">
+                  <i class="mdi mdi-heart" />
+                </span>
+                by the WXSD team (wxsd@external.cisco.com)
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
-  </div>
+      </nav>
+    </div>
+  {/if}
   <!-- hero-foot end -->
 </section>
 
@@ -90,14 +96,6 @@
   @use 'bulma/sass/helpers/typography';
   @use 'bulma/sass/helpers/color';
   @use 'bulma/sass/helpers/spacing';
-
-  #sessions {
-    height: 43rem;
-
-    @media screen and (min-width: 480px) {
-      height: 48rem;
-    }
-  }
 
   #weather {
     display: none;
@@ -112,6 +110,10 @@
     box-shadow: none !important;
   }
 
+  .embeddable {
+    zoom: 0.85;
+  }
+
   #app-model :global(.modal-content) {
     @extend .p-2;
     @extend .is-translucent-black;
@@ -121,11 +123,5 @@
 
   #app-model :global(iframe) {
     border-radius: var(--border-radius-large);
-  }
-
-  @media screen and (max-width: 1215px) {
-  }
-
-  @media screen and (max-width: 1215px) {
   }
 </style>
