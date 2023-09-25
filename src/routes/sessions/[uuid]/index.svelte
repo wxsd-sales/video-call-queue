@@ -19,6 +19,7 @@
   console.log(demo);
   let getWeatherResponse;
   const httpApiRequest = jsonRequest('/api');
+  let getWeatherResponse;
 
   if (demo.weatherCityId) {
     getWeatherResponse = (id: number, units: string) =>

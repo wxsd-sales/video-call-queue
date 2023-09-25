@@ -3,20 +3,25 @@
   import Notification from '$components/Notification/Notification.svelte';
   import { NOTIFICATION_TYPES, NOTIFICATION_VALUES } from '$components/Notification/enums';
   import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
-
+  import defaultSupportImg from '$lib/static/img/customer-support.png';
   export let demo: JSON;
   export let embeddable: boolean;
 
   const { isSIP, isSDK, isIC, uuid } = demo;
 
-  let sipQueues = [{ title: 'Looking for Assistance?', extensionNumber: 1111 }];
+  let sipQueues = [{ title: 'Looking for Assistance?', extensionNumber: 1111, sipImage: defaultSupportImg }];
+  let extensionNumber = 1111;
 
   if (demo.isSIP) {
     sipQueues = [
-      { title: demo.sipTitle || 'Looking for Assistance?', extensionNumber: demo.extensionNumber },
-      demo.sipTitle1 && { title: demo.sipTitle1, extensionNumber: demo.extensionNumber1 },
-      demo.sipTitle2 && { title: demo.sipTitle2, extensionNumber: demo.extensionNumber2 },
-      demo.sipTitle3 && { title: demo.sipTitle3, extensionNumber: demo.extensionNumber3 }
+      {
+        title: demo.sipTitle || 'Looking for Assistance?',
+        extensionNumber: demo.extensionNumber,
+        sipImage: demo.sipImage || defaultSupportImg
+      },
+      demo.sipTitle1 && { title: demo.sipTitle1, extensionNumber: demo.extensionNumber1, sipImage: demo.sipImage1 },
+      demo.sipTitle2 && { title: demo.sipTitle2, extensionNumber: demo.extensionNumber2, sipImage: demo.sipImage2 },
+      demo.sipTitle3 && { title: demo.sipTitle3, extensionNumber: demo.extensionNumber3, sipImage: demo.sipImage3 }
     ].filter(Boolean);
   }
   embeddable = sipQueues.length > 1 ? true : embeddable;
@@ -29,20 +34,20 @@
 
   let displaySIPErrorNotification = false;
   let displayNewSIPErrorNotification = false;
-  let timer = 6;
+  let timer = 8;
 
   const showNotif = ({ detail }) => {
     if (detail.props.value === NOTIFICATION_VALUES.SIP_ERROR) {
       displaySIPErrorNotification = true;
     } else {
       displayNewSIPErrorNotification = true;
-
+      extensionNumber = detail.props.extensionNumber;
       const interval = setInterval(() => {
         timer--;
 
         if (!timer) {
           clearInterval(interval);
-          timer = 6;
+          timer = 8;
           displayNewSIPErrorNotification = false;
         }
       }, 1000);
@@ -55,8 +60,19 @@
 </div>
 
 <div class="is-flex is-justify-content-space-evenly">
-  {#each sipQueues as { extensionNumber, title }, index}
-    <QueuePrompt {index} {uuid} {isSDK} {isIC} {isSIP} {extensionNumber} {title} {embeddable} on:notif={showNotif} />
+  {#each sipQueues as { extensionNumber, title, sipImage }, index}
+    <QueuePrompt
+      {index}
+      {uuid}
+      {isSDK}
+      {isIC}
+      {isSIP}
+      {extensionNumber}
+      {title}
+      {embeddable}
+      {sipImage}
+      on:notif={showNotif}
+    />
   {/each}
 </div>
 
@@ -66,10 +82,6 @@
   please visit our
   <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>page</a>.
 </Notification>
-
-<!-- <Notification type={NOTIFICATION_TYPES.ERROR} display={displayICErrorNotification} embeddable>
-  Instant Connect feature is not currently available on Cisco roomOS device in kiosk mode.
-</Notification> -->
 
 <Notification type={NOTIFICATION_TYPES.WARNING} display={displayNewSIPErrorNotification} hideClose>
   <div class="is-flex is-flex-direction-column">

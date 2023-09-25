@@ -54,12 +54,16 @@ export const GET = async (requestEvent: RequestEvent) => {
           'isSIP',
           'extensionNumber',
           'sipTitle',
+          'sipImage',
           'extensionNumber1',
           'sipTitle1',
+          'sipImage1',
           'extensionNumber2',
           'sipTitle2',
+          'sipImage2',
           'extensionNumber3',
           'sipTitle3',
+          'sipImage3',
           'displayFootnote'
         ],
         strategy: LoadStrategy.JOINED
@@ -67,11 +71,18 @@ export const GET = async (requestEvent: RequestEvent) => {
     )
     .then((r) => {
       if (r) {
-        const { backgroundPoster, brandLogo, ...demo }: { backgroundPoster: Data; brandLogo: Data } = r;
+        console.log(r)
+        const { backgroundPoster, brandLogo, sipImage, sipImage1, sipImage2, sipImage3, ...demo }
+          : { backgroundPoster: Data; brandLogo: Data, sipImage: Data | null, 
+            sipImage1: Data | null, sipImage2: Data | null, sipImage3: Data | null } = r;
         (demo as JSONObject)['brandLogo'] = 'data:' + brandLogo.type + ';base64,' + brandLogo.bits.toString('base64');
         (demo as JSONObject)['backgroundPoster'] =
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
-
+        (demo as JSONObject)['sipImage'] = sipImage != null ? 'data:' + sipImage.type + ';base64,' + sipImage.bits.toString('base64') : null;
+        (demo as JSONObject)['sipImage1'] = sipImage1 != null ?'data:' + sipImage1.type + ';base64,' + sipImage1.bits.toString('base64') : null;
+        (demo as JSONObject)['sipImage2'] = sipImage2 != null ? 'data:' + sipImage2.type + ';base64,' + sipImage2.bits.toString('base64') : null;
+        (demo as JSONObject)['sipImage3'] = sipImage3 != null ?'data:' + sipImage3.type + ';base64,' + sipImage3.bits.toString('base64'): null;
+        
         return {
           status: 200,
           body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }

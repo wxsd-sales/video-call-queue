@@ -46,8 +46,11 @@ export class Demo extends BaseEntity {
   @Property({ type: types.boolean })
   isSIP: boolean;
 
-  @Property({ type: types.string, nullable: true})
+  @Property({ type: types.string, nullable: true })
   sipTitle: string;
+
+  @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
+  sipImage!: Data | null;
 
   @Property({ type: types.integer, nullable: true })
   extensionNumber: number;
@@ -55,8 +58,11 @@ export class Demo extends BaseEntity {
   @Property({ type: types.string, nullable: true })
   videoLink: string;
 
-  @Property({ type: types.string, nullable: true})
+  @Property({ type: types.string, nullable: true })
   sipTitle1: string;
+
+  @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
+  sipImage1!: Data | null;
 
   @Property({ type: types.integer, nullable: true })
   extensionNumber1: number;
@@ -64,8 +70,11 @@ export class Demo extends BaseEntity {
   @Property({ type: types.string, nullable: true })
   videoLink1: string;
 
-  @Property({ type: types.string, nullable: true})
+  @Property({ type: types.string, nullable: true })
   sipTitle2: string;
+
+  @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
+  sipImage2!: Data | null;
 
   @Property({ type: types.integer, nullable: true })
   extensionNumber2: number;
@@ -73,8 +82,11 @@ export class Demo extends BaseEntity {
   @Property({ type: types.string, nullable: true })
   videoLink2: string;
 
-  @Property({ type: types.string, nullable: true})
+  @Property({ type: types.string, nullable: true })
   sipTitle3: string;
+
+  @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
+  sipImage3!: Data | null;
 
   @Property({ type: types.integer, nullable: true })
   extensionNumber3: number;
@@ -82,7 +94,7 @@ export class Demo extends BaseEntity {
   @Property({ type: types.string, nullable: true })
   videoLink3: string;
 
-  @Property({type: types.boolean, default: true, nullable: true})
+  @Property({ type: types.boolean, default: true, nullable: true })
   displayFootnote: boolean;
 
   constructor(obj: {
@@ -100,19 +112,22 @@ export class Demo extends BaseEntity {
     isIC: boolean;
     isSIP: boolean;
     sipTitle: string;
+    sipImage: Data;
     extensionNumber: number;
     videoLink: string;
     sipTitle1: string;
+    sipImage1: Data;
     extensionNumber1: number;
     videoLink1: string;
     sipTitle2: string;
+    sipImage2: Data;
     extensionNumber2: number;
     videoLink2: string;
     sipTitle3: string;
+    sipImage3: Data;
     extensionNumber3: number;
     videoLink3: string;
     displayFootnote: boolean;
-
   }) {
     super();
     this.user = obj.user;
@@ -129,15 +144,19 @@ export class Demo extends BaseEntity {
     this.isIC = obj.isIC;
     this.isSIP = obj.isSIP;
     this.sipTitle = obj.sipTitle;
+    this.sipImage = obj.sipImage;
     this.extensionNumber = obj.extensionNumber;
     this.videoLink = obj.videoLink;
     this.sipTitle1 = obj.sipTitle1;
+    this.sipImage1 = obj.sipImage1;
     this.extensionNumber1 = obj.extensionNumber1;
     this.videoLink1 = obj.videoLink1;
     this.sipTitle2 = obj.sipTitle2;
+    this.sipImage2 = obj.sipImage2;
     this.extensionNumber2 = obj.extensionNumber2;
     this.videoLink2 = obj.videoLink2;
     this.sipTitle3 = obj.sipTitle3;
+    this.sipImage3 = obj.sipImage3;
     this.extensionNumber3 = obj.extensionNumber3;
     this.videoLink3 = obj.videoLink3;
     this.displayFootnote = obj.displayFootnote;

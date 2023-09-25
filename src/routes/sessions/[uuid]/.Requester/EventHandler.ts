@@ -2,14 +2,13 @@ import * as CONST from '../constants';
 
 import type { Socket } from 'socket.io-client';
 
-
 /**
-   * Socket handler to listen and sort all events and pass them to the UI
-   *
-   * @param socket
-   * @param requesterID
-   * @param callback
-   */
+ * Socket handler to listen and sort all events and pass them to the UI
+ *
+ * @param socket
+ * @param requesterID
+ * @param callback
+ */
 export const socketEventHandler = (
   socket: Socket,
   requesterID: string,

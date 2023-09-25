@@ -1,5 +1,6 @@
 <script lang="ts">
   import Background from '$components/Background/Background.svelte';
+  import { touched, validity, form as formInput } from './utils/form';
   import { onMount } from 'svelte';
 
   export let poster: FileList = undefined;

@@ -4,12 +4,12 @@
   import BrandFields from './.Part2BrandFields.svelte';
   import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
   import MiscFields from './.Part4MiscFields.svelte';
-  import DemoSampleModal from './.DemoSampleModal.svelte';
+  import DemoSampleModal from './.DemoSampleModal/index.svelte';
 
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { form as formInput } from './utils/form';
+  import { form as formInput, formValues } from './utils/form';
   import Modal from '$components/Modal/Modal.svelte';
 
   export let form = undefined;
@@ -32,6 +32,8 @@
 
   let formElement: HTMLFormElement;
   let showModal = false;
+
+  formValues.subscribe((values) => {});
 
   const toFileList = (file?: { bits: string; name: string; lastModified: number; type: string }) =>
     file != null
@@ -72,7 +74,7 @@
     <BrandFields {title} {subtitle} />
   {/await}
   <hr />
-  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {SIPQueues} />
+  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {SIPQueues} {id} />
   <hr />
   <MiscFields {units} {cityId} {displayFootnote} />
   <hr />
@@ -101,9 +103,9 @@
       showModal = true;
     }}
     type="button"
-    class="sample button is-rounded is-warning is-light"
+    class="sample button is-rounded is-warning is-light px-5"
   >
-    Demo Sample
+    Preview
   </button>
 </form>
 

@@ -3,24 +3,20 @@
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
+  import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
 
   import { generateMacro } from '$lib/static/macro/WxCQ.js';
-
-  import { isFormValid, form as formInput } from './utils/form';
-  import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
-  import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
   import { SIPQueuesStore } from '$lib/store';
+  import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
+  import { isFormValid, form as formInput } from './utils/form';
+
+  import { onMount } from 'svelte';
 
   export let isSDK: boolean;
   export let isIC: boolean;
   export let isSIP: boolean;
-  export let SIPQueues = [
-    {
-      videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
-      extensionNumber: 1111,
-      sipTitle: 'Looking For Assistance?'
-    }
-  ];
+  export let id: string;
+  export let SIPQueues = [];
 
   let isNotRequired = isSDK || isIC || isSIP;
   let SDKCheckBoxElement: HTMLInputElement;
@@ -30,7 +26,6 @@
   let code = generateMacro(SIPQueues);
   let showModal = false;
 
-  // validity.subscribe((x) => console.log(x));
   /**
    * All checkboxes required statues may disable if only one checkbox is checked.
    *
@@ -48,9 +43,17 @@
       {
         videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
         extensionNumber: 1111,
-        sipTitle: 'Looking For Assistance?'
+        sipTitle: 'Looking For Assistance?',
+        sipImage: null
       }
     ];
+
+  onMount(() => {
+    $SIPQueuesStore = {
+      ...$SIPQueuesStore,
+      [id]: $SIPQueuesStore && $SIPQueuesStore[`${id}`] ? $SIPQueuesStore[`${id}`] : SIPQueues
+    };
+  });
 </script>
 
 <div class="columns is-multiline">
@@ -164,10 +167,11 @@
           on:click={() => {
             SIPQueues = [
               ...SIPQueues,
-              $SIPQueuesStore[SIPQueues.length] || {
+              $SIPQueuesStore[`${id}`][SIPQueues.length] || {
                 videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
                 extensionNumber: 1111,
-                sipTitle: 'Looking For Assistance?'
+                sipTitle: 'Looking For Assistance?',
+                sipImage: null
               }
             ];
           }}
@@ -178,18 +182,24 @@
           <span>Add More SIP URIs</span>
         </button>
       </div>
-      {#each SIPQueues as { videoLink, extensionNumber, sipTitle }, i}
+      {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i}
         <SIPQueueField
           {extensionNumber}
           {videoLink}
           index={i}
           {sipTitle}
+          {sipImage}
           on:sipQs={({ detail: { event, payload } }) => {
             switch (event) {
               case 'update':
-                const { index, videoLink, sipTitle, extensionNumber } = payload;
-                SIPQueues[index] = { videoLink, sipTitle, extensionNumber };
-                $SIPQueuesStore = SIPQueues;
+                const { index, videoLink, sipTitle, extensionNumber, sipImage } = payload;
+                SIPQueues[index] = {
+                  videoLink,
+                  sipTitle,
+                  extensionNumber,
+                  sipImage
+                };
+                $SIPQueuesStore[`${id}`] = SIPQueues;
                 break;
               case 'remove':
                 SIPQueues = [

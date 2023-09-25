@@ -1,7 +1,7 @@
 export const generateMacro = (queues) => {
   let qSTR = '';
 
-  for(const {extensionNumber, videoLink} of queues) 
+  for (const { extensionNumber, videoLink } of queues)
     qSTR = qSTR.concat(`
        {
           title: 'Please wait 😊', // The title which is display when in modal mode
@@ -9,10 +9,10 @@ export const generateMacro = (queues) => {
           url: '${videoLink}',  // URL to display
           mode: 'Fullscreen',       // Fullscreen | Modal
           target: 'OSD'     // OSD | Controller
-        },`)
+        },`);
 
   qSTR = qSTR.slice(0, -1);
-    
+
   return `
 /*********************************************************************
 Copyright (c) 2022 Cisco and/or its affiliates.
@@ -27,8 +27,8 @@ IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied.
 ***********************************************************************
 * 
-* Version: 1-0-0
-* Released: 02/08/23
+* Version: 1-1-0
+* Released: 09/28/23
 * 
 * This is a Webex Device Macro which displays a video while 
 * waiting in a Webex Calling call queue:
@@ -45,6 +45,9 @@ or implied.
 * Full Readme and source code available on Github:
 * https://github.com/wxsd-sales/video-queue-macro
 * 
+*
+* Support:
+* Please reach out to the WXSD team at wxsd@external.cisco.com
 ********************************************************/
 import xapi from 'xapi';
 
@@ -123,5 +126,5 @@ function setUIVisibility(state){
   console.log('Setting UI Visibility to: ' + state)
   xapi.Config.UserInterface.Features.HideAll.set(state ? 'False' : 'True');
 }
-`
+`;
 };
