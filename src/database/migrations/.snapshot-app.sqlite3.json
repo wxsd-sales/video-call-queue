@@ -77,7 +77,9 @@
       "indexes": [
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -133,7 +135,9 @@
       "indexes": [
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -235,7 +239,9 @@
       "name": "session",
       "indexes": [
         {
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "composite": false,
           "keyName": "session_user_uuid_index",
           "primary": false,
@@ -243,7 +249,9 @@
         },
         {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -253,9 +261,13 @@
       "foreignKeys": {
         "session_user_uuid_foreign": {
           "constraintName": "session_user_uuid_foreign",
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "localTableName": "session",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "user",
           "deleteRule": "no action",
           "updateRule": "cascade"
@@ -311,7 +323,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "text"
         },
         "description": {
@@ -358,7 +370,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "text"
         },
         "brand_subtitle": {
@@ -367,7 +379,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "text"
         },
         "weather_units": {
@@ -376,7 +388,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "weather_city_id": {
@@ -385,16 +397,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "responder_auth_is_required": {
-          "name": "responder_auth_is_required",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "is_sdk": {
@@ -424,6 +427,25 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "sip_title": {
+          "name": "sip_title",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_image_uuid": {
+          "name": "sip_image_uuid",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "text"
+        },
         "extension_number": {
           "name": "extension_number",
           "type": "integer",
@@ -441,34 +463,199 @@
           "primary": false,
           "nullable": true,
           "mappedType": "text"
+        },
+        "sip_title1": {
+          "name": "sip_title1",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_image1_uuid": {
+          "name": "sip_image1_uuid",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "text"
+        },
+        "extension_number1": {
+          "name": "extension_number1",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "video_link1": {
+          "name": "video_link1",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_title2": {
+          "name": "sip_title2",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_image2_uuid": {
+          "name": "sip_image2_uuid",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "text"
+        },
+        "extension_number2": {
+          "name": "extension_number2",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "video_link2": {
+          "name": "video_link2",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_title3": {
+          "name": "sip_title3",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_image3_uuid": {
+          "name": "sip_image3_uuid",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "text"
+        },
+        "extension_number3": {
+          "name": "extension_number3",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "video_link3": {
+          "name": "video_link3",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "display_footnote": {
+          "name": "display_footnote",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "default": "true",
+          "mappedType": "integer"
         }
       },
       "name": "demo",
       "indexes": [
         {
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "composite": false,
           "keyName": "demo_user_uuid_index",
           "primary": false,
           "unique": false
         },
         {
-          "columnNames": ["background_poster_uuid"],
+          "columnNames": [
+            "background_poster_uuid"
+          ],
           "composite": false,
           "keyName": "demo_background_poster_uuid_index",
           "primary": false,
           "unique": false
         },
         {
-          "columnNames": ["brand_logo_uuid"],
+          "columnNames": [
+            "brand_logo_uuid"
+          ],
           "composite": false,
           "keyName": "demo_brand_logo_uuid_index",
           "primary": false,
           "unique": false
         },
         {
+          "columnNames": [
+            "sip_image_uuid"
+          ],
+          "composite": false,
+          "keyName": "demo_sip_image_uuid_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "sip_image1_uuid"
+          ],
+          "composite": false,
+          "keyName": "demo_sip_image1_uuid_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "sip_image2_uuid"
+          ],
+          "composite": false,
+          "keyName": "demo_sip_image2_uuid_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "sip_image3_uuid"
+          ],
+          "composite": false,
+          "keyName": "demo_sip_image3_uuid_index",
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "primary",
-          "columnNames": ["uuid"],
+          "columnNames": [
+            "uuid"
+          ],
           "composite": false,
           "primary": true,
           "unique": true
@@ -478,27 +665,91 @@
       "foreignKeys": {
         "demo_user_uuid_foreign": {
           "constraintName": "demo_user_uuid_foreign",
-          "columnNames": ["user_uuid"],
+          "columnNames": [
+            "user_uuid"
+          ],
           "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "user",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
         "demo_background_poster_uuid_foreign": {
           "constraintName": "demo_background_poster_uuid_foreign",
-          "columnNames": ["background_poster_uuid"],
+          "columnNames": [
+            "background_poster_uuid"
+          ],
           "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "data",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
         "demo_brand_logo_uuid_foreign": {
           "constraintName": "demo_brand_logo_uuid_foreign",
-          "columnNames": ["brand_logo_uuid"],
+          "columnNames": [
+            "brand_logo_uuid"
+          ],
           "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "data",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "demo_sip_image_uuid_foreign": {
+          "constraintName": "demo_sip_image_uuid_foreign",
+          "columnNames": [
+            "sip_image_uuid"
+          ],
+          "localTableName": "demo",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "data",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "demo_sip_image1_uuid_foreign": {
+          "constraintName": "demo_sip_image1_uuid_foreign",
+          "columnNames": [
+            "sip_image1_uuid"
+          ],
+          "localTableName": "demo",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "data",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "demo_sip_image2_uuid_foreign": {
+          "constraintName": "demo_sip_image2_uuid_foreign",
+          "columnNames": [
+            "sip_image2_uuid"
+          ],
+          "localTableName": "demo",
+          "referencedColumnNames": [
+            "uuid"
+          ],
+          "referencedTableName": "data",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "demo_sip_image3_uuid_foreign": {
+          "constraintName": "demo_sip_image3_uuid_foreign",
+          "columnNames": [
+            "sip_image3_uuid"
+          ],
+          "localTableName": "demo",
+          "referencedColumnNames": [
+            "uuid"
+          ],
           "referencedTableName": "data",
           "deleteRule": "cascade",
           "updateRule": "cascade"

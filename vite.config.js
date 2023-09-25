@@ -8,6 +8,9 @@ const config = {
   ssr: {
     noExternal: ['@carbon/charts', 'carbon-components']
   },
+  optimizeDeps: {
+    include: ['lodash.get', 'lodash.isequal', 'lodash.clonedeep']
+  },
   resolve: {
     alias: {
       $components: resolve('./src/components'),

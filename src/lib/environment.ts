@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IsEmail, IsNotEmpty, IsString, IsUrl, Matches, MinLength, validateSync } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsUrl, Matches, validateSync } from 'class-validator';
 import { VALID_ACCESS_TOKEN } from './constants';
 import { dev } from '$app/env';
 import humps from 'humps';

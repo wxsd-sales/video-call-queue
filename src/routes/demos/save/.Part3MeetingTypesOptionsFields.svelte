@@ -1,28 +1,31 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-  import { showModalStore } from '$lib/store';
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
+  import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
 
   import { generateMacro } from '$lib/static/macro/WxCQ.js';
-
-  import { touched, isFormValid, validity, form as formInput } from './utils/form';
+  import { SIPQueuesStore } from '$lib/store';
   import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
+  import { isFormValid, form as formInput } from './utils/form';
+
+  import { onMount } from 'svelte';
 
   export let isSDK: boolean;
   export let isIC: boolean;
   export let isSIP: boolean;
-  export let videoLink = 'https://wxsd-sales.github.io/video-queue-macro/example-content';
-  export let extensionNumber: number;
+  export let id: string;
+  export let SIPQueues = [];
 
   let isNotRequired = isSDK || isIC || isSIP;
   let SDKCheckBoxElement: HTMLInputElement;
   let ICCheckBoxElement: HTMLInputElement;
   let SIPCheckBoxElement: HTMLInputElement;
   let generateIsLoading = false;
+  let code = generateMacro(SIPQueues);
+  let showModal = false;
 
-  $: code = generateMacro(videoLink, extensionNumber);
   /**
    * All checkboxes required statues may disable if only one checkbox is checked.
    *
@@ -31,6 +34,26 @@
   const handleCheckboxesRequiredStatus = () => {
     isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked || SIPCheckBoxElement.checked;
   };
+
+  //IC & SDK option will be disabled if multiple SIP queues is enabled
+  $: isIC = SIPQueues.length > 1 ? false : isIC;
+  $: isSDK = SIPQueues.length > 1 ? false : isSDK;
+  $: if (!isSIP)
+    SIPQueues = [
+      {
+        videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
+        extensionNumber: 1111,
+        sipTitle: 'Looking For Assistance?',
+        sipImage: null
+      }
+    ];
+
+  onMount(() => {
+    $SIPQueuesStore = {
+      ...$SIPQueuesStore,
+      [id]: $SIPQueuesStore && $SIPQueuesStore[`${id}`] ? $SIPQueuesStore[`${id}`] : SIPQueues
+    };
+  });
 </script>
 
 <div class="columns is-multiline">
@@ -52,8 +75,9 @@
         bind:this={SDKCheckBoxElement}
         on:input={handleCheckboxesRequiredStatus}
         required={!isNotRequired}
+        disabled={SIPQueues.length > 1}
       />
-      Meeting Browser SDK
+      <span class:has-text-grey-light={SIPQueues.length > 1}> Meeting Browser SDK </span>
     </label>
     <div class="help">
       <p>
@@ -74,8 +98,9 @@
         bind:this={ICCheckBoxElement}
         on:input={handleCheckboxesRequiredStatus}
         required={!isNotRequired}
+        disabled={SIPQueues.length > 1}
       />
-      Instant Connect
+      <span class:has-text-grey-light={SIPQueues.length > 1}> Instant Connect </span>
     </label>
     <div class="help">
       <p>
@@ -131,58 +156,66 @@
           <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>setup guide</a>.
         </p>
       </div>
-
-      <div class="column is-half">
-        <label class="label" for="city-id">Extension Number<sup class="has-text-danger" title="required">*</sup></label>
-        <div class="control has-icons-left">
-          <input
-            name="extensionNumber"
-            id="extensionNumber"
-            class="input"
-            type="number"
-            placeholder="1111"
-            bind:value={extensionNumber}
-            required
-          />
-          <span class="icon is-left">
-            <i class="mdi mdi-phone" />
-          </span>
-        </div>
-        <div class="help">
-          <p>
-            Extension number to call the queue. This number must be be configured inside
-            <a href={CONTROL_HUB_URL} target="_blank">Control hub</a>.
-          </p>
-        </div>
+      <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
+        <hr class="column is-three-quarters p-0" />
       </div>
-      <div class="column is-half">
-        <label class="label" for="city-id"
-          >Video Commercial Source <sup class="has-text-danger" title="required">*</sup></label
+      <div class="column is-full is-flex  is-justify-content-flex-end is-align-items-center">
+        <button
+          class="button is-rounded is-success is-outlined"
+          type="button"
+          disabled={SIPQueues.length >= 4}
+          on:click={() => {
+            SIPQueues = [
+              ...SIPQueues,
+              $SIPQueuesStore[`${id}`][SIPQueues.length] || {
+                videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
+                extensionNumber: 1111,
+                sipTitle: 'Looking For Assistance?',
+                sipImage: null
+              }
+            ];
+          }}
         >
-        <div class="control has-icons-left">
-          <input
-            name="videoLink"
-            id="extensionNumber"
-            class="input"
-            class:is-danger={$touched?.videoLink && $validity.videoLink?.invalid}
-            type="url"
-            placeholder="https://wxsd-sales.github.io/video-queue-macro/example-content"
-            bind:value={videoLink}
-            required
-          />
-          <span class="icon is-left">
-            <i class="mdi mdi-play" />
+          <span class="icon">
+            <i class="mdi mdi-plus" />
           </span>
-        </div>
-        <div class="help">
-          {#if $touched?.videoLink && $validity.videoLink?.invalid}
-            <p class="has-text-danger">Please provide a valid URL.</p>
-          {:else}
-            <p>Commercial video source to play while holding in queue.</p>
-          {/if}
-        </div>
+          <span>Add More SIP URIs</span>
+        </button>
       </div>
-      <div class="column is-flex p-0 is-justify-content-flex-end">
+      {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i}
+        <SIPQueueField
+          {extensionNumber}
+          {videoLink}
+          index={i}
+          {sipTitle}
+          {sipImage}
+          on:sipQs={({ detail: { event, payload } }) => {
+            switch (event) {
+              case 'update':
+                const { index, videoLink, sipTitle, extensionNumber, sipImage } = payload;
+                SIPQueues[index] = {
+                  videoLink,
+                  sipTitle,
+                  extensionNumber,
+                  sipImage
+                };
+                $SIPQueuesStore[`${id}`] = SIPQueues;
+                break;
+              case 'remove':
+                SIPQueues = [
+                  ...SIPQueues.slice(0, payload.index),
+                  ...SIPQueues.slice(payload.index + 1, SIPQueues.length)
+                ];
+                break;
+            }
+          }}
+        />
+      {/each}
+      <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
+        <hr class="column is-three-quarters p-0" />
+      </div>
+      <div class="column is-flex p-0 is-justify-content-space-between is-align-items-center">
+        <div class="mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
         <button
           disabled={!$isFormValid}
           class:is-loading={generateIsLoading}
@@ -190,9 +223,10 @@
           class="button is-small is-rounded is-primary is-light m-2 "
           on:click={() => {
             generateIsLoading = true;
+            code = generateMacro(SIPQueues);
             setTimeout(() => {
               generateIsLoading = false;
-              $showModalStore = true;
+              showModal = true;
             }, 1000);
           }}
         >
@@ -206,7 +240,7 @@
   {/if}
 </div>
 
-<Modal>
+<Modal bind:showModal>
   <div class="modal-content snippet is-translucent-black">
     <CodeSnippet {code} language="javascript" filename="VCQMacro.js" />
   </div>

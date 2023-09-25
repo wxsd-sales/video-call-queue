@@ -1,8 +1,19 @@
-export const generateMacro = (
-  videoLink = 'https://wxsd-sales.github.io/video-queue-macro/example-content/',
-  extensionNumber: number
-) =>
-  `
+export const generateMacro = (queues) => {
+  let qSTR = '';
+
+  for (const { extensionNumber, videoLink } of queues)
+    qSTR = qSTR.concat(`
+       {
+          title: 'Please wait 😊', // The title which is display when in modal mode
+          number: '${extensionNumber}', // Number to monitor
+          url: '${videoLink}',  // URL to display
+          mode: 'Fullscreen',       // Fullscreen | Modal
+          target: 'OSD'     // OSD | Controller
+        },`);
+
+  qSTR = qSTR.slice(0, -1);
+
+  return `
 /*********************************************************************
 Copyright (c) 2022 Cisco and/or its affiliates.
 This software is licensed to you under the terms of the Cisco Sample
@@ -16,18 +27,8 @@ IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied.
 ***********************************************************************
 * 
-* Author:             Harish Chawla
-*                     Leader, Systems Engineering 
-*                     hachawla@cisco.com
-*                     Cisco Systems
-* 
-* Co-Author:          William Mills
-*                     Technical Solutions Specialist 
-*                     wimills@cisco.com
-*                     Cisco Systems
-* 
-* Version: 1-0-0
-* Released: 02/08/23
+* Version: 1-1-0
+* Released: 09/28/23
 * 
 * This is a Webex Device Macro which displays a video while 
 * waiting in a Webex Calling call queue:
@@ -44,6 +45,9 @@ or implied.
 * Full Readme and source code available on Github:
 * https://github.com/wxsd-sales/video-queue-macro
 * 
+*
+* Support:
+* Please reach out to the WXSD team at wxsd@external.cisco.com
 ********************************************************/
 import xapi from 'xapi';
 
@@ -53,14 +57,7 @@ import xapi from 'xapi';
 
 const config = {
   queues: [       // Array of queues to monitor and display commercials
-    {
-      title: 'Please wait 😊', // The title which is display when in modal mode
-      number: '${extensionNumber}', // Number to monitor
-      url: '${videoLink}',  // URL to display
-      mode: 'Fullscreen',       // Fullscreen | Modal
-      target: 'OSD'     // OSD | Controller
-    }
-    // Add your additional queue monitoring settings here
+    ${qSTR}
   ],
   hideIncallUI: false,  // true = hide in call call controls, false = show controls
 }
@@ -85,12 +82,9 @@ async function processWebViews(event) {
   const url = event.URL;
   const id = event.id;
 
-  const hash = url.split('#')[Number('1')]
+  const sipURI = url.split('#')[Number('1')]
 
-  if (hash == 'dial') {
-    xapi.Command.Dial({Number: config.queues[Number('0')].number})
-    return;
-  }
+  xapi.Command.Dial({Number: sipURI})
 }
 
 async function processCallCount(event) {
@@ -133,3 +127,4 @@ function setUIVisibility(state){
   xapi.Config.UserInterface.Features.HideAll.set(state ? 'False' : 'True');
 }
 `;
+};

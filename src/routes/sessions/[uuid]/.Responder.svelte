@@ -13,7 +13,6 @@
   import * as CONST from './constants';
   import Modal from '$components/Modal/Modal.svelte';
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
-  import { showModalStore } from '$lib/store';
 
   export let socketID;
   export let embeddable: boolean;
@@ -32,6 +31,7 @@
   let joinSession = false;
   let joinButtonIsLoading = false;
   let iframeIsLoading = false;
+  let showModal = false;
 
   let meetingURL = '';
   let title = 'Request Queue';
@@ -263,7 +263,7 @@
   const handleClick = (target) => {
     if (target.command) {
       if (target.command === CLOSE_REQUEST) {
-        $showModalStore = true;
+        showModal = true;
       } else if (target.command === FORCE_CLOSE_REQUEST) {
         removeQueue(target);
       }
@@ -286,7 +286,7 @@
 <div style={embeddable ? 'height: 43rem' : 'height: 48rem'}>
   <div class="columns mb-2 is-align-items-center mb-1 ">
     <div class="column is-12 is-5 is-size-6 is-hidden-mobile" style="height: 5rem;">
-      {#if selectedRequest}
+      {#if selectedRequest && sessionStatus}
         <div class="columns m-0 is-mobile is-justify-content-space-between has-text-info-light">
           <div>Session ID:</div>
           <div class="has-text-success">
@@ -364,6 +364,7 @@
                 if (!joinButtonIsLoading) {
                   selectedRequest = undefined;
                   displayQueue = true;
+                  sessionStatus = undefined;
                 }
               }}
             >
@@ -385,7 +386,7 @@
   </div>
 </div>
 
-<Modal>
+<Modal bind:showModal>
   <div class="modal-content is-translucent-black" style="padding: 1.75rem 0.5rem; width: 22rem;">
     <div class="has-text-white has-text-centered">
       <div class="subtitle is-size-5 has-text-white mb-2 ">You are about to cancel this request.</div>
@@ -397,13 +398,13 @@
         class="button is-primary mr-6"
         on:click={() => {
           removeQueue(selectedRequest);
-          $showModalStore = false;
+          showModal = false;
         }}>Yes</button
       >
       <button
         class="button is-danger"
         on:click={() => {
-          $showModalStore = false;
+          showModal = false;
         }}>No</button
       >
     </div>

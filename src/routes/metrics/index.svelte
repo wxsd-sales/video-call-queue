@@ -7,7 +7,6 @@
   export let userDemosData;
   export let numberOfAll;
 
-  console.log(numberOfAll);
   export const donutCenteredOptions = {
     resizable: true,
     legend: {

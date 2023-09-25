@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { showModalStore } from '$lib/store';
+  export let showModal = false;
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if ($showModalStore && e.key === 'Escape') $showModalStore = false;
+    if (showModal && e.key === 'Escape') showModal = false;
   };
 </script>
 
-<div class="modal" class:is-active={$showModalStore}>
-  <div class="modal-background" on:click={() => ($showModalStore = false)} />
+<div class="modal" class:is-active={showModal}>
+  <div class="modal-background" on:click={() => (showModal = false)} />
   <section>
     <slot />
   </section>

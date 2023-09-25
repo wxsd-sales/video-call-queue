@@ -50,17 +50,32 @@ export const GET = async (requestEvent: RequestEvent) => {
               'brandLogo.lastModified',
               'weatherUnits',
               'weatherCityId',
-              'responderAuthIsRequired',
               'isSDK',
               'isIC',
               'isSIP',
               'extensionNumber',
-              'videoLink'
+              'videoLink',
+              'sipTitle',
+              'sipImage',
+              'extensionNumber1',
+              'videoLink1',
+              'sipTitle1',
+              'sipImage1',
+              'extensionNumber2',
+              'videoLink2',
+              'sipTitle2',
+              'sipImage2',
+              'extensionNumber3',
+              'videoLink3',
+              'sipTitle3',
+              'sipImage3',
+              'displayFootnote'
             ],
             strategy: LoadStrategy.JOINED
           }
         )
-        .then((r) => ({
+        .then((r) =>  {
+          return {
           status: 200,
           body: {
             name: r.name,
@@ -82,18 +97,63 @@ export const GET = async (requestEvent: RequestEvent) => {
             subtitle: r.brandSubtitle,
             cityId: r.weatherCityId,
             units: r.weatherUnits,
-            authIsReq: r.responderAuthIsRequired,
             isSDK: r.isSDK,
             isIC: r.isIC,
             isSIP: r.isSIP,
-            extensionNumber: r.extensionNumber,
-            videoLink: r.videoLink
+            SIPQueues: [
+              {
+                extensionNumber: r.extensionNumber,
+                videoLink: r.videoLink,
+                sipTitle: r.sipTitle || 'Looking for Assistance?',
+                sipImage: r.sipImage ? {
+                  bits: 'data:' + r.sipImage.type + ';base64,' + r.sipImage.bits.toString('base64'),
+                  name: r.sipImage.name,
+                  lastModified: r.sipImage.lastModified,
+                  type: r.sipImage.type
+                } : null
+              },
+              r?.extensionNumber1 && {
+                extensionNumber: r.extensionNumber1,
+                videoLink: r.videoLink1,
+                sipTitle: r.sipTitle1,
+                sipImage: r.sipImage1 ? {
+                  bits: 'data:' + r.sipImage1.type + ';base64,' + r.sipImage1.bits.toString('base64'),
+                  name: r.sipImage1.name,
+                  lastModified: r.sipImage1.lastModified,
+                  type: r.sipImage1.type
+                } : null
+              },
+              r?.extensionNumber2 && {
+                extensionNumber: r.extensionNumber2,
+                videoLink: r.videoLink2,
+                sipTitle: r.sipTitle2,
+                sipImage: r.sipImage2 ? {
+                  bits: 'data:' + r.sipImage2.type + ';base64,' + r.sipImage2.bits.toString('base64'),
+                  name: r.sipImage2.name,
+                  lastModified: r.sipImage2.lastModified,
+                  type: r.sipImage2.type
+                } : null
+              },
+              r.extensionNumber3 && {
+                extensionNumber: r.extensionNumber3,
+                videoLink: r.videoLink3,
+                sipTitle: r.sipTitle3,
+                sipImage: r.sipImage3 ? {
+                  bits: 'data:' + r.sipImage3.type + ';base64,' + r.sipImage3.bits.toString('base64'),
+                  name: r.sipImage3.name,
+                  lastModified: r.sipImage3.lastModified,
+                  type: r.sipImage3.type
+                } : null
+              }
+            ].filter(Boolean),
+            displayFootnote: Boolean(r.displayFootnote)
           }
-        }))
-        .catch(() => ({
+        }
+      })
+        .catch({
           status: 200,
           body: { brightness: 55, title: 'Cisco', subtitle: 'Bridge to Possible', units: 'imperial', cityId: 4887398 }
-        }))
+        })
     : {
         status: 200,
         body: { brightness: 55, title: 'Cisco', subtitle: 'Bridge to Possible', units: 'imperial', cityId: 4887398 }
@@ -131,20 +191,14 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly logo!: File;
 
     @Expose()
-    @IsNotEmpty()
     @MaxLength(16)
     @Transform(({ obj }: { obj: FormData }) => obj.get('title'), { toClassOnly: true })
     public readonly title!: string;
 
     @Expose()
-    @IsNotEmpty()
     @MaxLength(64)
     @Transform(({ obj }: { obj: FormData }) => obj.get('subtitle'), { toClassOnly: true })
     public readonly subtitle!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('authIsReq')), { toClassOnly: true })
-    public readonly authIsRequired!: boolean;
 
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SDK')), { toClassOnly: true })
@@ -159,9 +213,9 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly isSIP!: boolean;
 
     @Expose()
-    @IsIn(['imperial', 'metric', 'standard'])
+    @IsIn(['imperial', 'metric', 'standard', null])
     @Transform(({ obj }: { obj: FormData }) => obj.get('units'), { toClassOnly: true })
-    public readonly units!: 'imperial' | 'metric' | 'standard';
+    public readonly units!: 'imperial' | 'metric' | 'standard' | null;
 
     @Expose()
     @IsInt()
@@ -176,6 +230,69 @@ export const POST = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
     public readonly videoLink!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle'), { toClassOnly: true })
+    public readonly sipTitle!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage'), { toClassOnly: true })
+    public readonly sipImage!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber1')), { toClassOnly: true })
+    public readonly extensionNumber1!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink1'), { toClassOnly: true })
+    public readonly videoLink1!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle1'), { toClassOnly: true })
+    public readonly sipTitle1!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage1'), { toClassOnly: true })
+    public readonly sipImage1!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber2')), { toClassOnly: true })
+    public readonly extensionNumber2!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink2'), { toClassOnly: true })
+    public readonly videoLink2!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle2'), { toClassOnly: true })
+    public readonly sipTitle2!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage2'), { toClassOnly: true })
+    public readonly sipImage2!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber3')), { toClassOnly: true })
+    public readonly extensionNumber3!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink3'), { toClassOnly: true })
+    public readonly videoLink3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle3'), { toClassOnly: true })
+    public readonly sipTitle3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage3'), { toClassOnly: true })
+    public readonly sipImage3!: File;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('footnote')), { toClassOnly: true })
+    public readonly displayFootnote!: boolean;
   }
 
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
@@ -184,12 +301,14 @@ export const POST = async (requestEvent: RequestEvent) => {
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 
-  const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
-    .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
-    .then(() => true)
-    .catch(() => false);
-  if (isCityIdValid === false) {
-    return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+  if (formData.cityId) {
+    const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
+      .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
+      .then(() => true)
+      .catch(() => false);
+    if (isCityIdValid === false) {
+      return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+    }
   }
 
   try {
@@ -217,12 +336,46 @@ export const POST = async (requestEvent: RequestEvent) => {
         brandSubtitle: formData.subtitle,
         weatherUnits: formData.units,
         weatherCityId: formData.cityId,
-        responderAuthIsRequired: formData.authIsRequired,
         isSDK: formData.isSDK,
         isIC: formData.isIC,
         isSIP: formData.isSIP,
         videoLink: formData.videoLink,
-        extensionNumber: formData.extensionNumber
+        extensionNumber: formData.extensionNumber,
+        sipTitle: formData.sipTitle,
+        sipImage: formData.sipImage ? new Data({
+          bits: Buffer.from(await formData.sipImage.arrayBuffer()),
+          type: formData.sipImage.type,
+          name: formData.sipImage.name,
+          lastModified: formData.sipImage.lastModified
+        }) : null,
+        videoLink1: formData.videoLink1,
+        extensionNumber1: formData.extensionNumber1,
+        sipTitle1: formData.sipTitle1,
+        sipImage1: formData.sipImage1 ? new Data({
+          bits: Buffer.from(await formData.sipImage1.arrayBuffer()),
+          type: formData.sipImage1.type,
+          name: formData.sipImage1.name,
+          lastModified: formData.sipImage1.lastModified
+        }) : null,
+        videoLink2: formData.videoLink2,
+        extensionNumber2: formData.extensionNumber2,
+        sipTitle2: formData.sipTitle2,
+        sipImage2: formData.sipImage2 ? new Data({
+          bits: Buffer.from(await formData.sipImage2.arrayBuffer()),
+          type: formData.sipImage2.type,
+          name: formData.sipImage2.name,
+          lastModified: formData.sipImage2.lastModified
+        }) : null,
+        videoLink3: formData.videoLink3,
+        extensionNumber3: formData.extensionNumber3,
+        sipTitle3: formData.sipTitle3,
+        sipImage3: formData.sipImage3 ? new Data({
+          bits: Buffer.from(await formData.sipImage3.arrayBuffer()),
+          type: formData.sipImage3.type,
+          name: formData.sipImage3.name,
+          lastModified: formData.sipImage3.lastModified
+        }) : null,
+        displayFootnote: formData.displayFootnote
       });
       await db.persistAndFlush(demo);
 
@@ -271,13 +424,11 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     public readonly logo!: File;
 
     @Expose()
-    @IsNotEmpty()
     @MaxLength(16)
     @Transform(({ obj }: { obj: FormData }) => obj.get('title'), { toClassOnly: true })
     public readonly title!: string;
 
     @Expose()
-    @IsNotEmpty()
     @MaxLength(64)
     @Transform(({ obj }: { obj: FormData }) => obj.get('subtitle'), { toClassOnly: true })
     public readonly subtitle!: string;
@@ -295,13 +446,9 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     public readonly isSIP!: boolean;
 
     @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('authIsReq')), { toClassOnly: true })
-    public readonly authIsRequired!: boolean;
-
-    @Expose()
-    @IsIn(['imperial', 'metric', 'standard'])
+    @IsIn(['imperial', 'metric', 'standard', null])
     @Transform(({ obj }: { obj: FormData }) => obj.get('units'), { toClassOnly: true })
-    public readonly units!: 'imperial' | 'metric' | 'standard';
+    public readonly units!: 'imperial' | 'metric' | 'standard' | null;
 
     @Expose()
     @IsInt()
@@ -316,6 +463,69 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
     public readonly videoLink!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle'), { toClassOnly: true })
+    public readonly sipTitle!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage'), { toClassOnly: true })
+    public readonly sipImage!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber1')), { toClassOnly: true })
+    public readonly extensionNumber1!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink1'), { toClassOnly: true })
+    public readonly videoLink1!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle1'), { toClassOnly: true })
+    public readonly sipTitle1!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage1'), { toClassOnly: true })
+    public readonly sipImage1!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber2')), { toClassOnly: true })
+    public readonly extensionNumber2!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink2'), { toClassOnly: true })
+    public readonly videoLink2!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle2'), { toClassOnly: true })
+    public readonly sipTitle2!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage2'), { toClassOnly: true })
+    public readonly sipImage2!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber3')), { toClassOnly: true })
+    public readonly extensionNumber3!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink3'), { toClassOnly: true })
+    public readonly videoLink3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle3'), { toClassOnly: true })
+    public readonly sipTitle3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage3'), { toClassOnly: true })
+    public readonly sipImage3!: File;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('displayFootnote')), { toClassOnly: true })
+    public readonly displayFootnote!: boolean;
   }
 
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
@@ -324,17 +534,20 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 
-  const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
-    .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
-    .then(() => true)
-    .catch(() => false);
-  if (isCityIdValid === false) {
-    return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+  if (formData.cityId) {
+    const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
+      .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
+      .then(() => true)
+      .catch(() => false);
+    if (isCityIdValid === false) {
+      return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+    }
   }
 
   const db = requestEvent.locals.db;
   const session = requestEvent.locals.session;
 
+  console.log(formData)
   const demoId = formData.id;
   return demoId != null
     ? await db
@@ -359,12 +572,26 @@ export const PATCH = async (requestEvent: RequestEvent) => {
               'brandLogo.lastModified',
               'weatherUnits',
               'weatherCityId',
-              'responderAuthIsRequired',
               'isSDK',
               'isIC',
               'isSIP',
               'videoLink',
-              'extensionNumber'
+              'extensionNumber',
+              'sipTitle',
+              'sipImage',
+              'videoLink1',
+              'extensionNumber1',
+              'sipTitle1',
+              'sipImage1',
+              'videoLink2',
+              'extensionNumber2',
+              'sipTitle2',
+              'sipImage2',
+              'videoLink3',
+              'extensionNumber3',
+              'sipTitle3',
+              'sipImage3',
+              'displayFootnote'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -383,17 +610,53 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.brandLogo.type = formData.logo.type;
           r.brandLogo.name = formData.logo.name;
           r.brandLogo.lastModified = formData.logo.lastModified;
-          r.responderAuthIsRequired = formData.authIsRequired;
+          r.weatherUnits = formData.units;
+          r.weatherCityId = formData.cityId;
           r.isSDK = formData.isSDK;
           r.isIC = formData.isIC;
           r.isSIP = formData.isSIP;
           r.videoLink = formData.videoLink;
           r.extensionNumber = formData.extensionNumber;
+          r.sipTitle = formData.sipTitle;
+          r.sipImage = formData.sipImage ? new Data({
+            bits: Buffer.from(await formData.sipImage.arrayBuffer()),
+            type: formData.sipImage.type,
+            name: formData.sipImage.name,
+            lastModified: formData.sipImage.lastModified
+          }) : null;
+          r.videoLink1 = formData.videoLink1;
+          r.extensionNumber1 = formData.extensionNumber1;
+          r.sipTitle1 = formData.sipTitle1;
+          r.sipImage1 = formData.sipImage1 ? new Data({
+            bits: Buffer.from(await formData.sipImage1.arrayBuffer()),
+            type: formData.sipImage1.type,
+            name: formData.sipImage1.name,
+            lastModified: formData.sipImage1.lastModified
+          }) : null;
+          r.videoLink2 = formData.videoLink2;
+          r.extensionNumber2 = formData.extensionNumber2;
+          r.sipTitle2 = formData.sipTitle2;
+          r.sipImage2 = formData.sipImage2 ? new Data({
+            bits: Buffer.from(await formData.sipImage2.arrayBuffer()),
+            type: formData.sipImage2.type,
+            name: formData.sipImage2.name,
+            lastModified: formData.sipImage2.lastModified
+          }) : null;
+          r.videoLink3 = formData.videoLink3;
+          r.extensionNumber3 = formData.extensionNumber3;
+          r.sipTitle3 = formData.sipTitle3;
+          r.sipImage3 = formData.sipImage3 ? new Data({
+            bits: Buffer.from(await formData.sipImage3.arrayBuffer()),
+            type: formData.sipImage3.type,
+            name: formData.sipImage3.name,
+            lastModified: formData.sipImage3.lastModified
+          }) : null;
+          r.displayFootnote = formData.displayFootnote;
 
           await db.persistAndFlush(r);
 
           return { status: 302, headers: { Location: '/demos' } };
         })
-        .catch(() => ({ status: 422 }))
+        .catch((e) => {console.log(e)})
     : { status: 422 };
 };

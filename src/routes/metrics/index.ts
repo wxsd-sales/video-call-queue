@@ -4,29 +4,26 @@ import { EntityRepository } from '@mikro-orm/better-sqlite';
 import { Demo, User } from '../../database/entities';
 import config from '../../../mikro-orm.config';
 
-
-
 export const GET = async (requestEvent: RequestEvent) => {
   const removeDuplicates = (array) => {
-    return array.filter((value, index, self) =>
-      index === self.findIndex((t) => (
-        t.group === value.group && t.date === value.date
-      )))
-  }
+    return array.filter(
+      (value, index, self) => index === self.findIndex((t) => t.group === value.group && t.date === value.date)
+    );
+  };
 
   const orm = await MikroORM.init({ ...config, ...{ entities: [User, Demo] } });
   const em = orm.em.fork();
 
   const sdkCount = await em.count(Demo, {
-    isSDK: true,
+    isSDK: true
   });
 
   const icCount = await em.count(Demo, {
-    isIC: true,
+    isIC: true
   });
 
   const sipCount = await em.count(Demo, {
-    isSIP: true,
+    isSIP: true
   });
 
   const users = await em.find(User, {}, { populate: ['demos'] });
@@ -49,13 +46,13 @@ export const GET = async (requestEvent: RequestEvent) => {
   userArray.forEach((user) => {
     numberOfUsers.push({ group: 'Users', date: user.date, value: userCount[user.date] });
   });
- 
+
   numberOfUsers = removeDuplicates(numberOfUsers);
   let userTotal = 0;
   numberOfUsers = numberOfUsers.map(({ group, date, value }) => {
-    userTotal +=value;
-    return { group, date, value: userTotal }
-  })
+    userTotal += value;
+    return { group, date, value: userTotal };
+  });
 
   const demoArray = demos.map((demo) => ({ name: demo.name, date: new Date(demo.createdAt).toDateString() }));
   const demoCount = {};
@@ -67,14 +64,16 @@ export const GET = async (requestEvent: RequestEvent) => {
   demoArray.forEach((demo) => {
     numberOfDemos.push({ group: 'Demos', date: demo.date, value: demoCount[demo.date] });
   });
-  
+
   numberOfDemos = removeDuplicates(numberOfDemos);
   let demoTotal = 0;
   numberOfDemos = numberOfDemos.map(({ group, date, value }) => {
     demoTotal += value;
-    return { group, date, value: demoTotal }
-  })
+    return { group, date, value: demoTotal };
+  });
 
-
-  return { status: 200, body: {numberOfAll: [...numberOfDemos, ...numberOfUsers], meetingOptionsData, userDemosData} };
+  return {
+    status: 200,
+    body: { numberOfAll: [...numberOfDemos, ...numberOfUsers], meetingOptionsData, userDemosData }
+  };
 };
