@@ -62,6 +62,6 @@
       </div>
     </div>
   {:catch error}
-    <p class="subtitle has-text-danger" title={error?.message}>Could not get weather data.</p>
+    <div />
   {/await}
 </section>

@@ -50,12 +50,22 @@ export const GET = async (requestEvent: RequestEvent) => {
               'brandLogo.lastModified',
               'weatherUnits',
               'weatherCityId',
-              'responderAuthIsRequired',
               'isSDK',
               'isIC',
               'isSIP',
               'extensionNumber',
-              'videoLink'
+              'videoLink',
+              'sipTitle',
+              'extensionNumber1',
+              'videoLink1',
+              'sipTitle1',
+              'extensionNumber2',
+              'videoLink2',
+              'sipTitle2',
+              'extensionNumber3',
+              'videoLink3',
+              'sipTitle3',
+              'displayFootnote'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -82,15 +92,35 @@ export const GET = async (requestEvent: RequestEvent) => {
             subtitle: r.brandSubtitle,
             cityId: r.weatherCityId,
             units: r.weatherUnits,
-            authIsReq: r.responderAuthIsRequired,
             isSDK: r.isSDK,
             isIC: r.isIC,
             isSIP: r.isSIP,
-            extensionNumber: r.extensionNumber,
-            videoLink: r.videoLink
+            SIPQueues: [
+              {
+                extensionNumber: r.extensionNumber,
+                videoLink: r.videoLink,
+                sipTitle: r.sipTitle || 'Looking for Assistance?'
+              },
+              r?.extensionNumber1 && {
+                extensionNumber: r.extensionNumber1,
+                videoLink: r.videoLink1,
+                sipTitle: r.sipTitle1
+              },
+              r?.extensionNumber2 && {
+                extensionNumber: r.extensionNumber2,
+                videoLink: r.videoLink2,
+                sipTitle: r.sipTitle2
+              },
+              r.extensionNumber3 && {
+                extensionNumber: r.extensionNumber3,
+                videoLink: r.videoLink3,
+                sipTitle: r.sipTitle3
+              },
+            ].filter(Boolean),
+            displayFootnote: Boolean(r.displayFootnote)
           }
         }))
-        .catch(() => ({
+        .catch(({
           status: 200,
           body: { brightness: 55, title: 'Cisco', subtitle: 'Bridge to Possible', units: 'imperial', cityId: 4887398 }
         }))
@@ -143,10 +173,6 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly subtitle!: string;
 
     @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('authIsReq')), { toClassOnly: true })
-    public readonly authIsRequired!: boolean;
-
-    @Expose()
     @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SDK')), { toClassOnly: true })
     public readonly isSDK!: boolean;
 
@@ -159,9 +185,9 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly isSIP!: boolean;
 
     @Expose()
-    @IsIn(['imperial', 'metric', 'standard'])
+    @IsIn(['imperial', 'metric', 'standard', null])
     @Transform(({ obj }: { obj: FormData }) => obj.get('units'), { toClassOnly: true })
-    public readonly units!: 'imperial' | 'metric' | 'standard';
+    public readonly units!: 'imperial' | 'metric' | 'standard' | null;
 
     @Expose()
     @IsInt()
@@ -176,6 +202,54 @@ export const POST = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
     public readonly videoLink!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle'), { toClassOnly: true })
+    public readonly sipTitle!: string;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber1')), { toClassOnly: true })
+    public readonly extensionNumber1!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink1'), { toClassOnly: true })
+    public readonly videoLink1!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle1'), { toClassOnly: true })
+    public readonly sipTitle1!: string;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber2')), { toClassOnly: true })
+    public readonly extensionNumber2!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink2'), { toClassOnly: true })
+    public readonly videoLink2!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle2'), { toClassOnly: true })
+    public readonly sipTitle2!: string;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber3')), { toClassOnly: true })
+    public readonly extensionNumber3!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink3'), { toClassOnly: true })
+    public readonly videoLink3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle3'), { toClassOnly: true })
+    public readonly sipTitle3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('footnote')), { toClassOnly: true })
+    public readonly displayFootnote!: boolean;
+
   }
 
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
@@ -184,12 +258,14 @@ export const POST = async (requestEvent: RequestEvent) => {
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 
-  const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
-    .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
-    .then(() => true)
-    .catch(() => false);
-  if (isCityIdValid === false) {
-    return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+  if(formData.cityId) {
+    const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
+      .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
+      .then(() => true)
+      .catch(() => false);
+    if (isCityIdValid === false) {
+      return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+    }
   }
 
   try {
@@ -217,12 +293,22 @@ export const POST = async (requestEvent: RequestEvent) => {
         brandSubtitle: formData.subtitle,
         weatherUnits: formData.units,
         weatherCityId: formData.cityId,
-        responderAuthIsRequired: formData.authIsRequired,
         isSDK: formData.isSDK,
         isIC: formData.isIC,
         isSIP: formData.isSIP,
         videoLink: formData.videoLink,
-        extensionNumber: formData.extensionNumber
+        extensionNumber: formData.extensionNumber,
+        sipTitle: formData.sipTitle,
+        videoLink1: formData.videoLink1,
+        extensionNumber1: formData.extensionNumber1,
+        sipTitle1: formData.sipTitle1,
+        videoLink2: formData.videoLink2,
+        extensionNumber2: formData.extensionNumber2,
+        sipTitle2: formData.sipTitle2,
+        videoLink3: formData.videoLink3,
+        extensionNumber3: formData.extensionNumber3,
+        sipTitle3: formData.sipTitle3,
+        displayFootnote: formData.displayFootnote
       });
       await db.persistAndFlush(demo);
 
@@ -295,13 +381,9 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     public readonly isSIP!: boolean;
 
     @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('authIsReq')), { toClassOnly: true })
-    public readonly authIsRequired!: boolean;
-
-    @Expose()
-    @IsIn(['imperial', 'metric', 'standard'])
+    @IsIn(['imperial', 'metric', 'standard', null])
     @Transform(({ obj }: { obj: FormData }) => obj.get('units'), { toClassOnly: true })
-    public readonly units!: 'imperial' | 'metric' | 'standard';
+    public readonly units!: 'imperial' | 'metric' | 'standard' | null;
 
     @Expose()
     @IsInt()
@@ -316,6 +398,53 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
     public readonly videoLink!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle'), { toClassOnly: true })
+    public readonly sipTitle!: string;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber1')), { toClassOnly: true })
+    public readonly extensionNumber1!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink1'), { toClassOnly: true })
+    public readonly videoLink1!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle1'), { toClassOnly: true })
+    public readonly sipTitle1!: string;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber2')), { toClassOnly: true })
+    public readonly extensionNumber2!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink2'), { toClassOnly: true })
+    public readonly videoLink2!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle2'), { toClassOnly: true })
+    public readonly sipTitle2!: string;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber3')), { toClassOnly: true })
+    public readonly extensionNumber3!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink3'), { toClassOnly: true })
+    public readonly videoLink3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle3'), { toClassOnly: true })
+    public readonly sipTitle3!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('displayFootnote')), { toClassOnly: true })
+    public readonly displayFootnote!: boolean;
   }
 
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
@@ -324,12 +453,14 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 
-  const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
-    .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
-    .then(() => true)
-    .catch(() => false);
-  if (isCityIdValid === false) {
-    return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+  if(formData.cityId) {
+    const isCityIdValid = await jsonRequest(env.OPENWEATHERMAP_API_URL)
+      .get('weather', { appid: env.OPENWEATHERMAP_API_KEY, id: formData.cityId })
+      .then(() => true)
+      .catch(() => false);
+    if (isCityIdValid === false) {
+      return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
+    }
   }
 
   const db = requestEvent.locals.db;
@@ -359,12 +490,22 @@ export const PATCH = async (requestEvent: RequestEvent) => {
               'brandLogo.lastModified',
               'weatherUnits',
               'weatherCityId',
-              'responderAuthIsRequired',
               'isSDK',
               'isIC',
               'isSIP',
               'videoLink',
-              'extensionNumber'
+              'extensionNumber',
+              'sipTitle',
+              'videoLink1',
+              'extensionNumber1',
+              'sipTitle1',
+              'videoLink2',
+              'extensionNumber2',
+              'sipTitle2',
+              'videoLink3',
+              'extensionNumber3',
+              'sipTitle3',
+              'displayFootnote'
             ],
             strategy: LoadStrategy.JOINED
           }
@@ -383,12 +524,24 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.brandLogo.type = formData.logo.type;
           r.brandLogo.name = formData.logo.name;
           r.brandLogo.lastModified = formData.logo.lastModified;
-          r.responderAuthIsRequired = formData.authIsRequired;
+          r.weatherUnits = formData.units;
+          r.weatherCityId = formData.cityId;
           r.isSDK = formData.isSDK;
           r.isIC = formData.isIC;
           r.isSIP = formData.isSIP;
           r.videoLink = formData.videoLink;
           r.extensionNumber = formData.extensionNumber;
+          r.sipTitle = formData.sipTitle;
+          r.videoLink1 = formData.videoLink1;
+          r.extensionNumber1 = formData.extensionNumber1;
+          r.sipTitle1 = formData.sipTitle1;
+          r.videoLink2 = formData.videoLink2;
+          r.extensionNumber2 = formData.extensionNumber2;
+          r.sipTitle2 = formData.sipTitle2;
+          r.videoLink3 = formData.videoLink3;
+          r.extensionNumber3 = formData.extensionNumber3;
+          r.sipTitle3 = formData.sipTitle3;
+          r.displayFootnote = formData.displayFootnote;
 
           await db.persistAndFlush(r);
 

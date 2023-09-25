@@ -5,7 +5,6 @@
   import CopyLink from '$components/CopyLink/CopyLink.svelte';
 
   export let demos: Array<Demo>;
-
   const url = browser && `${window.location.protocol}//${browser && window.location.host}/sessions`;
 </script>
 
@@ -55,11 +54,13 @@
     </div>
     <div class="columns is-multiline is-flex-direction-column">
       <div class="column is-full">
-        <CopyLink url={`${url}/${demo.uuid}/?role=requester`} label={'Requester View Link'} />
+        <CopyLink url={`${url}/${demo.uuid}/?role=requester`} label={`Requester View Link`} />
       </div>
-      <div class="column is-full">
-        <CopyLink url={`${url}/${demo.uuid}/?role=responder`} label={'Responder View Link'} />
-      </div>
+      {#if demo.isSDK || demo.isIC}
+        <div class="column is-full">
+          <CopyLink url={`${url}/${demo.uuid}/?role=responder`} label={'Responder View Link'} />
+        </div>
+      {/if}
     </div>
   {/each}
 </div>

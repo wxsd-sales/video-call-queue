@@ -52,7 +52,15 @@ export const GET = async (requestEvent: RequestEvent) => {
           'isSDK',
           'isIC',
           'isSIP',
-          'extensionNumber'
+          'extensionNumber',
+          'sipTitle',
+          'extensionNumber1',
+          'sipTitle1',
+          'extensionNumber2',
+          'sipTitle2',
+          'extensionNumber3',
+          'sipTitle3',
+          'displayFootnote'
         ],
         strategy: LoadStrategy.JOINED
       }
@@ -64,8 +72,10 @@ export const GET = async (requestEvent: RequestEvent) => {
         (demo as JSONObject)['backgroundPoster'] =
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
 
-        (demo as JSONObject)['responderAuthIsRequired'] = demo.responderAuthIsRequired === 1;
-        return { status: 200, body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') } };
+        return {
+          status: 200,
+          body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }
+        };
       }
 
       return { status: 302, headers: { Location: '/auth' } };

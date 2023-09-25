@@ -3,12 +3,14 @@
   import BackgroundFields from './.Part1BackgroundFields.svelte';
   import BrandFields from './.Part2BrandFields.svelte';
   import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
-  import WeatherFields from './.Part4WeatherFields.svelte';
+  import MiscFields from './.Part4MiscFields.svelte';
+  import DemoSampleModal from './.DemoSampleModal.svelte';
 
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
   import { form as formInput } from './utils/form';
+  import Modal from '$components/Modal/Modal.svelte';
 
   export let form = undefined;
   export let name = undefined;
@@ -23,12 +25,13 @@
   export let isIC = false;
   export let isSIP = false;
   export let units = undefined;
-  export let videoLink = undefined;
-  export let extensionNumber = undefined;
+  export let SIPQueues = undefined;
+  export let displayFootnote = true;
 
   const id = $page.url.searchParams.get('id');
 
   let formElement: HTMLFormElement;
+  let showModal = false;
 
   const toFileList = (file?: { bits: string; name: string; lastModified: number; type: string }) =>
     file != null
@@ -69,10 +72,9 @@
     <BrandFields {title} {subtitle} />
   {/await}
   <hr />
-  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {extensionNumber} {videoLink} />
-
+  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {SIPQueues} />
   <hr />
-  <WeatherFields {units} {cityId} />
+  <MiscFields {units} {cityId} {displayFootnote} />
   <hr />
 
   <div class="columns is-multiline">
@@ -93,4 +95,27 @@
       {form ?? ''}
     </div>
   </div>
+
+  <button
+    on:click={() => {
+      showModal = true;
+    }}
+    type="button"
+    class="sample button is-rounded is-warning is-light"
+  >
+    Demo Sample
+  </button>
 </form>
+
+<Modal bind:showModal>
+  <DemoSampleModal />
+</Modal>
+
+<style>
+  .sample {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 2.5rem;
+  }
+</style>

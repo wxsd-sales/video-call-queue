@@ -69,7 +69,7 @@
     <p class="help">File must not exceed {maxFileSize / 1000}KB in size</p>
   </div>
   <div class="column is-one-fifths">
-    <label class="label" for="title">Title <sup class="has-text-danger" title="required">*</sup></label>
+    <label class="label" for="title">Title</label>
     <div class="control has-icons-left">
       <input
         name="title"
@@ -78,7 +78,6 @@
         type="text"
         maxlength="16"
         placeholder="Cisco Systems, Inc."
-        required
         bind:value={title}
       />
       <span class="icon is-left">
@@ -88,7 +87,7 @@
     <p class="help">The organization's common name, max. 16 characters</p>
   </div>
   <div class="column is-one-fifths">
-    <label class="label" for="subtitle">Subtitle <sup class="has-text-danger" title="required">*</sup></label>
+    <label class="label" for="subtitle">Subtitle</label>
     <div class="control has-icons-left">
       <input
         name="subtitle"
@@ -97,7 +96,6 @@
         type="text"
         placeholder="Bridge to Possible"
         maxlength="64"
-        required
         bind:value={subtitle}
       />
       <span class="icon is-left">

@@ -10,7 +10,7 @@ export class Demo extends BaseEntity {
   @ManyToOne({ entity: () => User, onDelete: 'cascade' })
   user!: User;
 
-  @Property({ type: types.string })
+  @Property({ type: types.string, nullable: true })
   name!: string;
 
   @Property({ type: types.string, nullable: true })
@@ -25,20 +25,17 @@ export class Demo extends BaseEntity {
   @ManyToOne({ entity: () => Data, onDelete: 'cascade' })
   brandLogo!: Data;
 
-  @Property({ type: types.string })
+  @Property({ type: types.string, nullable: true })
   brandTitle!: string;
 
-  @Property({ type: types.string })
+  @Property({ type: types.string, nullable: true })
   brandSubtitle!: string;
 
-  @Property({ type: types.enum })
-  weatherUnits!: 'imperial' | 'metric' | 'standard';
+  @Property({ type: types.enum, nullable: true })
+  weatherUnits!: 'imperial' | 'metric' | 'standard' | null;
 
-  @Property({ type: types.integer })
+  @Property({ type: types.integer, nullable: true })
   weatherCityId!: number;
-
-  @Property({ type: types.boolean })
-  responderAuthIsRequired!: boolean;
 
   @Property({ type: types.boolean })
   isSDK: boolean;
@@ -49,11 +46,44 @@ export class Demo extends BaseEntity {
   @Property({ type: types.boolean })
   isSIP: boolean;
 
+  @Property({ type: types.string, nullable: true})
+  sipTitle: string;
+
   @Property({ type: types.integer, nullable: true })
   extensionNumber: number;
 
   @Property({ type: types.string, nullable: true })
   videoLink: string;
+
+  @Property({ type: types.string, nullable: true})
+  sipTitle1: string;
+
+  @Property({ type: types.integer, nullable: true })
+  extensionNumber1: number;
+
+  @Property({ type: types.string, nullable: true })
+  videoLink1: string;
+
+  @Property({ type: types.string, nullable: true})
+  sipTitle2: string;
+
+  @Property({ type: types.integer, nullable: true })
+  extensionNumber2: number;
+
+  @Property({ type: types.string, nullable: true })
+  videoLink2: string;
+
+  @Property({ type: types.string, nullable: true})
+  sipTitle3: string;
+
+  @Property({ type: types.integer, nullable: true })
+  extensionNumber3: number;
+
+  @Property({ type: types.string, nullable: true })
+  videoLink3: string;
+
+  @Property({type: types.boolean, default: true, nullable: true})
+  displayFootnote: boolean;
 
   constructor(obj: {
     user: User;
@@ -64,14 +94,25 @@ export class Demo extends BaseEntity {
     brandLogo: Data;
     brandTitle: string;
     brandSubtitle: string;
-    weatherUnits: 'imperial' | 'metric' | 'standard';
+    weatherUnits: 'imperial' | 'metric' | 'standard' | null;
     weatherCityId: number;
-    responderAuthIsRequired: boolean;
     isSDK: boolean;
     isIC: boolean;
     isSIP: boolean;
+    sipTitle: string;
     extensionNumber: number;
     videoLink: string;
+    sipTitle1: string;
+    extensionNumber1: number;
+    videoLink1: string;
+    sipTitle2: string;
+    extensionNumber2: number;
+    videoLink2: string;
+    sipTitle3: string;
+    extensionNumber3: number;
+    videoLink3: string;
+    displayFootnote: boolean;
+
   }) {
     super();
     this.user = obj.user;
@@ -84,11 +125,21 @@ export class Demo extends BaseEntity {
     this.brandSubtitle = obj.brandSubtitle;
     this.weatherUnits = obj.weatherUnits;
     this.weatherCityId = obj.weatherCityId;
-    this.responderAuthIsRequired = obj.responderAuthIsRequired;
     this.isSDK = obj.isSDK;
     this.isIC = obj.isIC;
     this.isSIP = obj.isSIP;
+    this.sipTitle = obj.sipTitle;
     this.extensionNumber = obj.extensionNumber;
     this.videoLink = obj.videoLink;
+    this.sipTitle1 = obj.sipTitle1;
+    this.extensionNumber1 = obj.extensionNumber1;
+    this.videoLink1 = obj.videoLink1;
+    this.sipTitle2 = obj.sipTitle2;
+    this.extensionNumber2 = obj.extensionNumber2;
+    this.videoLink2 = obj.videoLink2;
+    this.sipTitle3 = obj.sipTitle3;
+    this.extensionNumber3 = obj.extensionNumber3;
+    this.videoLink3 = obj.videoLink3;
+    this.displayFootnote = obj.displayFootnote;
   }
 }

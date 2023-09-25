@@ -79,5 +79,8 @@
   "type": "module",
   "mikro-orm": {
     "useTsNode": true
+  },
+  "dependencies": {
+    "swiper": "^10.2.0"
   }
 }

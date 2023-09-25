@@ -8,7 +8,7 @@
   import Weather from '$components/Weather/Weather.svelte';
 
   import Responder from './.Responder.svelte';
-  import Requester from './.Requester.svelte';
+  import Requester from './.Requester/.Requester.svelte';
 
   import type { Demo } from 'src/database/entities';
 
@@ -16,10 +16,14 @@
   export let role: string;
   export let embeddable: boolean;
 
+  console.log(demo);
+  let getWeatherResponse;
   const httpApiRequest = jsonRequest('/api');
 
-  const getWeatherResponse = (id: number, units: string) =>
-    httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
+  if (demo.weatherCityId) {
+    getWeatherResponse = (id: number, units: string) =>
+      httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
+  }
 </script>
 
 <svelte:head>
@@ -37,11 +41,13 @@
             <div id="brand" class="column is-7 is-flex is-align-self-center">
               <Brand title={demo.brandLogo} subtitle={demo.brandSubtitle} />
             </div>
-            <div id="weather" class="column is-5 is-align-self-center">
-              <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
-                <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
-              </Weather>
-            </div>
+            {#if demo.weatherCityId !== null}
+              <div id="weather" class="column is-5 is-align-self-center">
+                <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
+                  <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
+                </Weather>
+              </div>
+            {/if}
           </div>
         </div>
       </nav>
@@ -56,21 +62,14 @@
         {#if role === 'responder'}
           <Responder socketID={demo.uuid} {embeddable} />
         {:else}
-          <Requester
-            socketID={demo.uuid}
-            isSIPAvailable={demo.isSIP}
-            isSDKAvailable={demo.isSDK}
-            isICAvailable={demo.isIC}
-            extensionNumber={demo.extensionNumber}
-            {embeddable}
-          />
+          <Requester {demo} {embeddable} />
         {/if}
       </div>
     </div>
   </div>
   <!-- hero-body end -->
   <!-- hero-foot start -->
-  {#if !embeddable}
+  {#if demo.displayFootnote && !embeddable}
     <div id="foot-widgets" class="hero-foot mx-2 p-2">
       <nav class="tabs">
         <div class="container">
