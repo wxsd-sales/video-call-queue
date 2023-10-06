@@ -1,23 +1,19 @@
 <script lang="ts">
-  import { MEETING_TYPE_OPTIONS } from '$lib/enums';
+  import CustomerSupportImg from '$lib/static/img/customer-support.png';
 
   export let isSDK: boolean;
   export let isIC: boolean;
   export let isSIP: boolean;
   export let title: string;
-  export let sipImage: string;
+  export let sipImage = CustomerSupportImg;
 
-  let meetingType: MEETING_TYPE_OPTIONS =
-    (isSDK && MEETING_TYPE_OPTIONS.BROWSER_SDK) ||
-    (isIC && MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ||
-    ((isSIP && MEETING_TYPE_OPTIONS.SIP_URI_DIALING) as MEETING_TYPE_OPTIONS);
-  let displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
+  $: displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
 </script>
 
 <div class="prompt box is-translucent-black is-flex is-flex-direction-column">
-  <img src={sipImage} alt="sipImage" class="is-align-self-center mx-5" />
+  <img src={sipImage} alt="sipImage" class="is-align-self-center mb-2" on:load />
   <button disabled class="button is-primary is-centered mb-4 mx-2">{title} </button>
-  <div class="control is-justify-content-space-around is-flex has-text-white is-size-6">
+  <div class="control is-justify-content-space-around is-flex has-text-white is-size-6 mb-2">
     {#if displayMeetingOptions}
       {#if isSDK}
         <label class="radio">
@@ -40,20 +36,21 @@
     {/if}
   </div>
   {#if !(isSIP && !isIC && !isSDK)}
-    <div class="has-text-white has-text-centered mt-5" style="font-size: 0.65rem ">
-      * Unanswered request will auto-expire in 30 minutes
-    </div>
+    <div class="footnote has-text-white has-text-centered">* Unanswered request will auto-expire in 30 minutes</div>
   {/if}
 </div>
 
 <style>
+  .footnote {
+    font-size: 0.65rem;
+  }
   .prompt {
     z-index: 1;
-    width: 22rem;
-    zoom: 0.9;
+    width: 20rem;
+    height: 20rem;
   }
 
   .prompt img {
-    width: 15rem;
+    width: 11rem;
   }
 </style>

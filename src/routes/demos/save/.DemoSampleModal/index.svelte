@@ -12,50 +12,37 @@
   import Clock from '$components/Clock/Clock.svelte';
   import Weather from '$components/Weather/Weather.svelte';
 
-  export let demo = {
-    backgroundBrightness: '55',
-    backgroundPoster: CiscoBackground,
-    brandTitle: 'Cisco Systems, Inc.',
-    brandSubtitle: 'Bridge to Possible',
-    brandLogo: CiscoLogo,
-    weatherUnits: 'imperial',
-    weatherCityId: 4887398,
-    isSDK: true,
-    isIC: true,
-    isSIP: true,
-    extensionNumber: 1111,
-    sipTitle: 'Looking For Assistance?',
-    sipImage: CustomerSupportImg
-  };
-
-  let role = 'requester';
-  let embeddable = false;
+  import { previewedDemoStore } from '$lib/store';
 
   let getWeatherResponse;
   const httpApiRequest = jsonRequest('/api');
 
-  if (demo.weatherCityId) {
-    getWeatherResponse = (id: number, units: string) =>
-      httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
-  }
+  previewedDemoStore.subscribe((data) => console.log(data));
+  getWeatherResponse = (id: number, units: string) =>
+    httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
 </script>
 
-<div class="preview is-flex has-text-white p-6">
+<div class="preview is-flex has-text-white ">
   <Background
     cssClass="background-class"
-    imageLink={demo.backgroundPoster}
-    filter="brightness({demo.backgroundBrightness}%)"
+    imageLink={$previewedDemoStore.poster?.bits || CiscoBackground}
+    filter="brightness({$previewedDemoStore.brightness}%)"
   />
   <div>
+    <nav class="navbar is-danger is-flex is-justify-content-center">
+      <div class="navbar-item has-text-white is-size-4 has-text-center">
+        The section below is for view-only purposes, and the buttons within it are not clickable.
+      </div>
+    </nav>
     <nav class="navbar header is-translucent-black">
       <div class="container is-block">
         <div class="columns m-0">
           <div id="brand" class="column is-7 is-flex is-align-self-center">
-            <Brand title={demo.brandLogo} subtitle={demo.brandSubtitle} />
+            <Brand title={$previewedDemoStore.logo?.bits || CiscoLogo} subtitle={$previewedDemoStore.brandSubtitle} />
           </div>
-          {#if demo.weatherCityId !== null}
+          {#if $previewedDemoStore.displayWeather}
             <div id="weather" class="column is-5 is-align-self-center">
-              <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
+              <Weather cityId={$previewedDemoStore.cityId} units={$previewedDemoStore.units} {getWeatherResponse}>
                 <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
               </Weather>
             </div>
@@ -64,19 +51,31 @@
       </div>
     </nav>
   </div>
-  <CallPrompt isIC={demo.isIC} isSDK={demo.isSDK} isSIP={demo.isSIP} title={demo.sipTitle} sipImage={demo.sipImage} />
+  <div class="prompts is-flex is-justify-content-space-evenly">
+    {#each $previewedDemoStore.SIPQueues as { sipTitle, sipImage }, index (index)}
+      <CallPrompt
+        isIC={$previewedDemoStore.IC}
+        isSDK={$previewedDemoStore.SDK}
+        isSIP={$previewedDemoStore.SIP}
+        title={sipTitle}
+        sipImage={sipImage?.bits || CustomerSupportImg}
+      />
+    {/each}
+  </div>
   <div class="mx-2 p-2 is-align-self-flex-end">
     <nav class="tabs">
       <div class="container">
         <div class="is-flex is-justify-content-flex-end ">
           <div class="has-text-centered has-text-weight-medium">
-            <p>
-              Made with
-              <span class="icon-text has-text-danger">
-                <i class="mdi mdi-heart" />
-              </span>
-              by the WXSD team (wxsd@external.cisco.com)
-            </p>
+            {#if $previewedDemoStore.displayFootnote}
+              <p>
+                Made with
+                <span class="icon-text has-text-danger">
+                  <i class="mdi mdi-heart" />
+                </span>
+                by the WXSD team (wxsd@external.cisco.com)
+              </p>
+            {/if}
           </div>
         </div>
       </div>
@@ -86,16 +85,21 @@
 
 <style>
   .preview {
-    display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 51rem;
+    height: 50rem;
     cursor: not-allowed;
+  }
+
+  .prompts {
+    width: 100%;
   }
   .preview :global(.background-class) {
     position: fixed;
-    padding: 0 4rem;
+    object-fit: cover;
+    height: 50rem;
+    width: 90rem;
     top: 50%;
     left: 50%;
     z-index: 0;
@@ -104,5 +108,10 @@
 
   .header {
     width: 90rem;
+  }
+
+  .warning {
+    max-width: 100%;
+    background-color: red;
   }
 </style>

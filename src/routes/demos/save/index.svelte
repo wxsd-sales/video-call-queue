@@ -9,8 +9,10 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { form as formInput, formValues } from './utils/form';
+  import { isFormValid, form as formInput, formValues } from './utils/form';
+
   import Modal from '$components/Modal/Modal.svelte';
+  import { previewedDemoStore } from '$lib/store';
 
   export let form = undefined;
   export let name = undefined;
@@ -33,7 +35,23 @@
   let formElement: HTMLFormElement;
   let showModal = false;
 
-  formValues.subscribe((values) => {});
+  $previewedDemoStore = {
+    name,
+    description,
+    poster: poster,
+    brightness,
+    logo: logo,
+    title,
+    subtitle,
+    cityId: cityId || 4887398,
+    SDK: isSDK,
+    IC: isIC,
+    SIP: isSIP,
+    units: units || 'imperial',
+    SIPQueues,
+    displayFootnote,
+    displayWeather: !!cityId
+  };
 
   const toFileList = (file?: { bits: string; name: string; lastModified: number; type: string }) =>
     file != null
@@ -48,7 +66,9 @@
           })
       : Promise.reject();
 
-  onMount(() => form && scrollTo(null, formElement.scrollHeight));
+  onMount(() => {
+    return form && scrollTo(null, formElement.scrollHeight);
+  });
 </script>
 
 <form
@@ -105,7 +125,7 @@
     type="button"
     class="sample button is-rounded is-warning is-light px-5"
   >
-    Preview
+    Preview Demo
   </button>
 </form>
 
