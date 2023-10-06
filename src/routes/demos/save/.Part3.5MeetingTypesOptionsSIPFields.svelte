@@ -219,7 +219,7 @@
             <i class="mdi mdi-image-plus" />
           </span>
         </span>
-        <span class="file-name">{imageFile?.[0].name || sipImage?.name || 'default-support.png'}</span>
+        <span class="file-name">{imageFile?.[0]?.name || sipImage?.name || 'No File Selected.'}</span>
       </label>
     </div>
     <div class="help">

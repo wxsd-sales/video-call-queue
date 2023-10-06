@@ -1,7 +1,6 @@
 <script lang="ts">
   import QueuePrompt from './.QueuePrompt.svelte';
   import Notification from '$components/Notification/Notification.svelte';
-  import SDKHeader from './.SDKHeader.svelte';
   import { NOTIFICATION_TYPES, NOTIFICATION_VALUES } from '$components/Notification/enums';
   import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
   import defaultSupportImg from '$lib/static/img/customer-support.png';
@@ -49,10 +48,6 @@
     }
   };
 </script>
-
-{#if isSDK || isIC}
-  <SDKHeader />
-{/if}
 
 <div class="columns mb-2 is-align-items-center is-mobile">
   <div class="column is-3 is-flex is-justify-content-flex-end" />

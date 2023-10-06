@@ -9,6 +9,7 @@
 
   import Responder from './.Responder.svelte';
   import Requester from './.Requester/.Requester.svelte';
+  import SDKHeader from './.SDKHeader.svelte';
 
   import type { Demo } from 'src/database/entities';
 
@@ -25,6 +26,9 @@
   }
 </script>
 
+{#if demo.isSDK || demo.isIC}
+  <SDKHeader />
+{/if}
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
 <section id="hero" class="hero is-fullheight has-text-white is-dark">
   {#if !embeddable}
