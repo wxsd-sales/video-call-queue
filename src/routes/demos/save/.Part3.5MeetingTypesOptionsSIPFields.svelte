@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
-  import { touched, validity, form as formInput } from './utils/form';
+  import { CONTROL_HUB_URL } from '$lib/constants.js';
+  import { touched, validity } from './utils/form';
   import { createEventDispatcher, onMount } from 'svelte';
   import { slide } from 'svelte/transition';
 
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { browser } from '$app/env';
   import defaultSupportImage from '$lib/static/img/customer-support.png';
 
   export let extensionNumber: number;
@@ -15,15 +14,10 @@
   export let index: number;
 
   let sipImageInput: HTMLInputElement;
-  let clientHeight: number;
-  let clientWidth: number;
-  let naturalHeight: number;
-  let naturalWidth: number;
 
   let acceptedFileTypes: string = '.jpg, .jpeg, .png, .svg, .gif, .webp, .avif, .apng';
   let maxFileSize: number = 200000;
   let imageFile: FileList | null;
-  let canvas, image;
 
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -64,9 +58,9 @@
   const handlePosterUpload = async (ev: Event) => {
     const file = sipImageInput.files?.[0];
 
-    if (file.size > maxFileSize) {
+    if (file?.size > maxFileSize) {
       sipImageInput.setCustomValidity('File size is too large.');
-    } else {
+    } else if (file) {
       sipImageInput.setCustomValidity('');
       sipImage = { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified };
       handleInputs();
@@ -87,12 +81,7 @@
   });
 </script>
 
-<div
-  use:formInput
-  transition:slide={{ duration: index != 0 ? 500 : 0 }}
-  class="sipField columns is-multiline"
-  style="width: 100%"
->
+<div transition:slide={{ duration: index != 0 ? 500 : 0 }} class="sipField columns is-multiline" style="width: 100%">
   <div class="column is-flex is-justify-content-space-between is-full py-0 mb-4 mt-5">
     <h3 class="title is-size-5">
       SIP Queue Number {index + 1}
@@ -101,6 +90,7 @@
       <button
         on:click={() => {
           dispatch('sipQs', { event: 'remove', payload: { index } });
+          imageFile = null;
         }}
         type="button"
         class="button is-danger is-rounded is-outlined is-small"
@@ -222,7 +212,7 @@
             <i class="mdi mdi-image-plus" />
           </span>
         </span>
-        <span class="file-name">{imageFile?.[0]?.name || 'No file selected'}</span>
+        <span class="file-name">{imageFile?.[0].name || sipImage?.name || 'default-support.png'}</span>
       </label>
     </div>
     <div class="help">

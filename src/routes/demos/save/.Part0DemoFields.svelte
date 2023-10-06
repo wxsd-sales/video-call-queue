@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { previewedDemoStore } from '$lib/store';
+
   export let name: string;
   export let description: string;
 </script>
@@ -33,6 +35,7 @@
         maxlength="64"
         placeholder="Video Calling Queue Demo"
         bind:value={name}
+        on:input={(e) => ($previewedDemoStore.name = e.target.value)}
       />
       <span class="icon is-left" />
     </div>
@@ -49,6 +52,7 @@
       maxlength="256"
       placeholder="A few lines..."
       bind:value={description}
+      on:input={(e) => ($previewedDemoStore.description = e.target.value)}
     />
     <div class="help">
       <p>This is only for your reference</p>

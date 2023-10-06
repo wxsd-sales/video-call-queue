@@ -6,9 +6,9 @@
   import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
 
   import { generateMacro } from '$lib/static/macro/WxCQ.js';
-  import { SIPQueuesStore } from '$lib/store';
+  import { previewedDemoStore, SIPQueuesStore } from '$lib/store';
   import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
-  import { isFormValid, form as formInput } from './utils/form';
+  import { isFormValid } from './utils/form';
 
   import { onMount } from 'svelte';
 
@@ -33,13 +33,16 @@
    */
   const handleCheckboxesRequiredStatus = () => {
     isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked || SIPCheckBoxElement.checked;
+    $previewedDemoStore.IC = ICCheckBoxElement.checked;
+    $previewedDemoStore.SDK = SDKCheckBoxElement.checked;
+    $previewedDemoStore.SIP = SIPCheckBoxElement.checked;
   };
 
   //IC & SDK option will be disabled if multiple SIP queues is enabled
-  $: isIC = SIPQueues.length > 1 ? false : isIC;
-  $: isSDK = SIPQueues.length > 1 ? false : isSDK;
+  $: isIC = $previewedDemoStore.IC = SIPQueues.length > 1 ? false : isIC;
+  $: isSDK = $previewedDemoStore.SDK = SIPQueues.length > 1 ? false : isSDK;
   $: if (!isSIP)
-    SIPQueues = [
+    $previewedDemoStore.SIPQueues = SIPQueues = [
       {
         videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
         extensionNumber: 1111,
@@ -69,6 +72,7 @@
     <label class="checkbox">
       <input
         type="checkbox"
+        bind:value={isSDK}
         bind:checked={isSDK}
         id={MEETING_TYPE_OPTIONS.BROWSER_SDK}
         name={MEETING_TYPE_OPTIONS.BROWSER_SDK}
@@ -134,7 +138,7 @@
   </div>
 
   {#if isSIP}
-    <div use:formInput transition:slide class="columns ml-4 mr-4 is-multiline">
+    <div transition:slide class="columns ml-4 mr-4 is-multiline">
       <div class="column is-full ">
         <h3 class="mt-6 title is-size-5">Video SIP Call Queue Macro Builder</h3>
       </div>
@@ -174,6 +178,7 @@
                 sipImage: null
               }
             ];
+            $previewedDemoStore.SIPQueues = SIPQueues;
           }}
         >
           <span class="icon">
@@ -182,7 +187,7 @@
           <span>Add More SIP URIs</span>
         </button>
       </div>
-      {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i}
+      {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
         <SIPQueueField
           {extensionNumber}
           {videoLink}
@@ -202,12 +207,10 @@
                 $SIPQueuesStore[`${id}`] = SIPQueues;
                 break;
               case 'remove':
-                SIPQueues = [
-                  ...SIPQueues.slice(0, payload.index),
-                  ...SIPQueues.slice(payload.index + 1, SIPQueues.length)
-                ];
+                SIPQueues = [...SIPQueues.slice(0, payload.index), ...SIPQueues.slice(payload.index + 1)];
                 break;
             }
+            $previewedDemoStore.SIPQueues = SIPQueues;
           }}
         />
       {/each}
