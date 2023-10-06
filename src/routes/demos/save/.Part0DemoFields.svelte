@@ -1,8 +1,15 @@
 <script lang="ts">
   import { previewedDemoStore } from '$lib/store';
+  import { onDestroy, onMount } from 'svelte';
 
   export let name: string;
   export let description: string;
+
+  console.log(name);
+
+  onDestroy(() => {
+    name = '';
+  });
 </script>
 
 <div class="columns is-multiline">

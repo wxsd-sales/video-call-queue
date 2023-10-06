@@ -18,5 +18,6 @@ export const GET = async (requestEvent: RequestEvent) => {
     return { status: 200, body: { demos } };
   }
 
+  console.log('here')
   return { status: 302, headers: { Location: '/auth' } };
 };

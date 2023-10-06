@@ -51,66 +51,71 @@
     (isIC && MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ||
     ((isSIP && MEETING_TYPE_OPTIONS.SIP_URI_DIALING) as MEETING_TYPE_OPTIONS);
 
-  let displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
-  const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: uuid } });
+  const displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
+  const enableSocket = !!isIC || !!isSDK;
+  const socketIO = enableSocket ? io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: uuid } }) : null;
   const isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
+
   $requesterIDStore = $requesterIDStore ? $requesterIDStore : uuidv4();
+  $hideSIPWarningStore = false;
 
-  socketEventHandler(socketIO, $requesterIDStore, (event, payload = {}) => {
-    switch (event) {
-      case CONST.SDK_JOIN_SESSION:
-        readyToJoin = true;
-        incomingMeetingURL = `${payload.meetingUrl}&autoDial=true&embedSize=desktop&sessionId=${$requesterIDStore}`;
-        requestSubmitted = false;
-        break;
+  if (enableSocket) {
+    socketEventHandler(socketIO, $requesterIDStore, (event, payload = {}) => {
+      switch (event) {
+        case CONST.SDK_JOIN_SESSION:
+          readyToJoin = true;
+          incomingMeetingURL = `${payload.meetingUrl}&autoDial=true&embedSize=desktop&sessionId=${$requesterIDStore}`;
+          requestSubmitted = false;
+          break;
 
-      case CONST.SDK_LEAVE_SESSION:
-        meetingURL = '';
-        displayIframe = false;
-        readyToJoin = false;
-        iframeIsLoading = false;
-        cancelRequest();
-        break;
+        case CONST.SDK_LEAVE_SESSION:
+          meetingURL = '';
+          displayIframe = false;
+          readyToJoin = false;
+          iframeIsLoading = false;
+          cancelRequest();
+          break;
 
-      case CONST.IC_JOIN_SESSION:
-        readyToJoin = true;
-        incomingMeetingURL = payload.meetingUrl;
-        requestSubmitted = false;
-        break;
+        case CONST.IC_JOIN_SESSION:
+          readyToJoin = true;
+          incomingMeetingURL = payload.meetingUrl;
+          requestSubmitted = false;
+          break;
 
-      case CONST.IC_LEAVE_SESSION:
-        displayIframe = false;
-        readyToJoin = false;
-        iframeIsLoading = false;
-        cancelRequest();
-        break;
+        case CONST.IC_LEAVE_SESSION:
+          displayIframe = false;
+          readyToJoin = false;
+          iframeIsLoading = false;
+          cancelRequest();
+          break;
 
-      case CONST.SET_QUEUE_POSITION:
-        $queueOrderStore = payload.queuePosition;
-        break;
+        case CONST.SET_QUEUE_POSITION:
+          $queueOrderStore = payload.queuePosition;
+          break;
 
-      case CONST.UPDATE_QUEUE_POSITION:
-        if (payload.queuePosition < $queueOrderStore) {
-          $queueOrderStore -= 1;
-        }
-        break;
+        case CONST.UPDATE_QUEUE_POSITION:
+          if (payload.queuePosition < $queueOrderStore) {
+            $queueOrderStore -= 1;
+          }
+          break;
 
-      case CONST.CANCEL_REQUEST:
-        requestSubmitted = false;
-        displayIframe = false;
-        readyToJoin = false;
-        break;
+        case CONST.CANCEL_REQUEST:
+          requestSubmitted = false;
+          displayIframe = false;
+          readyToJoin = false;
+          break;
 
-      case CONST.LIST_QUEUE:
-        requestSubmitted = payload.queue.some((q) => q.value === $requesterIDStore);
+        case CONST.LIST_QUEUE:
+          requestSubmitted = payload.queue.some((q) => q.value === $requesterIDStore);
 
-        break;
+          break;
 
-      case CONST.UPDATE_REQUEST:
-        requestInfo = payload.data;
-        break;
-    }
-  });
+        case CONST.UPDATE_REQUEST:
+          requestInfo = payload.data;
+          break;
+      }
+    });
+  }
 
   const displayNotification = (props) => {
     dispatch('notif', {
@@ -207,14 +212,15 @@
   };
 
   onMount(() => {
-    $hideSIPWarningStore = false;
-    socketIO.on(CONST.CONNECT, () => {
-      const message = { command: CONST.LIST, set: CONST.QUEUE, id: CONST.INIT_LIST, key: CONST.LIST };
-      socketIO.emit(CONST.MESSAGE, message);
-      socketIO.emit(CONST.JOIN, $requesterIDStore);
-    });
+    if (enableSocket) {
+      socketIO.on(CONST.CONNECT, () => {
+        const message = { command: CONST.LIST, set: CONST.QUEUE, id: CONST.INIT_LIST, key: CONST.LIST };
+        socketIO.emit(CONST.MESSAGE, message);
+        socketIO.emit(CONST.JOIN, $requesterIDStore);
+      });
+    }
 
-    if (browser) {
+    if (browser && enableSocket) {
       // Register a listener to trigger an event if the content of the tab has become visible or hidden
       window.addEventListener(CONST.VISIBILITY_CHANGE, () => {
         sendBrowserVisibilityStatus(
@@ -232,7 +238,9 @@
     }
 
     return () => {
-      socketIO.disconnect();
+      if (enableSocket) {
+        socketIO.disconnect();
+      }
     };
   });
 </script>

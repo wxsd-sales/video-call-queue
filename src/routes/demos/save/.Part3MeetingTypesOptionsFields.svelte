@@ -8,7 +8,6 @@
   import { generateMacro } from '$lib/static/macro/WxCQ.js';
   import { previewedDemoStore, SIPQueuesStore } from '$lib/store';
   import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
-  import { isFormValid } from './utils/form';
 
   import { onMount } from 'svelte';
 
@@ -23,6 +22,7 @@
   let ICCheckBoxElement: HTMLInputElement;
   let SIPCheckBoxElement: HTMLInputElement;
   let generateIsLoading = false;
+  let macroButtonIsDisabled = false;
   let code = generateMacro(SIPQueues);
   let showModal = false;
 
@@ -194,6 +194,7 @@
           index={i}
           {sipTitle}
           {sipImage}
+          on:queueIsValid={({ detail: formIsValid }) => (macroButtonIsDisabled = !formIsValid)}
           on:sipQs={({ detail: { event, payload } }) => {
             switch (event) {
               case 'update':
@@ -220,7 +221,7 @@
       <div class="column is-flex p-0 is-justify-content-space-between is-align-items-center">
         <div class="mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
         <button
-          disabled={!$isFormValid}
+          disabled={macroButtonIsDisabled}
           class:is-loading={generateIsLoading}
           type="button"
           class="button is-small is-rounded is-primary is-light m-2 "

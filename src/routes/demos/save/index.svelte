@@ -9,7 +9,6 @@
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { isFormValid, form as formInput, formValues } from './utils/form';
 
   import Modal from '$components/Modal/Modal.svelte';
   import { previewedDemoStore } from '$lib/store';
@@ -73,7 +72,6 @@
 
 <form
   id="demo-create"
-  use:formInput
   class="container px-4 mb-6"
   action={'./save' + (id == null ? '' : '?_method=PATCH')}
   method="post"

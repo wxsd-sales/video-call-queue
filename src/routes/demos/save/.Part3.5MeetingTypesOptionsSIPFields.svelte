@@ -1,6 +1,5 @@
 <script lang="ts">
   import { CONTROL_HUB_URL } from '$lib/constants.js';
-  import { touched, validity } from './utils/form';
   import { createEventDispatcher, onMount } from 'svelte';
   import { slide } from 'svelte/transition';
 
@@ -13,6 +12,10 @@
   export let sipImage: any;
   export let index: number;
 
+  let extensionNumberIsValid = true;
+  let videoLinkIsValid = true;
+  let sipTitleIsValid = true;
+  let formIsValid: boolean;
   let sipImageInput: HTMLInputElement;
 
   let acceptedFileTypes: string = '.jpg, .jpeg, .png, .svg, .gif, .webp, .avif, .apng';
@@ -28,8 +31,15 @@
     });
 
   const dispatch = createEventDispatcher();
-  const handleInputs = () =>
+  const handleInputs = () => {
+    extensionNumberIsValid = !extensionNumber ? false : true;
+    videoLinkIsValid = !videoLink ? false : true;
+    sipTitleIsValid = !sipTitle ? false : true;
+    formIsValid = extensionNumberIsValid && videoLinkIsValid && sipTitleIsValid;
+
+    dispatch('queueIsValid', formIsValid);
     dispatch('sipQs', { event: 'update', payload: { videoLink, sipTitle, extensionNumber, index, sipImage } });
+  };
 
   const pathToFilelist = async (url: string) => {
     const response = await urlEncodedRequest(defaultSupportImage).get();
@@ -110,8 +120,7 @@
         name="extensionNumber{index === 0 ? '' : index}"
         id="extensionNumber{index === 0 ? '' : index}"
         class="input"
-        class:is-danger={$touched[`extensionNumber${index ? index : ''}`] &&
-          $validity[`extensionNumber${index ? index : ''}`]?.invalid}
+        class:is-danger={!extensionNumberIsValid}
         type="number"
         placeholder={String(extensionNumber)}
         bind:value={extensionNumber}
@@ -124,7 +133,7 @@
     </div>
     <div class="help">
       <div class="help">
-        {#if $touched[`extensionNumber${index ? index : ''}`] && $validity[`extensionNumber${index ? index : ''}`]?.invalid}
+        {#if !extensionNumberIsValid}
           <p class="has-text-danger">Please provide a valid extension Number.</p>
         {:else}
           <p>
@@ -144,8 +153,7 @@
         name="videoLink{index === 0 ? '' : index}"
         id="videolinK{index === 0 ? '' : index}"
         class="input"
-        class:is-danger={$touched[`videoLink${index ? index : ''}`] &&
-          $validity[`videoLink${index ? index : ''}`]?.invalid}
+        class:is-danger={!videoLinkIsValid}
         type="url"
         placeholder={videoLink}
         bind:value={videoLink}
@@ -157,7 +165,7 @@
       </span>
     </div>
     <div class="help">
-      {#if $touched[`videoLink${index ? index : ''}`] && $validity[`videoLink${index ? index : ''}`]?.invalid}
+      {#if !videoLinkIsValid}
         <p class="has-text-danger">Please provide a valid URL.</p>
       {:else}
         <p>Video source to play while holding in queue.</p>
@@ -171,8 +179,7 @@
         name="sipTitle{index === 0 ? '' : index}"
         id="sipTitle{index === 0 ? '' : index}"
         class="input"
-        class:is-danger={$touched[`sipTitle${index ? index : ''}`] &&
-          $validity[`sipTitle${index ? index : ''}`]?.invalid}
+        class:is-danger={!sipTitleIsValid}
         placeholder={sipTitle}
         bind:value={sipTitle}
         maxlength="24"
@@ -184,7 +191,7 @@
       </span>
     </div>
     <div class="help">
-      {#if $touched[`sipTitle${index ? index : ''}`] && $validity[`sipTitle${index ? index : ''}`]?.invalid}
+      {#if !sipTitleIsValid}
         <p class="has-text-danger">Please provide a title</p>
       {:else}
         <p>To be displayed on the card, max. 24 characters</p>
