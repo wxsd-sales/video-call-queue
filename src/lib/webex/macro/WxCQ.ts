@@ -1,4 +1,4 @@
-import macroTemplate from '$lib/static/sip-macro-template.txt?raw'
+import macroTemplate from '$lib/static/sip-macro-template.txt?raw';
 
 export const generateMacro = (queues) => {
   let queuesSTR = '';
