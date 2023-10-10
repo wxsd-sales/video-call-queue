@@ -52,9 +52,6 @@ export const GET = async (requestEvent: RequestEvent) => {
           'isSDK',
           'isIC',
           'isSIP',
-          'extensionNumber',
-          'sipTitle',
-          'sipImage',
           'extensionNumber1',
           'sipTitle1',
           'sipImage1',
@@ -64,6 +61,9 @@ export const GET = async (requestEvent: RequestEvent) => {
           'extensionNumber3',
           'sipTitle3',
           'sipImage3',
+          'extensionNumber4',
+          'sipTitle4',
+          'sipImage4',
           'displayFootnote'
         ],
         strategy: LoadStrategy.JOINED
@@ -74,30 +74,30 @@ export const GET = async (requestEvent: RequestEvent) => {
         const {
           backgroundPoster,
           brandLogo,
-          sipImage,
           sipImage1,
           sipImage2,
           sipImage3,
+          sipImage4,
           ...demo
         }: {
           backgroundPoster: Data;
           brandLogo: Data;
-          sipImage: Data | null;
           sipImage1: Data | null;
           sipImage2: Data | null;
           sipImage3: Data | null;
+          sipImage4: Data | null;
         } = r;
         (demo as JSONObject)['brandLogo'] = 'data:' + brandLogo.type + ';base64,' + brandLogo.bits.toString('base64');
         (demo as JSONObject)['backgroundPoster'] =
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
-        (demo as JSONObject)['sipImage'] =
-          sipImage != null ? 'data:' + sipImage.type + ';base64,' + sipImage.bits.toString('base64') : null;
         (demo as JSONObject)['sipImage1'] =
           sipImage1 != null ? 'data:' + sipImage1.type + ';base64,' + sipImage1.bits.toString('base64') : null;
         (demo as JSONObject)['sipImage2'] =
           sipImage2 != null ? 'data:' + sipImage2.type + ';base64,' + sipImage2.bits.toString('base64') : null;
         (demo as JSONObject)['sipImage3'] =
           sipImage3 != null ? 'data:' + sipImage3.type + ';base64,' + sipImage3.bits.toString('base64') : null;
+        (demo as JSONObject)['sipImage4'] =
+          sipImage4 != null ? 'data:' + sipImage4.type + ';base64,' + sipImage4.bits.toString('base64') : null;
 
         return {
           status: 200,

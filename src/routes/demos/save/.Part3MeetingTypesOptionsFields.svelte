@@ -5,7 +5,7 @@
   import Modal from '$components/Modal/Modal.svelte';
   import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
 
-  import { generateMacro } from '$lib/static/macro/WxCQ.js';
+  import { generateMacro } from '$lib/webex/macro/WxCQ.js';
   import { previewedDemoStore, SIPQueuesStore } from '$lib/store';
   import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
 

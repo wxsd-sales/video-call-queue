@@ -4,7 +4,7 @@
   import { slide } from 'svelte/transition';
 
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import defaultSupportImage from '$lib/static/img/customer-support.png';
+  import customerSupport from '$lib/static/img/customer-support.svg';
 
   export let extensionNumber: number;
   export let videoLink: string;
@@ -36,15 +36,14 @@
     videoLinkIsValid = !videoLink ? false : true;
     sipTitleIsValid = !sipTitle ? false : true;
     formIsValid = extensionNumberIsValid && videoLinkIsValid && sipTitleIsValid;
-
     dispatch('queueIsValid', formIsValid);
     dispatch('sipQs', { event: 'update', payload: { videoLink, sipTitle, extensionNumber, index, sipImage } });
   };
 
   const pathToFilelist = async (url: string) => {
-    const response = await urlEncodedRequest(defaultSupportImage).get();
+    const response = await urlEncodedRequest(customerSupport).get();
     const blob = await response.blob();
-    const file = new File([blob], 'default-support.png', { lastModified: new Date(), type: 'image/png' });
+    const file = new File([blob], 'customer-support.svg', { lastModified: new Date(), type: 'image/svg+xml' });
     const container = new DataTransfer();
     container.items.add(file);
 
@@ -87,7 +86,7 @@
     }
 
     imageFile?.[0] != null ? (sipImageInput.files = imageFile) : null;
-    sipImageInput.name = `sipImage${index === 0 ? '' : index}`;
+    sipImageInput.name = `sipImage${index + 1}`;
   });
 </script>
 
@@ -117,8 +116,8 @@
     >
     <div class="control has-icons-left">
       <input
-        name="extensionNumber{index === 0 ? '' : index}"
-        id="extensionNumber{index === 0 ? '' : index}"
+        name="extensionNumber{index + 1}"
+        id="extensionNumber{index + 1}"
         class="input"
         class:is-danger={!extensionNumberIsValid}
         type="number"
@@ -150,8 +149,8 @@
     >
     <div class="control has-icons-left">
       <input
-        name="videoLink{index === 0 ? '' : index}"
-        id="videolinK{index === 0 ? '' : index}"
+        name="videoLink{index + 1}"
+        id="videoLink{index + 1}"
         class="input"
         class:is-danger={!videoLinkIsValid}
         type="url"
@@ -176,8 +175,8 @@
     <label class="label" for="city-id">Button Label <sup class="has-text-danger" title="required">*</sup></label>
     <div class="control has-icons-left">
       <input
-        name="sipTitle{index === 0 ? '' : index}"
-        id="sipTitle{index === 0 ? '' : index}"
+        name="sipTitle{index + 1}"
+        id="sipTitle{index + 1}"
         class="input"
         class:is-danger={!sipTitleIsValid}
         placeholder={sipTitle}
@@ -199,13 +198,11 @@
     </div>
   </div>
   <div class="column pt-0 is-one-quarter">
-    <label class="label" for="sipImage{index === 0 ? '' : index}"
-      >Image <sup class="has-text-danger" title="required">*</sup></label
-    >
+    <label class="label" for="sipImage{index + 1}">Image <sup class="has-text-danger" title="required">*</sup></label>
     <div class="file has-name is-fullwidth">
       <label class="file-label">
         <input
-          id="sipImage{index === 0 ? '' : index}"
+          id="sipImage{index + 1}"
           type="file"
           class="file-input"
           accept={acceptedFileTypes}

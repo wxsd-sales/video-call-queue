@@ -3,25 +3,25 @@
   import Notification from '$components/Notification/Notification.svelte';
   import { NOTIFICATION_TYPES, NOTIFICATION_VALUES } from '$components/Notification/enums';
   import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
-  import defaultSupportImg from '$lib/static/img/customer-support.png';
+  import customerSupport from '$lib/static/img/customer-support.svg';
   export let demo: JSON;
   export let embeddable: boolean;
 
   const { isSIP, isSDK, isIC, uuid } = demo;
 
-  let sipQueues = [{ title: 'Looking for Assistance?', extensionNumber: 1111, sipImage: defaultSupportImg }];
+  let sipQueues = [{ title: 'Looking for Assistance?', extensionNumber: 1111, sipImage: customerSupport }];
   let extensionNumber = 1111;
 
   if (demo.isSIP) {
     sipQueues = [
       {
-        title: demo.sipTitle || 'Looking for Assistance?',
-        extensionNumber: demo.extensionNumber,
-        sipImage: demo.sipImage || defaultSupportImg
+        title: demo.sipTitle1 || 'Looking for Assistance?',
+        extensionNumber: demo.extensionNumber1,
+        sipImage: demo.sipImage1 || customerSupport
       },
-      demo.sipTitle1 && { title: demo.sipTitle1, extensionNumber: demo.extensionNumber1, sipImage: demo.sipImage1 },
       demo.sipTitle2 && { title: demo.sipTitle2, extensionNumber: demo.extensionNumber2, sipImage: demo.sipImage2 },
-      demo.sipTitle3 && { title: demo.sipTitle3, extensionNumber: demo.extensionNumber3, sipImage: demo.sipImage3 }
+      demo.sipTitle3 && { title: demo.sipTitle3, extensionNumber: demo.extensionNumber3, sipImage: demo.sipImage3 },
+      demo.sipTitle4 && { title: demo.sipTitle4, extensionNumber: demo.extensionNumber4, sipImage: demo.sipImage4 }
     ].filter(Boolean);
   }
   embeddable = sipQueues.length > 1 ? true : embeddable;

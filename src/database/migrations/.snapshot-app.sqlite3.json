@@ -415,43 +415,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "sip_title": {
-          "name": "sip_title",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
-        "sip_image_uuid": {
-          "name": "sip_image_uuid",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 36,
-          "mappedType": "text"
-        },
-        "extension_number": {
-          "name": "extension_number",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "video_link": {
-          "name": "video_link",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
-        },
         "sip_title1": {
           "name": "sip_title1",
           "type": "text",
@@ -563,6 +526,43 @@
           "nullable": true,
           "mappedType": "text"
         },
+        "sip_title4": {
+          "name": "sip_title4",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "sip_image4_uuid": {
+          "name": "sip_image4_uuid",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 36,
+          "mappedType": "text"
+        },
+        "extension_number4": {
+          "name": "extension_number4",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "video_link4": {
+          "name": "video_link4",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
         "display_footnote": {
           "name": "display_footnote",
           "type": "integer",
@@ -598,13 +598,6 @@
           "unique": false
         },
         {
-          "columnNames": ["sip_image_uuid"],
-          "composite": false,
-          "keyName": "demo_sip_image_uuid_index",
-          "primary": false,
-          "unique": false
-        },
-        {
           "columnNames": ["sip_image1_uuid"],
           "composite": false,
           "keyName": "demo_sip_image1_uuid_index",
@@ -622,6 +615,13 @@
           "columnNames": ["sip_image3_uuid"],
           "composite": false,
           "keyName": "demo_sip_image3_uuid_index",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": ["sip_image4_uuid"],
+          "composite": false,
+          "keyName": "demo_sip_image4_uuid_index",
           "primary": false,
           "unique": false
         },
@@ -662,15 +662,6 @@
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "demo_sip_image_uuid_foreign": {
-          "constraintName": "demo_sip_image_uuid_foreign",
-          "columnNames": ["sip_image_uuid"],
-          "localTableName": "demo",
-          "referencedColumnNames": ["uuid"],
-          "referencedTableName": "data",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
         "demo_sip_image1_uuid_foreign": {
           "constraintName": "demo_sip_image1_uuid_foreign",
           "columnNames": ["sip_image1_uuid"],
@@ -692,6 +683,15 @@
         "demo_sip_image3_uuid_foreign": {
           "constraintName": "demo_sip_image3_uuid_foreign",
           "columnNames": ["sip_image3_uuid"],
+          "localTableName": "demo",
+          "referencedColumnNames": ["uuid"],
+          "referencedTableName": "data",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "demo_sip_image4_uuid_foreign": {
+          "constraintName": "demo_sip_image4_uuid_foreign",
+          "columnNames": ["sip_image4_uuid"],
           "localTableName": "demo",
           "referencedColumnNames": ["uuid"],
           "referencedTableName": "data",

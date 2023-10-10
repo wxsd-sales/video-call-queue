@@ -104,12 +104,26 @@
       </div>
     {/if}
     <div class="column is-12">
-      <button class="button is-medium is-rounded is-success is-fullwidth" type="submit">
-        <span class="icon">
-          <i class="mdi mdi-content-save-plus" />
-        </span>
-        <span>Save</span>
-      </button>
+      <div class="columns">
+        <button class="column button is-medium is-rounded is-success mr-4" type="submit">
+          <span class="icon">
+            <i class="mdi mdi-content-save-plus" />
+          </span>
+          <span>Save</span>
+        </button>
+        <button
+          type="button"
+          on:click={() => {
+            showModal = true;
+          }}
+          class="column button is-medium is-rounded is-warning "
+        >
+          <span class="icon">
+            <i class="mdi mdi-eye-circle-outline" />
+          </span>
+          <span>Preview Demo</span>
+        </button>
+      </div>
     </div>
     <div class="column is-12 has-text-danger">
       {form ?? ''}

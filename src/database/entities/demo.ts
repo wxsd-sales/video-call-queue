@@ -47,18 +47,6 @@ export class Demo extends BaseEntity {
   isSIP: boolean;
 
   @Property({ type: types.string, nullable: true })
-  sipTitle: string;
-
-  @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
-  sipImage!: Data | null;
-
-  @Property({ type: types.integer, nullable: true })
-  extensionNumber: number;
-
-  @Property({ type: types.string, nullable: true })
-  videoLink: string;
-
-  @Property({ type: types.string, nullable: true })
   sipTitle1: string;
 
   @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
@@ -94,6 +82,18 @@ export class Demo extends BaseEntity {
   @Property({ type: types.string, nullable: true })
   videoLink3: string;
 
+  @Property({ type: types.string, nullable: true })
+  sipTitle4: string;
+
+  @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
+  sipImage4!: Data | null;
+
+  @Property({ type: types.integer, nullable: true })
+  extensionNumber4: number;
+
+  @Property({ type: types.string, nullable: true })
+  videoLink4: string;
+
   @Property({ type: types.boolean, default: true, nullable: true })
   displayFootnote: boolean;
 
@@ -111,10 +111,6 @@ export class Demo extends BaseEntity {
     isSDK: boolean;
     isIC: boolean;
     isSIP: boolean;
-    sipTitle: string;
-    sipImage: Data;
-    extensionNumber: number;
-    videoLink: string;
     sipTitle1: string;
     sipImage1: Data;
     extensionNumber1: number;
@@ -127,6 +123,10 @@ export class Demo extends BaseEntity {
     sipImage3: Data;
     extensionNumber3: number;
     videoLink3: string;
+    sipTitle4: string;
+    sipImage4: Data;
+    extensionNumber4: number;
+    videoLink4: string;
     displayFootnote: boolean;
   }) {
     super();
@@ -143,10 +143,6 @@ export class Demo extends BaseEntity {
     this.isSDK = obj.isSDK;
     this.isIC = obj.isIC;
     this.isSIP = obj.isSIP;
-    this.sipTitle = obj.sipTitle;
-    this.sipImage = obj.sipImage;
-    this.extensionNumber = obj.extensionNumber;
-    this.videoLink = obj.videoLink;
     this.sipTitle1 = obj.sipTitle1;
     this.sipImage1 = obj.sipImage1;
     this.extensionNumber1 = obj.extensionNumber1;
@@ -159,6 +155,10 @@ export class Demo extends BaseEntity {
     this.sipImage3 = obj.sipImage3;
     this.extensionNumber3 = obj.extensionNumber3;
     this.videoLink3 = obj.videoLink3;
+    this.sipTitle4 = obj.sipTitle4;
+    this.sipImage4 = obj.sipImage4;
+    this.extensionNumber4 = obj.extensionNumber4;
+    this.videoLink4 = obj.videoLink4;
     this.displayFootnote = obj.displayFootnote;
   }
 }

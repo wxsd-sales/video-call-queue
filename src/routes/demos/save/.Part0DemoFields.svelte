@@ -5,8 +5,6 @@
   export let name: string;
   export let description: string;
 
-  console.log(name);
-
   onDestroy(() => {
     name = '';
   });

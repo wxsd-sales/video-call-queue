@@ -1,16 +1,15 @@
 <script lang="ts">
   export let filter = 'brightness(55%)';
-  export let cssClass = 'is-brand-background';
   export let imageLink: string | URL = undefined;
   export let videoLink: string | URL = undefined;
 </script>
 
 {#if imageLink && videoLink}
-  <video class={`${cssClass || 'is-brand-background'}`} autoplay loop muted playsinline poster={imageLink} style:filter>
+  <video class="is-brand-background" autoplay loop muted playsinline poster={imageLink} style:filter>
     <source src={videoLink} />
   </video>
 {:else}
-  <img class={`${cssClass || 'is-brand-background'}`} alt="background" src={imageLink} style:filter on:load />
+  <img class="is-brand-background" alt="background" src={imageLink} style:filter on:load />
 {/if}
 
 <style>

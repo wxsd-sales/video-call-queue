@@ -1,9 +1,9 @@
 <script lang="ts">
   import { jsonRequest } from '$lib/shared/json-request';
 
-  import CiscoBackground from '$lib/static/img/Cisco.png';
+  import CiscoBackground from '$lib/static/img/cisco-background.png';
   import CiscoLogo from '$lib/static/img/cisco-logo-white.png';
-  import CustomerSupportImg from '$lib/static/img/customer-support.png';
+  import CustomerSupportImg from '$lib/static/img/customer-support.svg';
 
   import CallPrompt from './CallPrompt.svelte';
 
@@ -23,7 +23,6 @@
 
 <div class="preview is-flex has-text-white ">
   <Background
-    cssClass="background-class"
     imageLink={$previewedDemoStore.poster?.bits || CiscoBackground}
     filter="brightness({$previewedDemoStore.brightness}%)"
   />
@@ -94,7 +93,7 @@
   .prompts {
     width: 100%;
   }
-  .preview :global(.background-class) {
+  .preview :global(.is-brand-background) {
     position: fixed;
     object-fit: cover;
     height: 50rem;

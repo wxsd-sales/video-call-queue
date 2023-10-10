@@ -53,10 +53,6 @@ export const GET = async (requestEvent: RequestEvent) => {
               'isSDK',
               'isIC',
               'isSIP',
-              'extensionNumber',
-              'videoLink',
-              'sipTitle',
-              'sipImage',
               'extensionNumber1',
               'videoLink1',
               'sipTitle1',
@@ -69,6 +65,10 @@ export const GET = async (requestEvent: RequestEvent) => {
               'videoLink3',
               'sipTitle3',
               'sipImage3',
+              'extensionNumber4',
+              'videoLink4',
+              'sipTitle4',
+              'sipImage4',
               'displayFootnote'
             ],
             strategy: LoadStrategy.JOINED
@@ -102,22 +102,9 @@ export const GET = async (requestEvent: RequestEvent) => {
               isSIP: r.isSIP,
               SIPQueues: [
                 {
-                  extensionNumber: r.extensionNumber,
-                  videoLink: r.videoLink,
-                  sipTitle: r.sipTitle || 'Looking for Assistance?',
-                  sipImage: r.sipImage
-                    ? {
-                        bits: 'data:' + r.sipImage.type + ';base64,' + r.sipImage.bits.toString('base64'),
-                        name: r.sipImage.name,
-                        lastModified: r.sipImage.lastModified,
-                        type: r.sipImage.type
-                      }
-                    : null
-                },
-                r?.extensionNumber1 && {
                   extensionNumber: r.extensionNumber1,
                   videoLink: r.videoLink1,
-                  sipTitle: r.sipTitle1,
+                  sipTitle: r.sipTitle1 || 'Looking for Assistance?',
                   sipImage: r.sipImage1
                     ? {
                         bits: 'data:' + r.sipImage1.type + ';base64,' + r.sipImage1.bits.toString('base64'),
@@ -140,7 +127,7 @@ export const GET = async (requestEvent: RequestEvent) => {
                       }
                     : null
                 },
-                r.extensionNumber3 && {
+                r?.extensionNumber3 && {
                   extensionNumber: r.extensionNumber3,
                   videoLink: r.videoLink3,
                   sipTitle: r.sipTitle3,
@@ -150,6 +137,19 @@ export const GET = async (requestEvent: RequestEvent) => {
                         name: r.sipImage3.name,
                         lastModified: r.sipImage3.lastModified,
                         type: r.sipImage3.type
+                      }
+                    : null
+                },
+                r.extensionNumber4 && {
+                  extensionNumber: r.extensionNumber4,
+                  videoLink: r.videoLink4,
+                  sipTitle: r.sipTitle4,
+                  sipImage: r.sipImage4
+                    ? {
+                        bits: 'data:' + r.sipImage4.type + ';base64,' + r.sipImage4.bits.toString('base64'),
+                        name: r.sipImage4.name,
+                        lastModified: r.sipImage4.lastModified,
+                        type: r.sipImage4.type
                       }
                     : null
                 }
@@ -232,23 +232,6 @@ export const POST = async (requestEvent: RequestEvent) => {
 
     @Expose()
     @IsInt()
-    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber')), { toClassOnly: true })
-    public readonly extensionNumber!: number;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
-    public readonly videoLink!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle'), { toClassOnly: true })
-    public readonly sipTitle!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage'), { toClassOnly: true })
-    public readonly sipImage!: File;
-
-    @Expose()
-    @IsInt()
     @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber1')), { toClassOnly: true })
     public readonly extensionNumber1!: number;
 
@@ -299,6 +282,23 @@ export const POST = async (requestEvent: RequestEvent) => {
     public readonly sipImage3!: File;
 
     @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber4')), { toClassOnly: true })
+    public readonly extensionNumber4!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink4'), { toClassOnly: true })
+    public readonly videoLink4!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle4'), { toClassOnly: true })
+    public readonly sipTitle4!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage4'), { toClassOnly: true })
+    public readonly sipImage4!: File;
+
+    @Expose()
     @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('footnote')), { toClassOnly: true })
     public readonly displayFootnote!: boolean;
   }
@@ -347,17 +347,6 @@ export const POST = async (requestEvent: RequestEvent) => {
         isSDK: formData.isSDK,
         isIC: formData.isIC,
         isSIP: formData.isSIP,
-        videoLink: formData.videoLink,
-        extensionNumber: formData.extensionNumber,
-        sipTitle: formData.sipTitle,
-        sipImage: formData.sipImage
-          ? new Data({
-              bits: Buffer.from(await formData.sipImage.arrayBuffer()),
-              type: formData.sipImage.type,
-              name: formData.sipImage.name,
-              lastModified: formData.sipImage.lastModified
-            })
-          : null,
         videoLink1: formData.videoLink1,
         extensionNumber1: formData.extensionNumber1,
         sipTitle1: formData.sipTitle1,
@@ -389,6 +378,17 @@ export const POST = async (requestEvent: RequestEvent) => {
               type: formData.sipImage3.type,
               name: formData.sipImage3.name,
               lastModified: formData.sipImage3.lastModified
+            })
+          : null,
+        videoLink4: formData.videoLink4,
+        extensionNumber4: formData.extensionNumber4,
+        sipTitle4: formData.sipTitle4,
+        sipImage4: formData.sipImage4
+          ? new Data({
+              bits: Buffer.from(await formData.sipImage4.arrayBuffer()),
+              type: formData.sipImage4.type,
+              name: formData.sipImage4.name,
+              lastModified: formData.sipImage4.lastModified
             })
           : null,
         displayFootnote: formData.displayFootnote
@@ -473,23 +473,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
 
     @Expose()
     @IsInt()
-    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber')), { toClassOnly: true })
-    public readonly extensionNumber!: number;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink'), { toClassOnly: true })
-    public readonly videoLink!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle'), { toClassOnly: true })
-    public readonly sipTitle!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage'), { toClassOnly: true })
-    public readonly sipImage!: File;
-
-    @Expose()
-    @IsInt()
     @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber1')), { toClassOnly: true })
     public readonly extensionNumber1!: number;
 
@@ -538,6 +521,23 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage3'), { toClassOnly: true })
     public readonly sipImage3!: File;
+
+    @Expose()
+    @IsInt()
+    @Transform(({ obj }: { obj: FormData }) => Number(obj.get('extensionNumber4')), { toClassOnly: true })
+    public readonly extensionNumber4!: number;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('videoLink4'), { toClassOnly: true })
+    public readonly videoLink4!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipTitle4'), { toClassOnly: true })
+    public readonly sipTitle4!: string;
+
+    @Expose()
+    @Transform(({ obj }: { obj: FormData }) => obj.get('sipImage4'), { toClassOnly: true })
+    public readonly sipImage4!: File;
 
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('displayFootnote')), { toClassOnly: true })
@@ -590,10 +590,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
               'isSDK',
               'isIC',
               'isSIP',
-              'videoLink',
-              'extensionNumber',
-              'sipTitle',
-              'sipImage',
               'videoLink1',
               'extensionNumber1',
               'sipTitle1',
@@ -606,6 +602,10 @@ export const PATCH = async (requestEvent: RequestEvent) => {
               'extensionNumber3',
               'sipTitle3',
               'sipImage3',
+              'videoLink4',
+              'extensionNumber4',
+              'sipTitle4',
+              'sipImage4',
               'displayFootnote'
             ],
             strategy: LoadStrategy.JOINED
@@ -630,17 +630,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.isSDK = formData.isSDK;
           r.isIC = formData.isIC;
           r.isSIP = formData.isSIP;
-          r.videoLink = formData.videoLink;
-          r.extensionNumber = formData.extensionNumber;
-          r.sipTitle = formData.sipTitle;
-          r.sipImage = formData.sipImage
-            ? new Data({
-                bits: Buffer.from(await formData.sipImage.arrayBuffer()),
-                type: formData.sipImage.type,
-                name: formData.sipImage.name,
-                lastModified: formData.sipImage.lastModified
-              })
-            : null;
           r.videoLink1 = formData.videoLink1;
           r.extensionNumber1 = formData.extensionNumber1;
           r.sipTitle1 = formData.sipTitle1;
@@ -672,6 +661,17 @@ export const PATCH = async (requestEvent: RequestEvent) => {
                 type: formData.sipImage3.type,
                 name: formData.sipImage3.name,
                 lastModified: formData.sipImage3.lastModified
+              })
+            : null;
+          r.videoLink4 = formData.videoLink4;
+          r.extensionNumber4 = formData.extensionNumber4;
+          r.sipTitle4 = formData.sipTitle4;
+          r.sipImage4 = formData.sipImage4
+            ? new Data({
+                bits: Buffer.from(await formData.sipImage4.arrayBuffer()),
+                type: formData.sipImage4.type,
+                name: formData.sipImage4.name,
+                lastModified: formData.sipImage4.lastModified
               })
             : null;
           r.displayFootnote = formData.displayFootnote;
