@@ -35,26 +35,33 @@ const toData = async (file: File) =>
     lastModified: file.lastModified
   });
 
-;
-const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: string, sipImage: Data ) => 
-  extensionNumber && videoLink && sipTitle && sipImage && {
-    extensionNumber, videoLink, sipTitle, sipImage: sipImage ? toFile(sipImage) : null
-}  
-
+const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: string, sipImage: Data) =>
+  extensionNumber &&
+  videoLink &&
+  sipTitle &&
+  sipImage && {
+    extensionNumber,
+    videoLink,
+    sipTitle,
+    sipImage: sipImage ? toFile(sipImage) : null
+  };
 
 const generateSIPQueues = (response) => {
   const qs = [];
   const MAX_QUEUES = 4;
 
-  for(let i = 1; i <= MAX_QUEUES; i++) {
-    qs.push(createSIPObject(
-      response[`sipTitle${i}`],
-      response[`extensionNumber${i}`], 
-      response[`videoLink${i}`], 
-      response[`sipImage${i}`]))
+  for (let i = 1; i <= MAX_QUEUES; i++) {
+    qs.push(
+      createSIPObject(
+        response[`sipTitle${i}`],
+        response[`extensionNumber${i}`],
+        response[`videoLink${i}`],
+        response[`sipImage${i}`]
+      )
+    );
   }
   return qs.filter(Boolean);
-}
+};
 
 const fields = [
   'uuid',
