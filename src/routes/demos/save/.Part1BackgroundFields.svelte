@@ -1,6 +1,7 @@
 <script lang="ts">
   import Background from '$components/Background/Background.svelte';
   import { onMount } from 'svelte';
+  import { previewedDemoStore } from '$lib/store';
 
   export let poster: FileList = undefined;
   export let brightness: number = undefined;
@@ -13,12 +14,27 @@
   let naturalHeight: number;
   let naturalWidth: number;
 
-  export const handlePosterUpload = (ev: Event) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  export const handlePosterUpload = async (ev: Event) => {
     clientHeight = clientWidth = naturalHeight = naturalWidth = undefined;
     const file = (ev.target as HTMLInputElement)?.files?.[0];
-    file?.size > maxFileSize
-      ? (ev.target as HTMLInputElement).setCustomValidity('File size is too large.')
-      : (ev.target as HTMLInputElement).setCustomValidity('');
+    if (file?.size > maxFileSize) {
+      (ev.target as HTMLInputElement).setCustomValidity('File size is too large.');
+    } else if (file) {
+      (ev.target as HTMLInputElement).setCustomValidity('');
+      const payload = {
+        file: { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified }
+      };
+
+      $previewedDemoStore.poster = payload.file;
+    }
     (ev.target as HTMLInputElement).reportValidity();
   };
 
@@ -77,6 +93,7 @@
         placeholder="55"
         required
         bind:value={brightness}
+        on:input={(e) => ($previewedDemoStore.brightness = e.target.value)}
       />
       <span class="icon is-left">
         <i class="mdi mdi-brightness-percent" />

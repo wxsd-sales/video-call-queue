@@ -1,6 +1,6 @@
 <script type="ts">
   import { browser } from '$app/env';
-  import { queueOrderStore, requesterIDStore } from '$lib/store';
+  import { queueOrderStore, requesterIDStore, hideSIPWarningStore } from '$lib/store';
   import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
 
@@ -22,6 +22,7 @@
   export let isSIP: boolean;
   export let extensionNumber: number;
   export let title: string;
+  export let img: string;
   export let embeddable: boolean;
   export let uuid;
   export let index;
@@ -38,11 +39,6 @@
   let isLoading = false;
   let SIPrequestIsSubmitted = false;
 
-  // Notification
-  let displaySIPErrorNotification = false;
-  let displayICErrorNotification = false;
-  let displayNewSIPErrorNotification = false;
-
   // Meeting URL
   let incomingMeetingURL: string = '';
   let meetingURL: string = '';
@@ -55,66 +51,71 @@
     (isIC && MEETING_TYPE_OPTIONS.INSTANT_CONNECT) ||
     ((isSIP && MEETING_TYPE_OPTIONS.SIP_URI_DIALING) as MEETING_TYPE_OPTIONS);
 
-  let displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
-  const socketIO = io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: uuid } });
+  const displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
+  const enableSocket = !!isIC || !!isSDK;
+  const socketIO = enableSocket ? io(import.meta.env.PUBLIC_SOAP_BOX_URL, { query: { room: uuid } }) : null;
   const isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
+
   $requesterIDStore = $requesterIDStore ? $requesterIDStore : uuidv4();
+  $hideSIPWarningStore = false;
 
-  socketEventHandler(socketIO, $requesterIDStore, (event, payload = {}) => {
-    switch (event) {
-      case CONST.SDK_JOIN_SESSION:
-        readyToJoin = true;
-        incomingMeetingURL = `${payload.meetingUrl}&autoDial=true&embedSize=desktop&sessionId=${$requesterIDStore}`;
-        requestSubmitted = false;
-        break;
+  if (enableSocket) {
+    socketEventHandler(socketIO, $requesterIDStore, (event, payload = {}) => {
+      switch (event) {
+        case CONST.SDK_JOIN_SESSION:
+          readyToJoin = true;
+          incomingMeetingURL = `${payload.meetingUrl}&autoDial=true&embedSize=desktop&sessionId=${$requesterIDStore}`;
+          requestSubmitted = false;
+          break;
 
-      case CONST.SDK_LEAVE_SESSION:
-        meetingURL = '';
-        displayIframe = false;
-        readyToJoin = false;
-        iframeIsLoading = false;
-        cancelRequest();
-        break;
+        case CONST.SDK_LEAVE_SESSION:
+          meetingURL = '';
+          displayIframe = false;
+          readyToJoin = false;
+          iframeIsLoading = false;
+          cancelRequest();
+          break;
 
-      case CONST.IC_JOIN_SESSION:
-        readyToJoin = true;
-        incomingMeetingURL = payload.meetingUrl;
-        requestSubmitted = false;
-        break;
+        case CONST.IC_JOIN_SESSION:
+          readyToJoin = true;
+          incomingMeetingURL = payload.meetingUrl;
+          requestSubmitted = false;
+          break;
 
-      case CONST.IC_LEAVE_SESSION:
-        displayIframe = false;
-        readyToJoin = false;
-        iframeIsLoading = false;
-        cancelRequest();
-        break;
+        case CONST.IC_LEAVE_SESSION:
+          displayIframe = false;
+          readyToJoin = false;
+          iframeIsLoading = false;
+          cancelRequest();
+          break;
 
-      case CONST.SET_QUEUE_POSITION:
-        $queueOrderStore = payload.queuePosition;
-        break;
+        case CONST.SET_QUEUE_POSITION:
+          $queueOrderStore = payload.queuePosition;
+          break;
 
-      case CONST.UPDATE_QUEUE_POSITION:
-        if (payload.queuePosition < $queueOrderStore) {
-          $queueOrderStore -= 1;
-        }
-        break;
+        case CONST.UPDATE_QUEUE_POSITION:
+          if (payload.queuePosition < $queueOrderStore) {
+            $queueOrderStore -= 1;
+          }
+          break;
 
-      case CONST.CANCEL_REQUEST:
-        requestSubmitted = false;
-        displayIframe = false;
-        readyToJoin = false;
-        break;
+        case CONST.CANCEL_REQUEST:
+          requestSubmitted = false;
+          displayIframe = false;
+          readyToJoin = false;
+          break;
 
-      case CONST.LIST_QUEUE:
-        requestSubmitted = payload.queue.some((q) => q.value === $requesterIDStore);
+        case CONST.LIST_QUEUE:
+          requestSubmitted = payload.queue.some((q) => q.value === $requesterIDStore);
 
-        break;
+          break;
 
-      case CONST.UPDATE_REQUEST:
-        requestInfo = payload.data;
-        break;
-    }
-  });
+        case CONST.UPDATE_REQUEST:
+          requestInfo = payload.data;
+          break;
+      }
+    });
+  }
 
   const displayNotification = (props) => {
     dispatch('notif', {
@@ -168,7 +169,10 @@
         }, 2000);
       } else {
         isLoading = true;
-        displayNotification({ type: NOTIFICATION_VALUES.NEW_SIP_ERROR, extensionNumber: extensionNumber });
+        if (!$hideSIPWarningStore) {
+          displayNotification({ type: NOTIFICATION_VALUES.NEW_SIP_ERROR, extensionNumber: extensionNumber });
+          $hideSIPWarningStore = true;
+        }
         setTimeout(() => {
           isLoading = false;
         }, 1000);
@@ -208,18 +212,17 @@
   };
 
   onMount(() => {
-    socketIO.on(CONST.CONNECT, () => {
-      const message = { command: CONST.LIST, set: CONST.QUEUE, id: CONST.INIT_LIST, key: CONST.LIST };
-      socketIO.emit(CONST.MESSAGE, message);
-      socketIO.emit(CONST.JOIN, $requesterIDStore);
-    });
+    if (enableSocket) {
+      socketIO.on(CONST.CONNECT, () => {
+        const message = { command: CONST.LIST, set: CONST.QUEUE, id: CONST.INIT_LIST, key: CONST.LIST };
+        socketIO.emit(CONST.MESSAGE, message);
+        socketIO.emit(CONST.JOIN, $requesterIDStore);
+      });
+    }
 
-    if (browser) {
+    if (browser && enableSocket) {
       // Register a listener to trigger an event if the content of the tab has become visible or hidden
       window.addEventListener(CONST.VISIBILITY_CHANGE, () => {
-        if (SIPrequestIsSubmitted) {
-        }
-
         sendBrowserVisibilityStatus(
           document.visibilityState === CONST.VISIBILITY_HIDDEN
             ? BROWSER_VISIBILITY_STATUS.INACTIVE
@@ -234,10 +237,10 @@
       disableSIPOption = true;
     }
 
-    if (isDevice && isIC) displayICErrorNotification = true;
-
     return () => {
-      socketIO.disconnect();
+      if (enableSocket) {
+        socketIO.disconnect();
+      }
     };
   });
 </script>
@@ -266,9 +269,9 @@
   {/if}
   {#if !displayIframe}
     <div
-      class="box is-flex is-flex-direction-column is-translucent-black pb-5 "
+      class="box is-flex is-flex-direction-column is-translucent-black pb-5 mx-5"
       class:embeddable
-      style={embeddable ? 'padding: 1.5rem; width: 20rem' : 'padding: 2.5rem; min-width: 30rem'}
+      style={embeddable ? 'padding: 1.5rem; width: 20rem' : 'padding: 2rem; min-width: 30rem'}
     >
       {#if readyToJoin}
         <div class="has-text-centered has-text-white {embeddable ? 'is-size-6' : 'is-size-5'} mb-4">
@@ -293,16 +296,16 @@
         </button>
       {:else}
         <div>
-          <div class="title has-text-white  has-text-centered {embeddable ? 'is-size-5' : 'is-size-4'} ">
-            {title}
+          <div class="has-text-centered">
+            <!-- {title} -->
+            <img style={embeddable ? 'height: 10rem' : 'height: 15rem'} src={img} alt={''} on:load />
           </div>
           <button
-            class="button {embeddable ? 'is-size-6' : 'is-size-5'} is-primary is-centered mb-5 {isLoading &&
-              'is-loading'}"
-            style={embeddable ? 'margin-top: 1.25rem; width: 100%;' : 'margin-top: 1.75rem; width: 100%;'}
+            class="button {embeddable ? 'is-size-5' : 'is-size-4'} is-primary is-centered  {isLoading && 'is-loading'}"
+            style={embeddable ? 'margin-top: 1rem; width: 100%;' : 'margin-top: 1.25rem; width: 100%;'}
             disabled={disableJoinButton && isSIP && !isIC && !isSDK}
             on:click={submitRequest}
-            >Click Here
+            >{title}
           </button>
           <div
             class="control is-justify-content-space-around is-flex has-text-white is-size-6"
@@ -327,20 +330,12 @@
                   <input
                     type="radio"
                     name="meeting"
-                    disabled={isDevice}
                     checked={meetingType === MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
                     value={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
                     on:change={(e) => (meetingType = MEETING_TYPE_OPTIONS.INSTANT_CONNECT)}
                   />
-                  {#if isDevice}
-                    <s class="has-text-grey">
-                      <span class="is-hidden-mobile">Instant Connect</span>
-                      <span class="is-hidden-tablet  ">IC</span>
-                    </s>
-                  {:else}
-                    <span class="is-hidden-mobile">Instant Connect</span>
-                    <span class="is-hidden-tablet  ">IC</span>
-                  {/if}
+                  <span class="is-hidden-mobile">Instant Connect</span>
+                  <span class="is-hidden-tablet  ">IC</span>
                 </label>
               {/if}
               {#if isSIP}

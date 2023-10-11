@@ -4,13 +4,14 @@
   import BrandFields from './.Part2BrandFields.svelte';
   import MeetingTypesOptionsFields from './.Part3MeetingTypesOptionsFields.svelte';
   import MiscFields from './.Part4MiscFields.svelte';
-  import DemoSampleModal from './.DemoSampleModal.svelte';
+  import DemoSampleModal from './.DemoSampleModal/index.svelte';
 
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import { form as formInput } from './utils/form';
+
   import Modal from '$components/Modal/Modal.svelte';
+  import { previewedDemoStore } from '$lib/store';
 
   export let form = undefined;
   export let name = undefined;
@@ -33,6 +34,24 @@
   let formElement: HTMLFormElement;
   let showModal = false;
 
+  $previewedDemoStore = {
+    name,
+    description,
+    poster: poster,
+    brightness,
+    logo: logo,
+    title,
+    subtitle,
+    cityId: cityId || 4887398,
+    SDK: isSDK,
+    IC: isIC,
+    SIP: isSIP || (!isSDK && !isIC && true),
+    units: units || 'imperial',
+    SIPQueues,
+    displayFootnote,
+    displayWeather: !!cityId
+  };
+
   const toFileList = (file?: { bits: string; name: string; lastModified: number; type: string }) =>
     file != null
       ? urlEncodedRequest(file.bits)
@@ -46,12 +65,13 @@
           })
       : Promise.reject();
 
-  onMount(() => form && scrollTo(null, formElement.scrollHeight));
+  onMount(() => {
+    return form && scrollTo(null, formElement.scrollHeight);
+  });
 </script>
 
 <form
   id="demo-create"
-  use:formInput
   class="container px-4 mb-6"
   action={'./save' + (id == null ? '' : '?_method=PATCH')}
   method="post"
@@ -72,7 +92,7 @@
     <BrandFields {title} {subtitle} />
   {/await}
   <hr />
-  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {SIPQueues} />
+  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {SIPQueues} {id} />
   <hr />
   <MiscFields {units} {cityId} {displayFootnote} />
   <hr />
@@ -84,12 +104,26 @@
       </div>
     {/if}
     <div class="column is-12">
-      <button class="button is-medium is-rounded is-success is-fullwidth" type="submit">
-        <span class="icon">
-          <i class="mdi mdi-content-save-plus" />
-        </span>
-        <span>Save</span>
-      </button>
+      <div class="columns">
+        <button
+          type="button"
+          on:click={() => {
+            showModal = true;
+          }}
+          class="column is-one-third button is-medium is-rounded is-info mr-4 "
+        >
+          <span class="icon">
+            <i class="mdi mdi-eye-circle-outline" />
+          </span>
+          <span>Preview Demo</span>
+        </button>
+        <button class="column button is-medium is-rounded is-success " type="submit">
+          <span class="icon">
+            <i class="mdi mdi-content-save-plus" />
+          </span>
+          <span>Save</span>
+        </button>
+      </div>
     </div>
     <div class="column is-12 has-text-danger">
       {form ?? ''}
@@ -101,15 +135,17 @@
       showModal = true;
     }}
     type="button"
-    class="sample button is-rounded is-warning is-light"
+    class="sample button is-rounded is-info is-light px-5"
   >
-    Demo Sample
+    Preview Demo
   </button>
 </form>
 
-<Modal bind:showModal>
-  <DemoSampleModal />
-</Modal>
+{#key $previewedDemoStore}
+  <Modal bind:showModal>
+    <DemoSampleModal />
+  </Modal>
+{/key}
 
 <style>
   .sample {

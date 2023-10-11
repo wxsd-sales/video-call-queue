@@ -3,34 +3,29 @@
   import { MEETING_TYPE_OPTIONS } from '$lib/enums';
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
-
-  import { generateMacro } from '$lib/static/macro/WxCQ.js';
-
-  import { isFormValid, form as formInput } from './utils/form';
-  import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
   import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
-  import { SIPQueuesStore } from '$lib/store';
+
+  import { generateMacro } from '$lib/webex/macro/WxCQ.js';
+  import { previewedDemoStore, SIPQueuesStore } from '$lib/store';
+  import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
+
+  import { onMount } from 'svelte';
 
   export let isSDK: boolean;
   export let isIC: boolean;
   export let isSIP: boolean;
-  export let SIPQueues = [
-    {
-      videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
-      extensionNumber: 1111,
-      sipTitle: 'Looking For Assistance?'
-    }
-  ];
+  export let id: string;
+  export let SIPQueues = [];
 
   let isNotRequired = isSDK || isIC || isSIP;
   let SDKCheckBoxElement: HTMLInputElement;
   let ICCheckBoxElement: HTMLInputElement;
   let SIPCheckBoxElement: HTMLInputElement;
   let generateIsLoading = false;
+  let macroButtonIsDisabled = false;
   let code = generateMacro(SIPQueues);
   let showModal = false;
 
-  // validity.subscribe((x) => console.log(x));
   /**
    * All checkboxes required statues may disable if only one checkbox is checked.
    *
@@ -38,19 +33,30 @@
    */
   const handleCheckboxesRequiredStatus = () => {
     isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked || SIPCheckBoxElement.checked;
+    $previewedDemoStore.IC = ICCheckBoxElement.checked;
+    $previewedDemoStore.SDK = SDKCheckBoxElement.checked;
+    $previewedDemoStore.SIP = SIPCheckBoxElement.checked;
   };
 
   //IC & SDK option will be disabled if multiple SIP queues is enabled
-  $: isIC = SIPQueues.length > 1 ? false : isIC;
-  $: isSDK = SIPQueues.length > 1 ? false : isSDK;
+  $: isIC = $previewedDemoStore.IC = SIPQueues.length > 1 ? false : isIC;
+  $: isSDK = $previewedDemoStore.SDK = SIPQueues.length > 1 ? false : isSDK;
   $: if (!isSIP)
-    SIPQueues = [
+    $previewedDemoStore.SIPQueues = SIPQueues = [
       {
         videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
         extensionNumber: 1111,
-        sipTitle: 'Looking For Assistance?'
+        sipTitle: 'Looking For Assistance?',
+        sipImage: null
       }
     ];
+
+  onMount(() => {
+    $SIPQueuesStore = {
+      ...$SIPQueuesStore,
+      [id]: $SIPQueuesStore && $SIPQueuesStore[`${id}`] ? $SIPQueuesStore[`${id}`] : SIPQueues
+    };
+  });
 </script>
 
 <div class="columns is-multiline">
@@ -66,6 +72,7 @@
     <label class="checkbox">
       <input
         type="checkbox"
+        bind:value={isSDK}
         bind:checked={isSDK}
         id={MEETING_TYPE_OPTIONS.BROWSER_SDK}
         name={MEETING_TYPE_OPTIONS.BROWSER_SDK}
@@ -131,7 +138,7 @@
   </div>
 
   {#if isSIP}
-    <div use:formInput transition:slide class="columns ml-4 mr-4 is-multiline">
+    <div transition:slide class="columns mx-4 is-multiline">
       <div class="column is-full ">
         <h3 class="mt-6 title is-size-5">Video SIP Call Queue Macro Builder</h3>
       </div>
@@ -164,12 +171,14 @@
           on:click={() => {
             SIPQueues = [
               ...SIPQueues,
-              $SIPQueuesStore[SIPQueues.length] || {
+              $SIPQueuesStore[`${id}`][SIPQueues.length] || {
                 videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
                 extensionNumber: 1111,
-                sipTitle: 'Looking For Assistance?'
+                sipTitle: 'Looking For Assistance?',
+                sipImage: null
               }
             ];
+            $previewedDemoStore.SIPQueues = SIPQueues;
           }}
         >
           <span class="icon">
@@ -178,26 +187,31 @@
           <span>Add More SIP URIs</span>
         </button>
       </div>
-      {#each SIPQueues as { videoLink, extensionNumber, sipTitle }, i}
+      {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
         <SIPQueueField
           {extensionNumber}
           {videoLink}
           index={i}
           {sipTitle}
+          {sipImage}
+          on:queueIsValid={({ detail: formIsValid }) => (macroButtonIsDisabled = !formIsValid)}
           on:sipQs={({ detail: { event, payload } }) => {
             switch (event) {
               case 'update':
-                const { index, videoLink, sipTitle, extensionNumber } = payload;
-                SIPQueues[index] = { videoLink, sipTitle, extensionNumber };
-                $SIPQueuesStore = SIPQueues;
+                const { index, videoLink, sipTitle, extensionNumber, sipImage } = payload;
+                SIPQueues[index] = {
+                  videoLink,
+                  sipTitle,
+                  extensionNumber,
+                  sipImage
+                };
+                $SIPQueuesStore[`${id}`] = SIPQueues;
                 break;
               case 'remove':
-                SIPQueues = [
-                  ...SIPQueues.slice(0, payload.index),
-                  ...SIPQueues.slice(payload.index + 1, SIPQueues.length)
-                ];
+                SIPQueues = [...SIPQueues.slice(0, payload.index), ...SIPQueues.slice(payload.index + 1)];
                 break;
             }
+            $previewedDemoStore.SIPQueues = SIPQueues;
           }}
         />
       {/each}
@@ -207,7 +221,7 @@
       <div class="column is-flex p-0 is-justify-content-space-between is-align-items-center">
         <div class="mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
         <button
-          disabled={!$isFormValid}
+          disabled={macroButtonIsDisabled}
           class:is-loading={generateIsLoading}
           type="button"
           class="button is-small is-rounded is-primary is-light m-2 "

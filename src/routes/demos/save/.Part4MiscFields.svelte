@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { previewedDemoStore } from '$lib/store';
   import { slide } from 'svelte/transition';
 
   export let units;
@@ -18,9 +19,11 @@
         <input
           type="checkbox"
           id="weather"
+          name="weather"
           bind:checked
           on:input={() => {
             cityId = checked ? null : 4887398;
+            $previewedDemoStore.displayWeather = !checked;
           }}
         />
         Show weather information for a particular city using data from
@@ -35,7 +38,12 @@
           <label class="label" for="units">Units <sup class="has-text-danger" title="required">*</sup></label>
           <div class="control has-icons-left">
             <span class="select is-empty is-fullwidth">
-              <select name="units" id="units" bind:value={units}>
+              <select
+                name="units"
+                id="units"
+                bind:value={units}
+                on:input={(e) => ($previewedDemoStore.units = e.target.value)}
+              >
                 <option value="imperial">Imperial &mdash; &deg;F</option>
                 <option value="metric">Metric &mdash; &deg;C</option>
               </select>
@@ -59,6 +67,7 @@
               placeholder="4887398"
               required
               bind:value={cityId}
+              on:input={(e) => ($previewedDemoStore.cityId = e.target.value)}
             />
             <span class="icon is-left">
               <i class="mdi mdi-numeric" />
@@ -77,7 +86,13 @@
   <div class="column is-full content mb-0">
     <label for="weather">
       <p>
-        <input type="checkbox" id="displayFootnote" name="displayFootnote" bind:checked={displayFootnote} />
+        <input
+          type="checkbox"
+          id="displayFootnote"
+          name="displayFootnote"
+          bind:checked={displayFootnote}
+          on:input={(e) => ($previewedDemoStore.displayFootnote = !displayFootnote)}
+        />
         Show WXSD footnote.
       </p>
     </label>

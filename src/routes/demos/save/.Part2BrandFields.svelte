@@ -1,5 +1,6 @@
 <script lang="ts">
   import Brand from '$components/Brand/Brand.svelte';
+  import { previewedDemoStore } from '$lib/store';
   import { onMount } from 'svelte';
 
   export let logo: FileList = undefined;
@@ -14,12 +15,27 @@
   let naturalHeight: number;
   let naturalWidth: number;
 
-  export const handleLogoUpload = (ev: Event) => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
+
+  export const handleLogoUpload = async (ev: Event) => {
     clientHeight = clientWidth = naturalHeight = naturalWidth = undefined;
     const file = (ev.target as HTMLInputElement)?.files?.[0];
-    file?.size > maxFileSize
-      ? (ev.target as HTMLInputElement).setCustomValidity('File size is too large.')
-      : (ev.target as HTMLInputElement).setCustomValidity('');
+    if (file?.size > maxFileSize) {
+      (ev.target as HTMLInputElement).setCustomValidity('File size is too large.');
+    } else if (file) {
+      (ev.target as HTMLInputElement).setCustomValidity('');
+      const payload = {
+        file: { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified }
+      };
+
+      $previewedDemoStore.logo = payload.file;
+    }
     (ev.target as HTMLInputElement).reportValidity();
   };
 
@@ -79,6 +95,7 @@
         maxlength="16"
         placeholder="Cisco Systems, Inc."
         bind:value={title}
+        on:input={(e) => ($previewedDemoStore.title = e.target.value)}
       />
       <span class="icon is-left">
         <i class="mdi mdi-format-header-1" />
@@ -97,6 +114,7 @@
         placeholder="Bridge to Possible"
         maxlength="64"
         bind:value={subtitle}
+        on:input={(e) => ($previewedDemoStore.subtitle = e.target.value)}
       />
       <span class="icon is-left">
         <i class="mdi mdi-format-header-2" />

@@ -16,7 +16,6 @@
   export let role: string;
   export let embeddable: boolean;
 
-  console.log(demo);
   let getWeatherResponse;
   const httpApiRequest = jsonRequest('/api');
 
@@ -27,9 +26,10 @@
 </script>
 
 <svelte:head>
-  <script crossorigin src="https://unpkg.com/webex@^2/umd/webex.min.js"></script>
+  {#if demo.isSDK || demo.isIC}
+    <script crossorigin src="https://unpkg.com/webex@^2/umd/webex.min.js"></script>
+  {/if}
 </svelte:head>
-
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
 <section id="hero" class="hero is-fullheight has-text-white is-dark">
   {#if !embeddable}
