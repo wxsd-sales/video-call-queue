@@ -7,11 +7,12 @@ import { classTransformOptions, classValidationOptions } from '../../.utils';
 import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
 
-const generateSIPCardData = (title: string, extensionNumber: number, img: Data| null) => (
+const generateSIPCardData = (title: string, extensionNumber: number, img: Data | null) =>
   title && {
-    title, extensionNumber, img: img ? 'data:' + img.type + ';base64,' + img.bits.toString('base64') : null
-  } 
-);
+    title,
+    extensionNumber,
+    img: img ? 'data:' + img.type + ';base64,' + img.bits.toString('base64') : null
+  };
 
 export const GET = async (requestEvent: RequestEvent) => {
   class RequestQueryDTO {
@@ -100,14 +101,14 @@ export const GET = async (requestEvent: RequestEvent) => {
           sipImage2: Data | null;
           sipImage3: Data | null;
           sipImage4: Data | null;
-          sipTitle1: string,
-          extensionNumber1: number,
-          sipTitle2: string,
-          extensionNumber2: number,
-          sipTitle3: string,
-          extensionNumber3: number,
-          sipTitle4: string,
-          extensionNumber4: number,
+          sipTitle1: string;
+          extensionNumber1: number;
+          sipTitle2: string;
+          extensionNumber2: number;
+          sipTitle3: string;
+          extensionNumber3: number;
+          sipTitle4: string;
+          extensionNumber4: number;
         } = r;
         (demo as JSONObject)['brandLogo'] = 'data:' + brandLogo.type + ';base64,' + brandLogo.bits.toString('base64');
         (demo as JSONObject)['backgroundPoster'] =

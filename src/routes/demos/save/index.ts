@@ -20,16 +20,14 @@ import { classTransformOptions, classValidationOptions } from '../../.utils';
 import env from '$lib/environment';
 import { LoadStrategy } from '@mikro-orm/core';
 
+const toFile = ({ bits, name, lastModified, type }: Data) => ({
+  bits: 'data:' + type + ';base64,' + bits.toString('base64'),
+  name,
+  lastModified,
+  type: type
+});
 
-const toFile = ({ bits, name, lastModified, type }: Data) => 
-  ({
-    bits: 'data:' + type + ';base64,' + bits.toString('base64'),
-    name,
-    lastModified,
-    type: type
-  });
-
-const toData = async (file: File) => 
+const toData = async (file: File) =>
   new Data({
     bits: Buffer.from(await file.arrayBuffer()),
     type: file.type,
@@ -113,13 +111,13 @@ export const GET = async (requestEvent: RequestEvent) => {
                   extensionNumber: r.extensionNumber1,
                   videoLink: r.videoLink1,
                   sipTitle: r.sipTitle1 || 'Looking for Assistance?',
-                  sipImage: r.sipImage1 ? toFile(r.sipImage1) : null,
+                  sipImage: r.sipImage1 ? toFile(r.sipImage1) : null
                 },
                 r?.extensionNumber2 && {
                   extensionNumber: r.extensionNumber2,
                   videoLink: r.videoLink2,
                   sipTitle: r.sipTitle2,
-                  sipImage: r.sipImage2 ? toFile(r.sipImage2) : null,
+                  sipImage: r.sipImage2 ? toFile(r.sipImage2) : null
                 },
                 r?.extensionNumber3 && {
                   extensionNumber: r.extensionNumber3,
@@ -320,7 +318,7 @@ export const POST = async (requestEvent: RequestEvent) => {
         videoLink1: formData.videoLink1,
         extensionNumber1: formData.extensionNumber1,
         sipTitle1: formData.sipTitle1,
-        sipImage1: formData.sipImage1 ? await toData(formData.sipImage1): null,
+        sipImage1: formData.sipImage1 ? await toData(formData.sipImage1) : null,
         videoLink2: formData.videoLink2,
         extensionNumber2: formData.extensionNumber2,
         sipTitle2: formData.sipTitle2,
@@ -516,7 +514,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           }
         )
         .then(async (r) => {
-          
           r.name = formData.name;
           r.description = formData.description;
           r.backgroundBrightness = formData.brightness;
@@ -546,11 +543,11 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.videoLink3 = formData.videoLink3;
           r.extensionNumber3 = formData.extensionNumber3;
           r.sipTitle3 = formData.sipTitle3;
-          r.sipImage3 = formData.sipImage3 ? await toData(formData.sipImage3) : null;;
+          r.sipImage3 = formData.sipImage3 ? await toData(formData.sipImage3) : null;
           r.videoLink4 = formData.videoLink4;
           r.extensionNumber4 = formData.extensionNumber4;
           r.sipTitle4 = formData.sipTitle4;
-          r.sipImage4 = formData.sipImage4 ? await toData(formData.sipImage4) : null;;
+          r.sipImage4 = formData.sipImage4 ? await toData(formData.sipImage4) : null;
           r.displayFootnote = formData.displayFootnote;
 
           await db.persistAndFlush(r);
