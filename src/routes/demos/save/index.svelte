@@ -45,7 +45,7 @@
     cityId: cityId || 4887398,
     SDK: isSDK,
     IC: isIC,
-    SIP: isSIP,
+    SIP: isSIP || (!isSDK && !isIC && true),
     units: units || 'imperial',
     SIPQueues,
     displayFootnote,
