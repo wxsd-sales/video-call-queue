@@ -16,7 +16,6 @@
 
   let getWeatherResponse;
   const httpApiRequest = jsonRequest('/api');
-
   getWeatherResponse = (id: number, units: string) =>
     httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
 </script>

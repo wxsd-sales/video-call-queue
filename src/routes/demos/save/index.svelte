@@ -141,9 +141,11 @@
   </button>
 </form>
 
-<Modal bind:showModal>
-  <DemoSampleModal />
-</Modal>
+{#key $previewedDemoStore}
+  <Modal bind:showModal>
+    <DemoSampleModal />
+  </Modal>
+{/key}
 
 <style>
   .sample {

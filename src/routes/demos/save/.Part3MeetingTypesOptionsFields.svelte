@@ -138,7 +138,7 @@
   </div>
 
   {#if isSIP}
-    <div transition:slide class="columns ml-4 mr-4 is-multiline">
+    <div transition:slide class="columns mx-4 is-multiline">
       <div class="column is-full ">
         <h3 class="mt-6 title is-size-5">Video SIP Call Queue Macro Builder</h3>
       </div>

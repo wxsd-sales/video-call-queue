@@ -1,17 +1,15 @@
 <script lang="ts">
-  import CustomerSupportImg from '$lib/static/img/customer-support.svg';
-
   export let isSDK: boolean;
   export let isIC: boolean;
   export let isSIP: boolean;
   export let title: string;
-  export let sipImage = CustomerSupportImg;
+  export let sipImage: string;
 
   $: displayMeetingOptions = isSDK ? isIC || isSIP : isIC && isSIP;
 </script>
 
 <div class="prompt box is-translucent-black is-flex is-flex-direction-column">
-  <img src={CustomerSupportImg} alt="sipImage" class="is-align-self-center mb-2" on:load />
+  <img src={sipImage} alt="sipImage" class="is-align-self-center mb-2" on:load />
   <button disabled class="button is-primary is-centered mb-4 mx-2">{title} </button>
   <div class="control is-justify-content-space-around is-flex has-text-white is-size-6 mb-2">
     {#if displayMeetingOptions}
