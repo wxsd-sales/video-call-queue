@@ -4,10 +4,6 @@
 
   export let name: string;
   export let description: string;
-
-  onDestroy(() => {
-    name = '';
-  });
 </script>
 
 <div class="columns is-multiline">
