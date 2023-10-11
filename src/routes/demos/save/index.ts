@@ -20,8 +20,63 @@ import { classTransformOptions, classValidationOptions } from '../../.utils';
 import env from '$lib/environment';
 import { LoadStrategy } from '@mikro-orm/core';
 
-/** @typedef {import('class-validator').ValidationError} ValidationError */
 
+const toFile = ({ bits, name, lastModified, type }: Data) => 
+  ({
+    bits: 'data:' + type + ';base64,' + bits.toString('base64'),
+    name,
+    lastModified,
+    type: type
+  });
+
+const toData = async (file: File) => 
+  new Data({
+    bits: Buffer.from(await file.arrayBuffer()),
+    type: file.type,
+    name: file.name,
+    lastModified: file.lastModified
+  });
+
+const fields = [
+  'uuid',
+  'name',
+  'description',
+  'backgroundBrightness',
+  'backgroundPoster.bits',
+  'backgroundPoster.name',
+  'backgroundPoster.type',
+  'backgroundPoster.lastModified',
+  'brandTitle',
+  'brandSubtitle',
+  'brandLogo.bits',
+  'brandLogo.name',
+  'brandLogo.type',
+  'brandLogo.lastModified',
+  'weatherUnits',
+  'weatherCityId',
+  'isSDK',
+  'isIC',
+  'isSIP',
+  'videoLink1',
+  'extensionNumber1',
+  'sipTitle1',
+  'sipImage1',
+  'videoLink2',
+  'extensionNumber2',
+  'sipTitle2',
+  'sipImage2',
+  'videoLink3',
+  'extensionNumber3',
+  'sipTitle3',
+  'sipImage3',
+  'videoLink4',
+  'extensionNumber4',
+  'sipTitle4',
+  'sipImage4',
+  'displayFootnote'
+];
+
+/** @typedef {import('class-validator').ValidationError} ValidationError */
 export const GET = async (requestEvent: RequestEvent) => {
   const demoId = requestEvent.url.searchParams.get('id');
   const db = requestEvent.locals.db;
@@ -33,44 +88,7 @@ export const GET = async (requestEvent: RequestEvent) => {
           Demo,
           { uuid: demoId, user: { uuid: session?.user?.uuid } },
           {
-            fields: [
-              'uuid',
-              'name',
-              'description',
-              'backgroundBrightness',
-              'backgroundPoster.bits',
-              'backgroundPoster.name',
-              'backgroundPoster.type',
-              'backgroundPoster.lastModified',
-              'brandTitle',
-              'brandSubtitle',
-              'brandLogo.bits',
-              'brandLogo.name',
-              'brandLogo.type',
-              'brandLogo.lastModified',
-              'weatherUnits',
-              'weatherCityId',
-              'isSDK',
-              'isIC',
-              'isSIP',
-              'extensionNumber1',
-              'videoLink1',
-              'sipTitle1',
-              'sipImage1',
-              'extensionNumber2',
-              'videoLink2',
-              'sipTitle2',
-              'sipImage2',
-              'extensionNumber3',
-              'videoLink3',
-              'sipTitle3',
-              'sipImage3',
-              'extensionNumber4',
-              'videoLink4',
-              'sipTitle4',
-              'sipImage4',
-              'displayFootnote'
-            ],
+            fields,
             strategy: LoadStrategy.JOINED
           }
         )
@@ -80,19 +98,9 @@ export const GET = async (requestEvent: RequestEvent) => {
             body: {
               name: r.name,
               description: r.description,
-              poster: {
-                bits: 'data:' + r.backgroundPoster.type + ';base64,' + r.backgroundPoster.bits.toString('base64'),
-                name: r.backgroundPoster.name,
-                lastModified: r.backgroundPoster.lastModified,
-                type: r.backgroundPoster.type
-              },
+              poster: toFile(r.backgroundPoster),
               brightness: r.backgroundBrightness,
-              logo: {
-                bits: 'data:' + r.brandLogo.type + ';base64,' + r.brandLogo.bits.toString('base64'),
-                name: r.brandLogo.name,
-                lastModified: r.brandLogo.lastModified,
-                type: r.brandLogo.type
-              },
+              logo: toFile(r.brandLogo),
               title: r.brandTitle,
               subtitle: r.brandSubtitle,
               cityId: r.weatherCityId,
@@ -105,53 +113,25 @@ export const GET = async (requestEvent: RequestEvent) => {
                   extensionNumber: r.extensionNumber1,
                   videoLink: r.videoLink1,
                   sipTitle: r.sipTitle1 || 'Looking for Assistance?',
-                  sipImage: r.sipImage1
-                    ? {
-                        bits: 'data:' + r.sipImage1.type + ';base64,' + r.sipImage1.bits.toString('base64'),
-                        name: r.sipImage1.name,
-                        lastModified: r.sipImage1.lastModified,
-                        type: r.sipImage1.type
-                      }
-                    : null
+                  sipImage: r.sipImage1 ? toFile(r.sipImage1) : null,
                 },
                 r?.extensionNumber2 && {
                   extensionNumber: r.extensionNumber2,
                   videoLink: r.videoLink2,
                   sipTitle: r.sipTitle2,
-                  sipImage: r.sipImage2
-                    ? {
-                        bits: 'data:' + r.sipImage2.type + ';base64,' + r.sipImage2.bits.toString('base64'),
-                        name: r.sipImage2.name,
-                        lastModified: r.sipImage2.lastModified,
-                        type: r.sipImage2.type
-                      }
-                    : null
+                  sipImage: r.sipImage2 ? toFile(r.sipImage2) : null,
                 },
                 r?.extensionNumber3 && {
                   extensionNumber: r.extensionNumber3,
                   videoLink: r.videoLink3,
                   sipTitle: r.sipTitle3,
-                  sipImage: r.sipImage3
-                    ? {
-                        bits: 'data:' + r.sipImage3.type + ';base64,' + r.sipImage3.bits.toString('base64'),
-                        name: r.sipImage3.name,
-                        lastModified: r.sipImage3.lastModified,
-                        type: r.sipImage3.type
-                      }
-                    : null
+                  sipImage: r.sipImage3 ? toFile(r.sipImage3) : null
                 },
                 r.extensionNumber4 && {
                   extensionNumber: r.extensionNumber4,
                   videoLink: r.videoLink4,
                   sipTitle: r.sipTitle4,
-                  sipImage: r.sipImage4
-                    ? {
-                        bits: 'data:' + r.sipImage4.type + ';base64,' + r.sipImage4.bits.toString('base64'),
-                        name: r.sipImage4.name,
-                        lastModified: r.sipImage4.lastModified,
-                        type: r.sipImage4.type
-                      }
-                    : null
+                  sipImage: r.sipImage4 ? toFile(r.sipImage4) : null
                 }
               ].filter(Boolean),
               displayFootnote: Boolean(r.displayFootnote)
@@ -327,19 +307,9 @@ export const POST = async (requestEvent: RequestEvent) => {
         user: session.user,
         name: formData.name,
         description: formData?.description,
-        backgroundPoster: new Data({
-          bits: Buffer.from(await formData.poster.arrayBuffer()),
-          type: formData.poster.type,
-          name: formData.poster.name,
-          lastModified: formData.poster.lastModified
-        }),
+        backgroundPoster: await toData(formData.poster),
         backgroundBrightness: formData.brightness,
-        brandLogo: new Data({
-          bits: Buffer.from(await formData.logo.arrayBuffer()),
-          type: formData.logo.type,
-          name: formData.logo.name,
-          lastModified: formData.logo.lastModified
-        }),
+        brandLogo: await toData(formData.logo),
         brandTitle: formData.title,
         brandSubtitle: formData.subtitle,
         weatherUnits: formData.units,
@@ -350,47 +320,19 @@ export const POST = async (requestEvent: RequestEvent) => {
         videoLink1: formData.videoLink1,
         extensionNumber1: formData.extensionNumber1,
         sipTitle1: formData.sipTitle1,
-        sipImage1: formData.sipImage1
-          ? new Data({
-              bits: Buffer.from(await formData.sipImage1.arrayBuffer()),
-              type: formData.sipImage1.type,
-              name: formData.sipImage1.name,
-              lastModified: formData.sipImage1.lastModified
-            })
-          : null,
+        sipImage1: formData.sipImage1 ? await toData(formData.sipImage1): null,
         videoLink2: formData.videoLink2,
         extensionNumber2: formData.extensionNumber2,
         sipTitle2: formData.sipTitle2,
-        sipImage2: formData.sipImage2
-          ? new Data({
-              bits: Buffer.from(await formData.sipImage2.arrayBuffer()),
-              type: formData.sipImage2.type,
-              name: formData.sipImage2.name,
-              lastModified: formData.sipImage2.lastModified
-            })
-          : null,
+        sipImage2: formData.sipImage2 ? await toData(formData.sipImage2) : null,
         videoLink3: formData.videoLink3,
         extensionNumber3: formData.extensionNumber3,
         sipTitle3: formData.sipTitle3,
-        sipImage3: formData.sipImage3
-          ? new Data({
-              bits: Buffer.from(await formData.sipImage3.arrayBuffer()),
-              type: formData.sipImage3.type,
-              name: formData.sipImage3.name,
-              lastModified: formData.sipImage3.lastModified
-            })
-          : null,
+        sipImage3: formData.sipImage3 ? await toData(formData.sipImage3) : null,
         videoLink4: formData.videoLink4,
         extensionNumber4: formData.extensionNumber4,
         sipTitle4: formData.sipTitle4,
-        sipImage4: formData.sipImage4
-          ? new Data({
-              bits: Buffer.from(await formData.sipImage4.arrayBuffer()),
-              type: formData.sipImage4.type,
-              name: formData.sipImage4.name,
-              lastModified: formData.sipImage4.lastModified
-            })
-          : null,
+        sipImage4: formData.sipImage4 ? await toData(formData.sipImage4) : null,
         displayFootnote: formData.displayFootnote
       });
       await db.persistAndFlush(demo);
@@ -562,7 +504,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
 
   const db = requestEvent.locals.db;
   const session = requestEvent.locals.session;
-
   const demoId = formData.id;
   return demoId != null
     ? await db
@@ -570,48 +511,12 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           Demo,
           { uuid: demoId, user: { uuid: session?.user?.uuid } },
           {
-            fields: [
-              'uuid',
-              'name',
-              'description',
-              'backgroundBrightness',
-              'backgroundPoster.bits',
-              'backgroundPoster.name',
-              'backgroundPoster.type',
-              'backgroundPoster.lastModified',
-              'brandTitle',
-              'brandSubtitle',
-              'brandLogo.bits',
-              'brandLogo.name',
-              'brandLogo.type',
-              'brandLogo.lastModified',
-              'weatherUnits',
-              'weatherCityId',
-              'isSDK',
-              'isIC',
-              'isSIP',
-              'videoLink1',
-              'extensionNumber1',
-              'sipTitle1',
-              'sipImage1',
-              'videoLink2',
-              'extensionNumber2',
-              'sipTitle2',
-              'sipImage2',
-              'videoLink3',
-              'extensionNumber3',
-              'sipTitle3',
-              'sipImage3',
-              'videoLink4',
-              'extensionNumber4',
-              'sipTitle4',
-              'sipImage4',
-              'displayFootnote'
-            ],
+            fields,
             strategy: LoadStrategy.JOINED
           }
         )
         .then(async (r) => {
+          
           r.name = formData.name;
           r.description = formData.description;
           r.backgroundBrightness = formData.brightness;
@@ -633,47 +538,19 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.videoLink1 = formData.videoLink1;
           r.extensionNumber1 = formData.extensionNumber1;
           r.sipTitle1 = formData.sipTitle1;
-          r.sipImage1 = formData.sipImage1
-            ? new Data({
-                bits: Buffer.from(await formData.sipImage1.arrayBuffer()),
-                type: formData.sipImage1.type,
-                name: formData.sipImage1.name,
-                lastModified: formData.sipImage1.lastModified
-              })
-            : null;
+          r.sipImage1 = formData.sipImage1 ? await toData(formData.sipImage1) : null;
           r.videoLink2 = formData.videoLink2;
           r.extensionNumber2 = formData.extensionNumber2;
           r.sipTitle2 = formData.sipTitle2;
-          r.sipImage2 = formData.sipImage2
-            ? new Data({
-                bits: Buffer.from(await formData.sipImage2.arrayBuffer()),
-                type: formData.sipImage2.type,
-                name: formData.sipImage2.name,
-                lastModified: formData.sipImage2.lastModified
-              })
-            : null;
+          r.sipImage2 = formData.sipImage2 ? await toData(formData.sipImage2) : null;
           r.videoLink3 = formData.videoLink3;
           r.extensionNumber3 = formData.extensionNumber3;
           r.sipTitle3 = formData.sipTitle3;
-          r.sipImage3 = formData.sipImage3
-            ? new Data({
-                bits: Buffer.from(await formData.sipImage3.arrayBuffer()),
-                type: formData.sipImage3.type,
-                name: formData.sipImage3.name,
-                lastModified: formData.sipImage3.lastModified
-              })
-            : null;
+          r.sipImage3 = formData.sipImage3 ? await toData(formData.sipImage3) : null;;
           r.videoLink4 = formData.videoLink4;
           r.extensionNumber4 = formData.extensionNumber4;
           r.sipTitle4 = formData.sipTitle4;
-          r.sipImage4 = formData.sipImage4
-            ? new Data({
-                bits: Buffer.from(await formData.sipImage4.arrayBuffer()),
-                type: formData.sipImage4.type,
-                name: formData.sipImage4.name,
-                lastModified: formData.sipImage4.lastModified
-              })
-            : null;
+          r.sipImage4 = formData.sipImage4 ? await toData(formData.sipImage4) : null;;
           r.displayFootnote = formData.displayFootnote;
 
           await db.persistAndFlush(r);

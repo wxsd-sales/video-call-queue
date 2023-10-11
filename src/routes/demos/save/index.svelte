@@ -105,23 +105,23 @@
     {/if}
     <div class="column is-12">
       <div class="columns">
-        <button class="column button is-medium is-rounded is-success mr-4" type="submit">
-          <span class="icon">
-            <i class="mdi mdi-content-save-plus" />
-          </span>
-          <span>Save</span>
-        </button>
         <button
           type="button"
           on:click={() => {
             showModal = true;
           }}
-          class="column button is-medium is-rounded is-warning "
+          class="column is-one-third button is-medium is-rounded is-info mr-4 "
         >
           <span class="icon">
             <i class="mdi mdi-eye-circle-outline" />
           </span>
           <span>Preview Demo</span>
+        </button>
+        <button class="column button is-medium is-rounded is-success " type="submit">
+          <span class="icon">
+            <i class="mdi mdi-content-save-plus" />
+          </span>
+          <span>Save</span>
         </button>
       </div>
     </div>
@@ -135,7 +135,7 @@
       showModal = true;
     }}
     type="button"
-    class="sample button is-rounded is-warning is-light px-5"
+    class="sample button is-rounded is-info is-light px-5"
   >
     Preview Demo
   </button>

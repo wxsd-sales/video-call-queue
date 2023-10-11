@@ -7,24 +7,11 @@
   export let demo: JSON;
   export let embeddable: boolean;
 
-  const { isSIP, isSDK, isIC, uuid } = demo;
-
-  let sipQueues = [{ title: 'Looking for Assistance?', extensionNumber: 1111, sipImage: customerSupport }];
+  const { isSIP, isSDK, isIC, uuid, sipQueues } = demo;
+  const queues = sipQueues ?? [{ title: 'Looking for Assistance?', extensionNumber: 1111, img: customerSupport }];
   let extensionNumber = 1111;
 
-  if (demo.isSIP) {
-    sipQueues = [
-      {
-        title: demo.sipTitle1 || 'Looking for Assistance?',
-        extensionNumber: demo.extensionNumber1,
-        sipImage: demo.sipImage1 || customerSupport
-      },
-      demo.sipTitle2 && { title: demo.sipTitle2, extensionNumber: demo.extensionNumber2, sipImage: demo.sipImage2 },
-      demo.sipTitle3 && { title: demo.sipTitle3, extensionNumber: demo.extensionNumber3, sipImage: demo.sipImage3 },
-      demo.sipTitle4 && { title: demo.sipTitle4, extensionNumber: demo.extensionNumber4, sipImage: demo.sipImage4 }
-    ].filter(Boolean);
-  }
-  embeddable = sipQueues.length > 1 ? true : embeddable;
+  embeddable = queues.length > 1 ? true : embeddable;
 
   let displaySIPErrorNotification = false;
   let displayNewSIPErrorNotification = false;
@@ -54,7 +41,7 @@
 </div>
 
 <div class="is-flex is-justify-content-space-evenly">
-  {#each sipQueues as { extensionNumber, title, sipImage }, index}
+  {#each queues as { extensionNumber, title, img }, index}
     <QueuePrompt
       {index}
       {uuid}
@@ -64,7 +51,7 @@
       {extensionNumber}
       {title}
       {embeddable}
-      {sipImage}
+      {img}
       on:notif={showNotif}
     />
   {/each}

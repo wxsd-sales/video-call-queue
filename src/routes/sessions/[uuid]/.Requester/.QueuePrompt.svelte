@@ -22,7 +22,7 @@
   export let isSIP: boolean;
   export let extensionNumber: number;
   export let title: string;
-  export let sipImage: string;
+  export let img: string;
   export let embeddable: boolean;
   export let uuid;
   export let index;
@@ -298,11 +298,12 @@
         <div>
           <div class="has-text-centered">
             <!-- {title} -->
-            <img style={embeddable ? 'height: 10rem' : 'height: 15rem'} src={sipImage} alt={''} on:load />
+            <img style={embeddable ? 'height: 10rem' : 'height: 15rem'} src={img} alt={''} on:load />
           </div>
           <button
             class="button {embeddable ? 'is-size-5' : 'is-size-4'} is-primary is-centered  {isLoading && 'is-loading'}"
             style={embeddable ? 'margin-top: 1rem; width: 100%;' : 'margin-top: 1.25rem; width: 100%;'}
+            disabled={disableJoinButton && isSIP && !isIC && !isSDK}
             on:click={submitRequest}
             >{title}
           </button>

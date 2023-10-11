@@ -12,9 +12,9 @@
   export let sipImage: any;
   export let index: number;
 
-  let extensionNumberIsValid = true;
-  let videoLinkIsValid = true;
-  let sipTitleIsValid = true;
+  let extensionNumberError: string;
+  let videoLinkError: string;
+  let sipTitleError: string;
   let formIsValid: boolean;
   let sipImageInput: HTMLInputElement;
 
@@ -32,10 +32,18 @@
 
   const dispatch = createEventDispatcher();
   const handleInputs = () => {
-    extensionNumberIsValid = !extensionNumber ? false : true;
-    videoLinkIsValid = !videoLink ? false : true;
-    sipTitleIsValid = !sipTitle ? false : true;
-    formIsValid = extensionNumberIsValid && videoLinkIsValid && sipTitleIsValid;
+    const extensionNumberRegex = new RegExp('^[0-9]{0,6}$');
+    const nullErrorMsgTemplate = (type: string) => `Please provide a valid ${type}`;
+
+    extensionNumberError = !extensionNumber
+      ? nullErrorMsgTemplate('extension number')
+      : !extensionNumberRegex.test(String(extensionNumber))
+      ? 'The input may consist of up to six numerical digits'
+      : '';
+    videoLinkError = !videoLink ? nullErrorMsgTemplate('video link') : '';
+    sipTitleError = !sipTitle ? nullErrorMsgTemplate('title') : '';
+
+    formIsValid = !extensionNumberError && !videoLinkError && !sipTitleError;
     dispatch('queueIsValid', formIsValid);
     dispatch('sipQs', { event: 'update', payload: { videoLink, sipTitle, extensionNumber, index, sipImage } });
   };
@@ -68,7 +76,7 @@
     const file = sipImageInput.files?.[0];
 
     if (file?.size > maxFileSize) {
-      sipImageInput.setCustomValidity('File size is too large.');
+      sipImageInput.setCustomValidity('File size is too large');
     } else if (file) {
       sipImageInput.setCustomValidity('');
       sipImage = { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified };
@@ -119,7 +127,7 @@
         name="extensionNumber{index + 1}"
         id="extensionNumber{index + 1}"
         class="input"
-        class:is-danger={!extensionNumberIsValid}
+        class:is-danger={extensionNumberError}
         type="number"
         placeholder={String(extensionNumber)}
         bind:value={extensionNumber}
@@ -132,12 +140,12 @@
     </div>
     <div class="help">
       <div class="help">
-        {#if !extensionNumberIsValid}
-          <p class="has-text-danger">Please provide a valid extension Number.</p>
+        {#if extensionNumberError}
+          <p class="has-text-danger">{extensionNumberError}</p>
         {:else}
           <p>
             Configurable number in
-            <a href={CONTROL_HUB_URL} target="_blank">CH</a>.
+            <a href={CONTROL_HUB_URL} target="_blank">CH</a>
           </p>
         {/if}
       </div>
@@ -152,7 +160,7 @@
         name="videoLink{index + 1}"
         id="videoLink{index + 1}"
         class="input"
-        class:is-danger={!videoLinkIsValid}
+        class:is-danger={videoLinkError}
         type="url"
         placeholder={videoLink}
         bind:value={videoLink}
@@ -164,10 +172,10 @@
       </span>
     </div>
     <div class="help">
-      {#if !videoLinkIsValid}
-        <p class="has-text-danger">Please provide a valid URL.</p>
+      {#if videoLinkError}
+        <p class="has-text-danger">{videoLinkError}</p>
       {:else}
-        <p>Video source to play while holding in queue.</p>
+        <p>Video source to play while holding in queue</p>
       {/if}
     </div>
   </div>
@@ -178,7 +186,7 @@
         name="sipTitle{index + 1}"
         id="sipTitle{index + 1}"
         class="input"
-        class:is-danger={!sipTitleIsValid}
+        class:is-danger={sipTitleError}
         placeholder={sipTitle}
         bind:value={sipTitle}
         maxlength="24"
@@ -190,8 +198,8 @@
       </span>
     </div>
     <div class="help">
-      {#if !sipTitleIsValid}
-        <p class="has-text-danger">Please provide a title</p>
+      {#if sipTitleError}
+        <p class="has-text-danger">{sipTitleError}</p>
       {:else}
         <p>To be displayed on the card, max. 24 characters</p>
       {/if}
@@ -216,7 +224,7 @@
             <i class="mdi mdi-image-plus" />
           </span>
         </span>
-        <span class="file-name">{imageFile?.[0]?.name || sipImage?.name || 'No File Selected.'}</span>
+        <span class="file-name">{imageFile?.[0]?.name || sipImage?.name || 'No File Selected'}</span>
       </label>
     </div>
     <div class="help">

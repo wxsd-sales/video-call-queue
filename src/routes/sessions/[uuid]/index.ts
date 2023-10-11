@@ -7,6 +7,12 @@ import { classTransformOptions, classValidationOptions } from '../../.utils';
 import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
 
+const generateSIPCardData = (title: string, extensionNumber: number, img: Data| null) => (
+  title && {
+    title, extensionNumber, img: img ? 'data:' + img.type + ';base64,' + img.bits.toString('base64') : null
+  } 
+);
+
 export const GET = async (requestEvent: RequestEvent) => {
   class RequestQueryDTO {
     @Expose()
@@ -75,8 +81,16 @@ export const GET = async (requestEvent: RequestEvent) => {
           backgroundPoster,
           brandLogo,
           sipImage1,
+          sipTitle1,
+          extensionNumber1,
+          sipTitle2,
+          extensionNumber2,
           sipImage2,
+          sipTitle3,
+          extensionNumber3,
           sipImage3,
+          sipTitle4,
+          extensionNumber4,
           sipImage4,
           ...demo
         }: {
@@ -86,19 +100,26 @@ export const GET = async (requestEvent: RequestEvent) => {
           sipImage2: Data | null;
           sipImage3: Data | null;
           sipImage4: Data | null;
+          sipTitle1: string,
+          extensionNumber1: number,
+          sipTitle2: string,
+          extensionNumber2: number,
+          sipTitle3: string,
+          extensionNumber3: number,
+          sipTitle4: string,
+          extensionNumber4: number,
         } = r;
         (demo as JSONObject)['brandLogo'] = 'data:' + brandLogo.type + ';base64,' + brandLogo.bits.toString('base64');
         (demo as JSONObject)['backgroundPoster'] =
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
-        (demo as JSONObject)['sipImage1'] =
-          sipImage1 != null ? 'data:' + sipImage1.type + ';base64,' + sipImage1.bits.toString('base64') : null;
-        (demo as JSONObject)['sipImage2'] =
-          sipImage2 != null ? 'data:' + sipImage2.type + ';base64,' + sipImage2.bits.toString('base64') : null;
-        (demo as JSONObject)['sipImage3'] =
-          sipImage3 != null ? 'data:' + sipImage3.type + ';base64,' + sipImage3.bits.toString('base64') : null;
-        (demo as JSONObject)['sipImage4'] =
-          sipImage4 != null ? 'data:' + sipImage4.type + ';base64,' + sipImage4.bits.toString('base64') : null;
+        (demo as JSONObject)['sipQueues'] = [
+          generateSIPCardData(sipTitle1, extensionNumber1, sipImage1),
+          generateSIPCardData(sipTitle2, extensionNumber2, sipImage2),
+          generateSIPCardData(sipTitle3, extensionNumber3, sipImage3),
+          generateSIPCardData(sipTitle4, extensionNumber4, sipImage4)
+        ].filter(Boolean);
 
+        demo.sipQueues = demo.sipQueues.length ? demo.sipQueues : null;
         return {
           status: 200,
           body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }
