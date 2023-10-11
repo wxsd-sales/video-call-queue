@@ -35,6 +35,27 @@ const toData = async (file: File) =>
     lastModified: file.lastModified
   });
 
+;
+const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: string, sipImage: Data ) => 
+  extensionNumber && videoLink && sipTitle && sipImage && {
+    extensionNumber, videoLink, sipTitle, sipImage: sipImage ? toFile(sipImage) : null
+}  
+
+
+const generateSIPQueues = (response) => {
+  const qs = [];
+  const MAX_QUEUES = 4;
+
+  for(let i = 1; i <= MAX_QUEUES; i++) {
+    qs.push(createSIPObject(
+      response[`sipTitle${i}`],
+      response[`extensionNumber${i}`], 
+      response[`videoLink${i}`], 
+      response[`sipImage${i}`]))
+  }
+  return qs.filter(Boolean);
+}
+
 const fields = [
   'uuid',
   'name',
@@ -91,6 +112,7 @@ export const GET = async (requestEvent: RequestEvent) => {
           }
         )
         .then((r) => {
+          const qs = generateSIPQueues(r);
           return {
             status: 200,
             body: {
@@ -105,33 +127,8 @@ export const GET = async (requestEvent: RequestEvent) => {
               units: r.weatherUnits,
               isSDK: r.isSDK,
               isIC: r.isIC,
-              isSIP: r.isSIP,
-              SIPQueues: [
-                {
-                  extensionNumber: r.extensionNumber1,
-                  videoLink: r.videoLink1,
-                  sipTitle: r.sipTitle1 || 'Looking for Assistance?',
-                  sipImage: r.sipImage1 ? toFile(r.sipImage1) : null
-                },
-                r?.extensionNumber2 && {
-                  extensionNumber: r.extensionNumber2,
-                  videoLink: r.videoLink2,
-                  sipTitle: r.sipTitle2,
-                  sipImage: r.sipImage2 ? toFile(r.sipImage2) : null
-                },
-                r?.extensionNumber3 && {
-                  extensionNumber: r.extensionNumber3,
-                  videoLink: r.videoLink3,
-                  sipTitle: r.sipTitle3,
-                  sipImage: r.sipImage3 ? toFile(r.sipImage3) : null
-                },
-                r.extensionNumber4 && {
-                  extensionNumber: r.extensionNumber4,
-                  videoLink: r.videoLink4,
-                  sipTitle: r.sipTitle4,
-                  sipImage: r.sipImage4 ? toFile(r.sipImage4) : null
-                }
-              ].filter(Boolean),
+              isSIP: r.isSIP && qs.length,
+              SIPQueues: qs,
               displayFootnote: Boolean(r.displayFootnote)
             }
           };

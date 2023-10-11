@@ -121,6 +121,8 @@ export const GET = async (requestEvent: RequestEvent) => {
         ].filter(Boolean);
 
         demo.sipQueues = demo.sipQueues.length ? demo.sipQueues : null;
+        demo.isSIP = demo.isSSIP && demos.sipQueues?.length;
+
         return {
           status: 200,
           body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }
