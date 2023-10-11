@@ -9,7 +9,6 @@
 
   import Responder from './.Responder.svelte';
   import Requester from './.Requester/.Requester.svelte';
-  import SdkHeader from './.SdkHeader.svelte';
 
   import type { Demo } from 'src/database/entities';
 
@@ -26,9 +25,11 @@
   }
 </script>
 
-{#if demo.isSDK || demo.isIC}
-  <SdkHeader />
-{/if}
+<svelte:head>
+  {#if demo.isSDK || demo.isIC}
+    <script crossorigin src="https://unpkg.com/webex@^2/umd/webex.min.js"></script>
+  {/if}
+</svelte:head>
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
 <section id="hero" class="hero is-fullheight has-text-white is-dark">
   {#if !embeddable}
