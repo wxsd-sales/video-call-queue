@@ -4,7 +4,7 @@
 
 This is a proof-of-concept application which generates a customized looking queue links to establish Webex backed WebRTC video calls between the requester and responder.
 
-<p align="center">
+<p >
    <a href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3" target="_blank">
        <img src="static/readme/videoQueue.gif" alt="video-call-queue"/>
     </a>
