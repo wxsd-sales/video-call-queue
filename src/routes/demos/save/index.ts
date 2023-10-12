@@ -38,8 +38,7 @@ const toData = async (file: File) =>
 const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: string, sipImage: Data) =>
   extensionNumber &&
   videoLink &&
-  sipTitle &&
-  sipImage && {
+  sipTitle &&  {
     extensionNumber,
     videoLink,
     sipTitle,
