@@ -20,6 +20,7 @@ This is a proof-of-concept application which generates a customized looking queu
   - [Browser Meeting SDK](#browser-meeting-sdk)
   - [Instant Connect Solution](#instnat-connect-solution)
   - [SIP URI Dialing](#sip-uri-dialing)
+  - [Multiple URI Dialings](#multiple-sip-dialings)
 - [Setup](#setup)
 - [Built With](#built-with)
 - [Demo](#demo)
@@ -119,6 +120,15 @@ Responder will receive incoming calls once they are available, Responder could a
 
 <br />
 
+## Multiple SIP URI Dialings
+
+As indicated in the title, this workflow closely parallels the one detailed earlier. The sole distinction lies in the augmentation of user capabilities for SIP URI dialing management, encompassing functionalities such as addition, removal, and updates. The architectural design remains consistent with the previously illustrated framework.
+
+<p align="center">
+   <img src="static/readme/MULTIPLESIPS.png" alt="video-call-queue"/>
+</p>
+
+<br />
 # Setup
 
 These instructions assume that you have:
