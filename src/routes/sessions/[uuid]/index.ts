@@ -8,7 +8,9 @@ import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
 
 const generateSIPCardData = (title: string, videoLink: string, extensionNumber: number, img: Data | null) =>
-  title && extensionNumber && videoLink && {
+  title &&
+  extensionNumber &&
+  videoLink && {
     title,
     extensionNumber,
     img: img ? 'data:' + img.type + ';base64,' + img.bits.toString('base64') : null
@@ -109,10 +111,10 @@ export const GET = async (requestEvent: RequestEvent) => {
           sipImage2: Data | null;
           sipImage3: Data | null;
           sipImage4: Data | null;
-          videoLink1: string,
-          videoLink2: string,
-          videoLink3: string,
-          videoLink4: string,
+          videoLink1: string;
+          videoLink2: string;
+          videoLink3: string;
+          videoLink4: string;
           sipTitle1: string;
           extensionNumber1: number;
           sipTitle2: string;
