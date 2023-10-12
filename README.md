@@ -4,7 +4,7 @@
 
 This is a proof-of-concept application which generates a customized looking queue links to establish Webex backed WebRTC video calls between the requester and responder.
 
-<p align="center">
+<p >
    <a href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3" target="_blank">
        <img src="static/readme/videoQueue.gif" alt="video-call-queue"/>
     </a>
@@ -20,7 +20,7 @@ This is a proof-of-concept application which generates a customized looking queu
   - [Browser Meeting SDK](#browser-meeting-sdk)
   - [Instant Connect Solution](#instnat-connect-solution)
   - [SIP URI Dialing](#sip-uri-dialing)
-  - [Multiple URI Dialings](#multiple-sip-dialings)
+  - [Multiple SIP URI Dialings](#multiple-sip-uri-dialings)
 - [Setup](#setup)
 - [Built With](#built-with)
 - [Demo](#demo)
@@ -129,6 +129,7 @@ As indicated in the title, this workflow closely parallels the one detailed earl
 </p>
 
 <br />
+
 # Setup
 
 These instructions assume that you have:
