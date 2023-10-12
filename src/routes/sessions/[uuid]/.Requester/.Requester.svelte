@@ -3,12 +3,12 @@
   import Notification from '$components/Notification/Notification.svelte';
   import { NOTIFICATION_TYPES, NOTIFICATION_VALUES } from '$components/Notification/enums';
   import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
-  import customerSupport from '$lib/static/img/customer-support.svg';
+  import customerSupportSVG from '$lib/static/img/customer-support.svg';
   export let demo: JSON;
   export let embeddable: boolean;
 
   const { isSIP, isSDK, isIC, uuid, sipQueues } = demo;
-  const queues = sipQueues ?? [{ title: 'Looking for Assistance?', extensionNumber: 1111, img: customerSupport }];
+  const queues = sipQueues ?? [{ title: 'Looking for Assistance?', extensionNumber: 1111, img: null }];
   let extensionNumber = 1111;
 
   embeddable = queues.length > 1 ? true : embeddable;
@@ -51,7 +51,7 @@
       {extensionNumber}
       {title}
       {embeddable}
-      {img}
+      img={img || customerSupportSVG}
       on:notif={showNotif}
     />
   {/each}

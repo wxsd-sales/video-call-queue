@@ -72,7 +72,7 @@
       : Promise.resolve(null);
   };
 
-  const handlePosterUpload = async (ev: Event) => {
+  const handleSIPImageUpload = async (ev: Event) => {
     const file = sipImageInput.files?.[0];
 
     if (file?.size > maxFileSize) {
@@ -81,6 +81,8 @@
       sipImageInput.setCustomValidity('');
       sipImage = { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified };
       handleInputs();
+    } else {
+      sipImage = null;
     }
 
     sipImageInput.reportValidity();
@@ -94,7 +96,6 @@
     }
 
     imageFile?.[0] != null ? (sipImageInput.files = imageFile) : null;
-    sipImageInput.name = `sipImage${index + 1}`;
   });
 </script>
 
@@ -211,12 +212,13 @@
       <label class="file-label">
         <input
           id="sipImage{index + 1}"
+          name="sipImage{index + 1}"
           type="file"
           class="file-input"
           accept={acceptedFileTypes}
           bind:this={sipImageInput}
           bind:files={imageFile}
-          on:input={handlePosterUpload}
+          on:input={handleSIPImageUpload}
           required
         />
         <span class="file-cta">

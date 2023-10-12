@@ -28,7 +28,6 @@
   export let units = undefined;
   export let SIPQueues = undefined;
   export let displayFootnote = true;
-
   const id = $page.url.searchParams.get('id');
 
   let formElement: HTMLFormElement;

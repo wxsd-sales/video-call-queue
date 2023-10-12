@@ -7,8 +7,10 @@ import { classTransformOptions, classValidationOptions } from '../../.utils';
 import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
 
-const generateSIPCardData = (title: string, extensionNumber: number, img: Data | null) =>
-  title && {
+const generateSIPCardData = (title: string, videoLink: string, extensionNumber: number, img: Data | null) =>
+  title &&
+  extensionNumber &&
+  videoLink && {
     title,
     extensionNumber,
     img: img ? 'data:' + img.type + ';base64,' + img.bits.toString('base64') : null
@@ -62,14 +64,18 @@ export const GET = async (requestEvent: RequestEvent) => {
           'extensionNumber1',
           'sipTitle1',
           'sipImage1',
+          'videoLink1',
           'extensionNumber2',
           'sipTitle2',
+          'videoLink2',
           'sipImage2',
           'extensionNumber3',
           'sipTitle3',
+          'videoLink3',
           'sipImage3',
           'extensionNumber4',
           'sipTitle4',
+          'videoLink4',
           'sipImage4',
           'displayFootnote'
         ],
@@ -84,15 +90,19 @@ export const GET = async (requestEvent: RequestEvent) => {
           sipImage1,
           sipTitle1,
           extensionNumber1,
+          videoLink1,
           sipTitle2,
           extensionNumber2,
+          videoLink2,
           sipImage2,
           sipTitle3,
           extensionNumber3,
           sipImage3,
+          videoLink3,
           sipTitle4,
           extensionNumber4,
           sipImage4,
+          videoLink4,
           ...demo
         }: {
           backgroundPoster: Data;
@@ -101,6 +111,10 @@ export const GET = async (requestEvent: RequestEvent) => {
           sipImage2: Data | null;
           sipImage3: Data | null;
           sipImage4: Data | null;
+          videoLink1: string;
+          videoLink2: string;
+          videoLink3: string;
+          videoLink4: string;
           sipTitle1: string;
           extensionNumber1: number;
           sipTitle2: string;
@@ -114,13 +128,15 @@ export const GET = async (requestEvent: RequestEvent) => {
         (demo as JSONObject)['backgroundPoster'] =
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
         (demo as JSONObject)['sipQueues'] = [
-          generateSIPCardData(sipTitle1, extensionNumber1, sipImage1),
-          generateSIPCardData(sipTitle2, extensionNumber2, sipImage2),
-          generateSIPCardData(sipTitle3, extensionNumber3, sipImage3),
-          generateSIPCardData(sipTitle4, extensionNumber4, sipImage4)
+          generateSIPCardData(sipTitle1, videoLink1, extensionNumber1, sipImage1),
+          generateSIPCardData(sipTitle2, videoLink2, extensionNumber2, sipImage2),
+          generateSIPCardData(sipTitle3, videoLink3, extensionNumber3, sipImage3),
+          generateSIPCardData(sipTitle4, videoLink4, extensionNumber4, sipImage4)
         ].filter(Boolean);
 
         demo.sipQueues = demo.sipQueues.length ? demo.sipQueues : null;
+        demo.isSIP = demo.isSIP && demo.sipQueues?.length;
+
         return {
           status: 200,
           body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }
