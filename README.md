@@ -121,6 +121,7 @@ Responder will receive incoming calls once they are available, Responder could a
 <br />
 
 ## Multiple SIP URI Dialings
+
 As indicated in the title, this workflow closely parallels the one detailed earlier. The sole distinction lies in the augmentation of user capabilities for SIP URI dialing management, encompassing functionalities such as addition, removal, and updates. The architectural design remains consistent with the previously illustrated framework.
 
 <p align="center">
