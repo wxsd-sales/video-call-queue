@@ -20,7 +20,7 @@ This is a proof-of-concept application which generates a customized looking queu
   - [Browser Meeting SDK](#browser-meeting-sdk)
   - [Instant Connect Solution](#instnat-connect-solution)
   - [SIP URI Dialing](#sip-uri-dialing)
-  - [Multiple URI Dialings](#multiple-sip-dialings)
+  - [Multiple SIP URI Dialings](#multiple-sip-uri-dialings)
 - [Setup](#setup)
 - [Built With](#built-with)
 - [Demo](#demo)
@@ -129,6 +129,7 @@ As indicated in the title, this workflow closely parallels the one detailed earl
 </p>
 
 <br />
+
 # Setup
 
 These instructions assume that you have:
