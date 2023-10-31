@@ -7,8 +7,6 @@
       props: { email: session.email, isError: error != null || status !== 200 }
     };
   };
-
-  // console.log(env.PUBLIC_APPD_CONFIG_APP_KEY);
 </script>
 
 <!-- Scripts -->
@@ -92,11 +90,11 @@
 
 <svelte:head>
   <title>Webex Video Call Queue</title>
-  <meta name="app-config" content={JSON.stringify(APPD_CONFIG)} />
+  <meta name="appd-config" content={JSON.stringify(APPD_CONFIG)} />
   <script>
     window['adrum-start-time'] = new Date().getTime();
     var { appKey, adrumExtUrlHttp, adrumExtUrlHttps, beaconUrlHttp, beaconUrlHttps, resTiming } = JSON.parse(
-      document.querySelector('meta[name=app-config]').getAttribute('content')
+      document.querySelector('meta[name=appd-config]').getAttribute('content')
     );
 
     (function (config) {

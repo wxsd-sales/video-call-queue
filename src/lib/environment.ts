@@ -174,4 +174,4 @@ if (environmentValidationErrors.length > 0) {
   throw Error('Invalid .env configuration.');
 }
 
-export default {};
+export default environment;
