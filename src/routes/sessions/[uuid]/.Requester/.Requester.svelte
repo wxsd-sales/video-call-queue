@@ -40,7 +40,7 @@
   <div class="column is-3 is-flex is-justify-content-flex-end" />
 </div>
 
-<div class="is-flex is-justify-content-space-evenly">
+<div class="prompts is-flex is-justify-content-space-evenly">
   {#each queues as { extensionNumber, title, img }, index}
     <QueuePrompt
       {index}
@@ -80,3 +80,14 @@
     <p class="is-size-7 pt-2 is-align-self-center">* This notification automatically closes in {timer} seconds.</p>
   </div>
 </Notification>
+
+<style>
+  .prompts {
+    zoom: 0.85;
+  }
+  @media only screen and (min-width: 1296px) {
+    .prompts {
+      zoom: 1;
+    }
+  }
+</style>

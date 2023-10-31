@@ -14,6 +14,21 @@
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
+  import {
+    PUBLIC_APPD_CONFIG_APP_KEY,
+    PUBLIC_APPD_CONFIG_EXTERNAL_URL,
+    PUBLIC_APPD_CONFIG_BEACON_URL
+  } from '$env/static/public';
+
+  let APPD_CONFIG = {
+    appKey: PUBLIC_APPD_CONFIG_APP_KEY,
+    adrumExtUrlHttp: PUBLIC_APPD_CONFIG_EXTERNAL_URL,
+    adrumExtUrlHttps: PUBLIC_APPD_CONFIG_EXTERNAL_URL.replace('http', 'https'),
+    beaconUrlHttp: PUBLIC_APPD_CONFIG_BEACON_URL,
+    beaconUrlHttps: PUBLIC_APPD_CONFIG_BEACON_URL.replace('http', 'https'),
+    resTiming: { bufSize: 200, clearResTimingOnBeaconSend: true },
+    maxUrlLength: 512
+  };
 
   export let email = undefined;
   export let isError = false;
@@ -75,6 +90,36 @@
 
 <svelte:head>
   <title>Webex Video Call Queue</title>
+  <meta name="appd-config" content={JSON.stringify(APPD_CONFIG)} />
+  <script>
+    window['adrum-start-time'] = new Date().getTime();
+    var { appKey, adrumExtUrlHttp, adrumExtUrlHttps, beaconUrlHttp, beaconUrlHttps, resTiming } = JSON.parse(
+      document.querySelector('meta[name=appd-config]').getAttribute('content')
+    );
+
+    (function (config) {
+      config.userEventInfo = {
+        PageView: function () {
+          let device = 'N/A';
+          if (navigator.userAgent.includes('RoomOS'))
+            device = navigator.userAgent.split(';')[2].split(')')[0].replace('Cisco', '').trim();
+
+          return {
+            userData: {
+              CiscoDevice: device
+            }
+          };
+        }
+      };
+      config.appKey = appKey;
+      config.adrumExtUrlHttp = adrumExtUrlHttp;
+      config.adrumExtUrlHttps = adrumExtUrlHttps;
+      config.beaconUrlHttps = beaconUrlHttps;
+      config.beaconUrlHttp = beaconUrlHttp;
+      config.resTiming = resTiming;
+    })(window['adrum-config'] || (window['adrum-config'] = {}));
+  </script>
+  <script src="//cdn.appdynamics.com/adrum/adrum-23.3.0.4265.js"></script>
 </svelte:head>
 
 <noscript id="javascript-warning" class="hero is-danger is-bold">
