@@ -116,8 +116,17 @@ export class Environment {
   @IsUrl()
   public readonly PUBLIC_TUNNEL: string;
 
+  @IsNotEmpty()
+  public readonly PUBLIC_APPD_CONFIG_APP_KEY: string;
+
+  @IsNotEmpty()
+  public readonly PUBLIC_APPD_CONFIG_EXTERNAL_URL: string;
+
+  @IsNotEmpty()
+  public readonly PUBLIC_APPD_CONFIG_BEACON_URL: string;
+
   constructor() {
-    dotenvExpand.expand(dotenv.config());
+    dotenvExpand.expand(dotenv.config({ path: dev ? '.env.development' : '.env.production' }));
     this.APP_URL = process.env.APP_URL || dev ? 'https://localhost:5173' : 'https://localhost:4173';
     this.OPENWEATHERMAP_API_URL = process.env.OPENWEATHERMAP_API_URL as string;
     this.OPENWEATHERMAP_API_KEY = process.env.OPENWEATHERMAP_API_KEY as string;
@@ -151,6 +160,9 @@ export class Environment {
     this.PUBLIC_SOAP_BOX_URL = process.env.PUBLIC_SOAP_BOX_URL as string;
     this.PUBLIC_WEBEX_DEV_PORTAL_URL = process.env.PUBLIC_WEBEX_DEV_PORTAL_URL as string;
     this.PUBLIC_TUNNEL = process.env.PUBLIC_TUNNEL as string;
+    this.PUBLIC_APPD_CONFIG_APP_KEY = process.env.PUBLIC_APPD_CONFIG_APP_KEY as string;
+    this.PUBLIC_APPD_CONFIG_EXTERNAL_URL = process.env.PUBLIC_APPD_CONFIG_EXTERNAL_URL as string;
+    this.PUBLIC_APPD_CONFIG_BEACON_URL = process.env.PUBLIC_APPD_CONFIG_BEACON_URL as string;
   }
 }
 
@@ -162,4 +174,4 @@ if (environmentValidationErrors.length > 0) {
   throw Error('Invalid .env configuration.');
 }
 
-export default environment;
+export default {};
