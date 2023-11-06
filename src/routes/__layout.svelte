@@ -27,6 +27,7 @@
     beaconUrlHttp: PUBLIC_APPD_CONFIG_BEACON_URL,
     beaconUrlHttps: PUBLIC_APPD_CONFIG_BEACON_URL.replace('http', 'https'),
     resTiming: { bufSize: 200, clearResTimingOnBeaconSend: true },
+    useHTTPSAlways: false,
     maxUrlLength: 512
   };
 
@@ -93,9 +94,16 @@
   <meta name="appd-config" content={JSON.stringify(APPD_CONFIG)} />
   <script>
     window['adrum-start-time'] = new Date().getTime();
-    var { appKey, adrumExtUrlHttp, adrumExtUrlHttps, beaconUrlHttp, beaconUrlHttps, resTiming } = JSON.parse(
-      document.querySelector('meta[name=appd-config]').getAttribute('content')
-    );
+    var {
+      appKey,
+      adrumExtUrlHttp,
+      adrumExtUrlHttps,
+      beaconUrlHttp,
+      beaconUrlHttps,
+      resTiming,
+      useHTTPSAlways,
+      maxUrlLength
+    } = JSON.parse(document.querySelector('meta[name=appd-config]').getAttribute('content'));
 
     (function (config) {
       config.userEventInfo = {
@@ -114,9 +122,11 @@
       config.appKey = appKey;
       config.adrumExtUrlHttp = adrumExtUrlHttp;
       config.adrumExtUrlHttps = adrumExtUrlHttps;
-      config.beaconUrlHttps = beaconUrlHttps;
       config.beaconUrlHttp = beaconUrlHttp;
+      config.beaconUrlHttps = beaconUrlHttps;
+      config.useHTTPSAlways = useHTTPSAlways;
       config.resTiming = resTiming;
+      config.maxUrlLength = maxUrlLength;
     })(window['adrum-config'] || (window['adrum-config'] = {}));
   </script>
   <script src="//cdn.appdynamics.com/adrum/adrum-23.3.0.4265.js"></script>
