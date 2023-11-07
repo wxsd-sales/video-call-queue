@@ -68,7 +68,7 @@ async function processWebViews(event) {
 
   const sipURI = url.split('#')[Number('1')]
 
-  xapi.Command.Dial({Number: sipURI})
+  if(sipURI) xapi.Command.Dial({Number: sipURI})
 }
 
 async function processCallCount(event) {
@@ -82,7 +82,7 @@ async function processCallCount(event) {
 }
 
 function processRemoteNumber(event){
-  console.log(`Remote Number[\${ event }]`)
+  console.log(`Remote Number[${ event }]`)
   // Check if a monitoring number is present
   const match = config.queues.find(queue => event.startsWith(queue.number))
   // Ignore calls with not matched number
@@ -95,7 +95,7 @@ function processRemoteNumber(event){
 }
 
 function showCommercial({title, url, mode, target }) {
-  console.log(`Opening Webview on[\${ target }]- Title: \${ title } | Mode: \${ mode } | Url: $\{ url } `)
+  console.log(`Opening Webview on[${ target }]- Title: ${ title } | Mode: ${ mode } | Url: ${ url } `)
   xapi.Command.UserInterface.WebView.Display(
     { Mode: mode, Target: target, Title: title, Url: url })
     .catch(e => console.log('Error opening webview: ' + e.message))
