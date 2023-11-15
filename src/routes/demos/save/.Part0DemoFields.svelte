@@ -1,6 +1,5 @@
 <script lang="ts">
   import { previewedDemoStore } from '$lib/store';
-  import { onDestroy, onMount } from 'svelte';
 
   export let name: string;
   export let description: string;
@@ -39,21 +38,6 @@
       />
       <span class="icon is-left" />
     </div>
-    <div class="help">
-      <p>This is only for your reference</p>
-    </div>
-  </div>
-  <div class="column is-full is-hidden">
-    <label class="label" for="description">Description</label>
-    <textarea
-      name="description"
-      id="description"
-      class="textarea"
-      maxlength="256"
-      placeholder="A few lines..."
-      bind:value={description}
-      on:input={(e) => ($previewedDemoStore.description = e.target.value)}
-    />
     <div class="help">
       <p>This is only for your reference</p>
     </div>

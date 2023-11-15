@@ -5,9 +5,6 @@
   export let label: string;
 
   let isCopyLoading = false;
-  let isEmbedLoading = false;
-
-  let isEmbedded = false;
   let isCopied = false;
 
   const copyUrl = () => {
@@ -21,22 +18,6 @@
 
             setTimeout(() => {
               isCopied = false;
-            }, 1000);
-          }, 400)
-        );
-  };
-
-  const copyEmbedUrl = () => {
-    browser &&
-      Promise.resolve((isEmbedLoading = true))
-        .then(() => navigator.clipboard.writeText(`${url}&embeddable`))
-        .finally(() =>
-          setTimeout(() => {
-            isEmbedLoading = false;
-            isEmbedded = true;
-
-            setTimeout(() => {
-              isEmbedded = false;
             }, 1000);
           }, 400)
         );
@@ -73,18 +54,6 @@
           <span>{isCopied ? 'Copied' : 'Copy'}</span>
           <span class="icon">
             <i class="mdi mdi-{isCopied ? 'check' : 'content-copy'}" />
-          </span>
-        </button>
-      </div>
-      <div class="control">
-        <button
-          class="button customButton is-danger is-small"
-          class:is-loading={isEmbedLoading}
-          on:click={() => copyEmbedUrl()}
-        >
-          <span>{isEmbedded ? 'Copied' : 'Embed'}</span>
-          <span class="icon">
-            <i class="mdi mdi-{isEmbedded ? 'check' : 'code-tags'}" />
           </span>
         </button>
       </div>

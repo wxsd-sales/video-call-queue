@@ -25,9 +25,6 @@ export const GET = async (requestEvent: RequestEvent) => {
     @Expose()
     @IsNotEmpty()
     public readonly role!: 'responder' | 'requester';
-
-    @Expose()
-    public readonly embeddable!: false;
   }
 
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
@@ -127,19 +124,19 @@ export const GET = async (requestEvent: RequestEvent) => {
         (demo as JSONObject)['brandLogo'] = 'data:' + brandLogo.type + ';base64,' + brandLogo.bits.toString('base64');
         (demo as JSONObject)['backgroundPoster'] =
           'data:' + backgroundPoster.type + ';base64,' + backgroundPoster.bits.toString('base64');
-        (demo as JSONObject)['sipQueues'] = [
+        (demo as JSONObject)['queues'] = [
           generateSIPCardData(sipTitle1, videoLink1, extensionNumber1, sipImage1),
           generateSIPCardData(sipTitle2, videoLink2, extensionNumber2, sipImage2),
           generateSIPCardData(sipTitle3, videoLink3, extensionNumber3, sipImage3),
           generateSIPCardData(sipTitle4, videoLink4, extensionNumber4, sipImage4)
         ].filter(Boolean);
 
-        demo.sipQueues = demo.sipQueues.length ? demo.sipQueues : null;
-        demo.isSIP = demo.isSIP && demo.sipQueues?.length;
+        demo.queues = demo.queues.length ? demo.queues : null;
+        demo.isSIP = demo.isSIP && demo.queues?.length;
 
         return {
           status: 200,
-          body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }
+          body: { demo, role: query.role }
         };
       }
       return { status: 302, headers: { Location: '/auth' } };

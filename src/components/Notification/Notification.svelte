@@ -6,13 +6,12 @@
   export let type: NOTIFICATION_TYPES;
   export let display = false;
   export let hideClose = false;
-  export let embeddable = false;
 
   const dispatch = createEventDispatcher();
 </script>
 
 {#if display}
-  <div in:slide out:slide class={`notif  notification is-${type}`} class:embeddable>
+  <div in:slide out:slide class={`notif  notification is-${type}`}>
     {#if !hideClose}
       <button
         class="delete"

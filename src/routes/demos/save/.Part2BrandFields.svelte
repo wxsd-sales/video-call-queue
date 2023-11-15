@@ -84,53 +84,13 @@
     <p class="help">Accepted file types are {acceptedFileTypes}</p>
     <p class="help">File must not exceed {maxFileSize / 1000}KB in size</p>
   </div>
-  <div class="column is-one-fifths is-hidden">
-    <label class="label" for="title">Title</label>
-    <div class="control has-icons-left">
-      <input
-        name="title"
-        id="title"
-        class="input"
-        type="text"
-        maxlength="16"
-        placeholder="Cisco Systems, Inc."
-        bind:value={title}
-        on:input={(e) => ($previewedDemoStore.title = e.target.value)}
-      />
-      <span class="icon is-left">
-        <i class="mdi mdi-format-header-1" />
-      </span>
-    </div>
-    <p class="help">The organization's common name, max. 16 characters</p>
-  </div>
-  <div class="column is-one-fifths is-hidden">
-    <label class="label" for="subtitle">Subtitle</label>
-    <div class="control has-icons-left">
-      <input
-        name="subtitle"
-        id="subtitle"
-        class="input"
-        type="text"
-        placeholder="Bridge to Possible"
-        maxlength="64"
-        bind:value={subtitle}
-        on:input={(e) => ($previewedDemoStore.subtitle = e.target.value)}
-      />
-      <span class="icon is-left">
-        <i class="mdi mdi-format-header-2" />
-      </span>
-    </div>
-    <p class="help">The organization's slogan, max. 64 characters</p>
-  </div>
-  <div id="logo-preview" class="column is-12">
+  <div
+    id="logo-preview"
+    class="column is-flex is-flex-direction-column is-justify-content-space-around  is-two-fifth ml-1"
+  >
     {#if logo?.[0]}
-      <div class="level help is-mobile">
-        <p class="level-left label mb-0">Preview</p>
-        <div class="level-right">
-          <p class="level-item">{logo[0].type}</p>
-          <p class="level-item">{logo[0].size / 1000} KB</p>
-          <p class="level-item">modified {new Date(logo[0].lastModified).toISOString()}</p>
-        </div>
+      <div class=" help is-mobile mb-1">
+        <p class=" label mb-0">Preview</p>
       </div>
       <Brand title={window.URL.createObjectURL(logo[0])} {subtitle} on:load={handleLogoLoad} />
       <p class="help">
@@ -149,5 +109,6 @@
 <style lang="scss">
   #logo-preview :global(img.is-brand-logo) {
     background: repeating-conic-gradient(hsl(0deg, 0%, 71%) 0% 25%, transparent 0% 50%) 50% / 10px 10px;
+    width: fit-content;
   }
 </style>
