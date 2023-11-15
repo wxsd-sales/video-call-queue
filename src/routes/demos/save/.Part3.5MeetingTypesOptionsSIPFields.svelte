@@ -101,7 +101,7 @@
 
 <div transition:slide={{ duration: index != 0 ? 500 : 0 }} class="sipField columns is-multiline" style="width: 100%">
   <div class="column is-flex is-justify-content-space-between is-full py-0 mb-4 mt-5">
-    <h3 class="title is-size-5">
+    <h3 class="title mb-0 is-size-5">
       SIP Queue Number {index + 1}
     </h3>
     {#if index != 0}

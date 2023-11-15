@@ -8,18 +8,17 @@
 
 <div class="columns is-multiline">
   <div class="column is-full">
-    <h2 class="title">Create a New Demo</h2>
+    <h2 class="title">Create a New Kiosk Instance</h2>
     <article class="message is-info is-medium">
       <div class="message-header is-hidden" />
       <div class="message-body content ">
         <p class="is-italic">
-          A <strong>"Demo"</strong> is a single Video Queue implementation accessible by multiple requestors and responders.
-          This means multiple users can request support from a single requestor URL and multiple responders can access and
-          respond to the stack of queued requests published on a single responder URL. No authentication has been implemented
-          for simplicity.
+          An <strong>"Instance"</strong> is a single Video Queue implementation accessible between a requestor and an agent.
+          This means users can now request support from a device to be connected to an agent in a FIFO order. No authentication
+          has been implemented for simplicity.
         </p>
         <p class="has-text-weight-semibold">
-          We highly recommend you create an individual "Demo" per customer or use case in order to avoid cross-talk!
+          We highly recommend you create an individual "Instance" per customer or use case in order to avoid confusion!
         </p>
       </div>
     </article>
@@ -44,7 +43,7 @@
       <p>This is only for your reference</p>
     </div>
   </div>
-  <div class="column is-full">
+  <div class="column is-full is-hidden">
     <label class="label" for="description">Description</label>
     <textarea
       name="description"

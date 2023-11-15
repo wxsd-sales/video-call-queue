@@ -57,7 +57,7 @@
       image that is wide and has transparent background.
     </p>
   </div>
-  <div class="column is-three-fifths">
+  <div class="column is-12">
     <label class="label" for="logo">Logo <sup class="has-text-danger" title="required">*</sup></label>
     <div class="file has-name is-fullwidth">
       <label class="file-label">
@@ -84,7 +84,7 @@
     <p class="help">Accepted file types are {acceptedFileTypes}</p>
     <p class="help">File must not exceed {maxFileSize / 1000}KB in size</p>
   </div>
-  <div class="column is-one-fifths">
+  <div class="column is-one-fifths is-hidden">
     <label class="label" for="title">Title</label>
     <div class="control has-icons-left">
       <input
@@ -103,7 +103,7 @@
     </div>
     <p class="help">The organization's common name, max. 16 characters</p>
   </div>
-  <div class="column is-one-fifths">
+  <div class="column is-one-fifths is-hidden">
     <label class="label" for="subtitle">Subtitle</label>
     <div class="control has-icons-left">
       <input

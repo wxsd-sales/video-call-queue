@@ -2,11 +2,11 @@
 
 **Create a fully customized WebRTC video call queue.**
 
-This is a proof-of-concept application which generates a customized looking queue links to establish Webex backed WebRTC video calls between the requester and responder.
+This is a proof-of-concept custom-branded application that enables users to dial into a video call queue powered by Webex Call Management Group, facilitating a structured connection between the requester and the agent.
 
 <p >
-   <a href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3" target="_blank">
-       <img src="static/readme/videoQueue.gif" alt="video-call-queue"/>
+   <a href="https://app.vidcast.io/share/fd2c4347-f94e-4c0c-9a39-348397abed73" target="_blank">
+       <img src="static/readme/multiple-sip-calls.png" alt="video-call-queue"/>
     </a>
 </p>
 
@@ -17,8 +17,6 @@ This is a proof-of-concept application which generates a customized looking queu
 - [Overview](#overview)
 - [High-Level Architecture](#high-level-architecture)
   - [Prerequisites](#prerequisites)
-  - [Browser Meeting SDK](#browser-meeting-sdk)
-  - [Instant Connect Solution](#instnat-connect-solution)
   - [SIP URI Dialing](#sip-uri-dialing)
   - [Multiple SIP URI Dialings](#multiple-sip-uri-dialings)
 - [Setup](#setup)
@@ -30,79 +28,17 @@ This is a proof-of-concept application which generates a customized looking queu
 
 # Overview
 
-This web application provides a support queue system that could be embedded in E2C use cases and contains two views: Requester & Responder views. As you see in the figure above, there is a list of requests for a responder to manage or address to. In order for the responder to view any requests, they would need any requester to submit a request. Once a requester has submitted a request, responder will have few options to manage the request. Responder is able to skip or address the request by starting a session with the requester. This PoC is designed to address some of the use cases mentioned below:
+This web application offers a support queue system that can be integrated into E2C use cases. It empowers demo builders to craft a custom-branded experience, enabling users to dial into up to 4 queues, each tailored to provide a unique experience while awaiting connection to an agent. This Proof of Concept (PoC) is specifically designed to address the following use cases:
 
-<i>"I need a WebRTC video solution embedded in our built-in native app to connect customers to experts." </i> <br/>
-<i>"I need a branded WebRTC supported video call queue solution to connect two parties without asking them to login."</i> <br/>
-<i>"I need a click-to-call support feature embedded in my Cisco board Pro to connect incoming lobby guests to lobby ambassadors"</i> <br/>
+<i>"To enhance the customer experience, I aim to provide a welcoming greeting as they enter the lobby to be connected with the lobby ambassador."</i> <br/>
+<i>"I want my support team to be available 24 hours, covering all areas of the workplace, to address any support issues in real time."</i> <br/>
 <br />
 
 # High Level Architecture
 
 ## Prerequisites
 
-This PoC leverages a few services behind the scene to provide a FIFO orderly queue system to manage requests and establish a WebRTC connections between the responder and requester. Here is the list of services that are required before launching the application. Make sure to review our env.example file to input the right values before running the app locally.
-
-<ol>
-<li><a href="https://github.com/wxsd-sales/soapbox" target="_blank">SoapBox</a> - A websocket message broker link must be provided to establish a WSS connection between the responder and requester</li>
-<li><a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank">Guest Demo</a> - To generate and embed the meeting experience into support flow</li>
-<li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank">Mindy Bot</a> - To manage guest users and to perform space and memberships creations</li>
-<li><a href="https://instant.webex.com/" target="_blank">Webex Instant Connect</a> - To embed Webex IC flow into the support flow, Instant Connect must be activated</li>
-<li><a href="https://cisco.sharepoint.com/:b:/s/WXSD-WebexSolutionsDevelopment/EQJu96KU411LpGw16KdT4ewBwZsAOl7NEH_Tnprt6UX4tA" target="_blank">Webex Calling Queue on Cisco Devices</a> - To create a support queue experience on Cisco Device using macros & Webex calling group call management</li>
-</ol>
-
-## Browser Meeting SDK
-
-### Requester Flow
-
-Establishes a WebSocket connection to SoapBox to publish the request data and subscribe to queue & meeting management events.
-
-### Responder Flow
-
-<ol>
-<li>Establish a WebSocket connection to SoapBox to register queue events</li>
-<li>Send HTTPs POST request to Mindy BOT</li>
-<li><a href="https://github.com/wxsd-sales/mindy-bot-refactored" target="_blank" >Mindy Bot</a> Node Service
-   <ol>
-      <li> Issues JWTs</li>
-      <li> Create an Space</li>
-      <li> Create Space memberships with newly generated guest tokens</li>
-      <li> Retrieve a meeting link using <a href="https://github.com/wxsd-sales/wxsd-guest-demo" target="_blank" >Guest Demo</a> API</li>
-      <li> Update registered soapbox session with meeting details</li>
-   </ol>
-</li>
-<li> Responder and requester clients receive the meeting information from the SoapBox
-<li> Responder Client initiates Browser Meeting SDK to register Meeting related events </li>
-<li> Responder Client publishes queue <strong>pop</strong> & meeting related events back to requester client </li>
-</li>
-</ol>
-<p align="center">
-   <img src="static/readme/SDK.jpg" alt="video-call-queue"/>
-</p>
-
-<br />
-
-## Instant Connect Solution
-
-### Requester Flow
-
-Establishes a WebSocket connection to SoapBox to publish the request data and subscribe to queue & meeting management events.
-
-### Responder Flow
-
-<ol>
-<li> Establishes a WebSocket connection to SoapBox to register queue related events</li>
-<li> Sends HTTPs POST request Instant Connect</li>
-<li> Receives IC meeting url to join </li>
-<li> Responder Client initiates Browser Meeting SDK to register Meeting related events </li>
-<li> Responder Client publishes queue <strong>pop</strong> & meeting related events back to requester client </li>
-</li>
-</ol>
-<p align="center">
-   <img src="static/readme/IC.jpg" alt="video-call-queue"/>
-</p>
-
-<br />
+This PoC leverages a Webex Group Call Management feature powered by Webex Cloud Calling behind the scene to provide a FIFO orderly queue system to manage requests and establish a SIP connections between the responder and requester. Here is the list of services that are required before launching the application. For more information please click [here](https://cisco.sharepoint.com/:b:/s/WXSD-WebexSolutionsDevelopment/EQJu96KU411LpGw16KdT4ewBwZsAOl7NEH_Tnprt6UX4tA)
 
 ## SIP URI Dialing
 
@@ -180,8 +116,6 @@ Lastly, navigate to `http://localhost` in your browser and follow instructions.
 
 # Built With
 
-- [Webex Browser SDK](https://github.com/webex/webex-js-sdk)
-- [Webex Instant Connect](https://instant.webex.com/)
 - [SvelteJS](https://reactjs.org)
 - [TypeScript](https://www.typescriptlang.org/)
 
