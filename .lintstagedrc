@@ -1,7 +1,7 @@
 {
-  "*": [
+  "!(*png)*": [
     "npm run format",
     "npm run lint"
   ],
-  "*.md": "prettier --list-different"
+  "*.md": "prettier"
 }
