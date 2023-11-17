@@ -19,13 +19,20 @@
         <div class="message-header is-hidden" />
         <div class="message-body content">
           <p>
-            Demonstrate a branded WebRTC call queue! Applicable to a broad set of B2C use-cases. Connect banking
-            consumers to mortgage specialists, or clinicians from patient rooms; this tool will help you explore the
-            art-of-the-possible through Webex programmability!
+            Looking to demonstrate a branded Video Concierge Use Case powered by Webex? You've come to the right place!
+          </p>
+          <p>
+            This application will help you explore a broad set of business-to-consumer Kiosk use cases for
+            cloud-registered.
+          </p>
+          <p>
+            Bundle with Webex Calling to showcase standards based SIP connecting banking consumers to mortgage
+            specialists, quickly connect clinicians from patient rooms or direct visitors in a lobby to their
+            appointments! Explore the art-of-the-possible through Webex programmability!
           </p>
           <p>
             Please watch the <span
-              ><a target="_blank" href="https://app.vidcast.io/share/d5289588-9810-4e4a-9ea5-b85b61816cc3">vidcast</a
+              ><a target="_blank" href="https://app.vidcast.io/share/fd2c4347-f94e-4c0c-9a39-348397abed73">vidcast</a
               ></span
             > for a quick walk-through.
           </p>

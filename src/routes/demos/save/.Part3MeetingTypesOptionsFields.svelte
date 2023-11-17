@@ -17,7 +17,6 @@
   export let id: string;
   export let SIPQueues = [];
 
-  let isNotRequired = isSDK || isIC || isSIP;
   let SDKCheckBoxElement: HTMLInputElement;
   let ICCheckBoxElement: HTMLInputElement;
   let SIPCheckBoxElement: HTMLInputElement;
@@ -32,7 +31,6 @@
    * @returns {void}
    */
   const handleCheckboxesRequiredStatus = () => {
-    isNotRequired = SDKCheckBoxElement.checked || ICCheckBoxElement.checked || SIPCheckBoxElement.checked;
     $previewedDemoStore.IC = ICCheckBoxElement.checked;
     $previewedDemoStore.SDK = SDKCheckBoxElement.checked;
     $previewedDemoStore.SIP = SIPCheckBoxElement.checked;
@@ -60,14 +58,36 @@
 </script>
 
 <div class="columns is-multiline">
-  <div class="column is-full">
-    <h2 class="title">Video Call Options</h2>
+  <div class="column mb-4">
+    <h2 class="title">Video SIP Call Configuration</h2>
   </div>
-  <div class="column is-full content mb-0">
-    <p>Provide a list of video call options for a requester to choose from.</p>
+  <div class="column mb-4 is-flex  is-justify-content-flex-end is-align-items-center">
+    <button
+      class="button is-rounded is-success is-outlined"
+      type="button"
+      disabled={SIPQueues.length >= 4}
+      on:click={() => {
+        SIPQueues = [
+          ...SIPQueues,
+          $SIPQueuesStore[`${id}`][SIPQueues.length] || {
+            videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
+            extensionNumber: 1111,
+            sipTitle: 'Looking For Assistance?',
+            sipImage: null
+          }
+        ];
+        $previewedDemoStore.SIPQueues = SIPQueues;
+      }}
+    >
+      <span class="icon">
+        <i class="mdi mdi-plus" />
+      </span>
+      <span>Add More SIP URIs</span>
+    </button>
   </div>
+
   <!-- A -->
-  <div class="column is-one-third">
+  <div class="column is-one-third is-hidden">
     <label class="label" for="subtitle">Options <sup class="has-text-danger" title="required">*</sup></label>
     <label class="checkbox">
       <input
@@ -78,7 +98,6 @@
         name={MEETING_TYPE_OPTIONS.BROWSER_SDK}
         bind:this={SDKCheckBoxElement}
         on:input={handleCheckboxesRequiredStatus}
-        required={!isNotRequired}
         disabled={SIPQueues.length > 1}
       />
       <span class:has-text-grey-light={SIPQueues.length > 1}> Meeting Browser SDK </span>
@@ -91,7 +110,7 @@
       </p>
     </div>
   </div>
-  <div class="column is-one-third is-flex is-flex-direction-column is-justify-content-flex-end">
+  <div class="column is-one-third is-flex is-flex-direction-column is-justify-content-flex-end is-hidden">
     <label class="checkbox">
       <label class="label" for="subtitle"> <sup class="has-text-danger" title="required" /> </label>
       <input
@@ -101,7 +120,6 @@
         name={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
         bind:this={ICCheckBoxElement}
         on:input={handleCheckboxesRequiredStatus}
-        required={!isNotRequired}
         disabled={SIPQueues.length > 1}
       />
       <span class:has-text-grey-light={SIPQueues.length > 1}> Instant Connect </span>
@@ -114,7 +132,7 @@
       </p>
     </div>
   </div>
-  <div class="column is-one-third is-flex is-flex-direction-column is-justify-content-flex-end">
+  <div class="column is-one-third is-flex is-flex-direction-column is-justify-content-flex-end is-hidden">
     <label class="checkbox">
       <input
         type="checkbox"
@@ -123,7 +141,6 @@
         name={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
         bind:this={SIPCheckBoxElement}
         on:input={handleCheckboxesRequiredStatus}
-        required={!isNotRequired}
       />
       SIP URI Dialing
     </label>
@@ -137,56 +154,28 @@
     </div>
   </div>
 
-  {#if isSIP}
-    <div transition:slide class="columns mx-4 is-multiline">
-      <div class="column is-full ">
-        <h3 class="mt-6 title is-size-5">Video SIP Call Queue Macro Builder</h3>
-      </div>
-      <div class="column is-full content mb-3">
-        <p>
-          <span class="is-italic"> SIP URI Dialing</span> feature will only be available on Cisco roomOS devices. This
-          feature also requires users to create a call queue under
-          <a target="_blank" href={`${CONTROL_HUB_URL}/calling/features/callQueue`}>Webex control hub call management</a
-          >
-          section, and enable a macro - which could be auto generated here - on their devices*. Please also note that
-          <code>SipUrlHandler</code> toggle must be enabled for this flow. For more information on how to enable this
-          toggle please click <a href="https://roomos.cisco.com/doc/TechDocs/KioskMode#placing-a-call">here</a>.
-        </p>
+  <div transition:slide class="columns mx-2 is-multiline">
+    <div class="column is-full content mb-3">
+      <p>
+        <span class="is-italic"> SIP URI Dialing</span> feature will only be available on Cisco roomOS devices. This
+        feature also requires users to create a call queue under
+        <a target="_blank" href={`${CONTROL_HUB_URL}/calling/features/callQueue`}>Webex control hub call management</a>
+        section, and enable a macro - which could be auto generated here - on their devices*. Please also note that
+        <code>SipUrlHandler</code> toggle must be enabled for this flow. For more information on how to enable this
+        toggle please click <a href="https://roomos.cisco.com/doc/TechDocs/KioskMode#placing-a-call">here</a>.
+      </p>
 
-        <p class="help">
-          * If you are not familiar with video call queue feature on devices powered by Webex Calling, we highly
-          recommend you to watch this <a target="_blank" href={DEVICE_CALL_QUEUE_VIDCAST}>vidcast</a>
-          and follow the steps mentioned in our
-          <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>setup guide</a>.
-        </p>
-      </div>
-      <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
-        <hr class="column is-three-quarters p-0" />
-      </div>
-      <div class="column is-full is-flex  is-justify-content-flex-end is-align-items-center">
-        <button
-          class="button is-rounded is-success is-outlined"
-          type="button"
-          disabled={SIPQueues.length >= 4}
-          on:click={() => {
-            SIPQueues = [
-              ...SIPQueues,
-              $SIPQueuesStore[`${id}`][SIPQueues.length] || {
-                videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
-                extensionNumber: 1111,
-                sipTitle: 'Looking For Assistance?',
-                sipImage: null
-              }
-            ];
-            $previewedDemoStore.SIPQueues = SIPQueues;
-          }}
-        >
-          <span class="icon">
-            <i class="mdi mdi-plus" />
-          </span>
-          <span>Add More SIP URIs</span>
-        </button>
-      </div>
+      <p class="help">
+        * If you are not familiar with video call queue feature on devices powered by Webex Calling, we highly recommend
+        you to watch this <a target="_blank" href={DEVICE_CALL_QUEUE_VIDCAST}>vidcast</a>
+        and follow the steps mentioned in our
+        <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>setup guide</a>.
+      </p>
+    </div>
+    <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
+      <hr class="column is-three-quarters p-0" />
+    </div>
+    <div class="mx-5">
       {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
         <SIPQueueField
           {extensionNumber}
@@ -215,33 +204,34 @@
           }}
         />
       {/each}
-      <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
-        <hr class="column is-three-quarters p-0" />
-      </div>
-      <div class="column is-flex p-0 is-justify-content-space-between is-align-items-center">
-        <div class="mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
-        <button
-          disabled={macroButtonIsDisabled}
-          class:is-loading={generateIsLoading}
-          type="button"
-          class="button is-small is-rounded is-primary is-light m-2 "
-          on:click={() => {
-            generateIsLoading = true;
-            code = generateMacro(SIPQueues);
-            setTimeout(() => {
-              generateIsLoading = false;
-              showModal = true;
-            }, 1000);
-          }}
-        >
-          <span class="icon">
-            <i class="mdi mdi-cog" />
-          </span>
-          <span> Generate Macro </span>
-        </button>
-      </div>
     </div>
-  {/if}
+
+    <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
+      <hr class="column is-three-quarters p-0" />
+    </div>
+    <div class="column is-flex p-0 is-justify-content-space-between is-align-items-center">
+      <div class="mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
+      <button
+        disabled={macroButtonIsDisabled}
+        class:is-loading={generateIsLoading}
+        type="button"
+        class="button is-small is-rounded is-primary is-light m-2 "
+        on:click={() => {
+          generateIsLoading = true;
+          code = generateMacro(SIPQueues);
+          setTimeout(() => {
+            generateIsLoading = false;
+            showModal = true;
+          }, 1000);
+        }}
+      >
+        <span class="icon">
+          <i class="mdi mdi-cog" />
+        </span>
+        <span> Generate Macro </span>
+      </button>
+    </div>
+  </div>
 </div>
 
 <Modal bind:showModal>
