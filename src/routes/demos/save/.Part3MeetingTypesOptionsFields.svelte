@@ -175,7 +175,7 @@
     <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
       <hr class="column is-three-quarters p-0" />
     </div>
-    <div class="mx-4">
+    <div class="mx-5">
       {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
         <SIPQueueField
           {extensionNumber}
