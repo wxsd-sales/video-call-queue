@@ -4,7 +4,7 @@ export const WEBEX_SDK_CONFIG = {
   logger: { level: 'silent' },
   meetings: { reconnection: { enabled: true } }
 };
-
+export const VALID_DOMAINS = ['http://call-queue.wbx.ninja', 'https://call-queue.wbx.ninja', 'http://localhost:5173'];
 export const CONTROL_HUB_URL = 'https://admin.webex.com';
 export const DEVICE_CALL_QUEUE_VIDCAST = 'https://app.vidcast.io/share/05285d39-75a7-429e-81d0-61911a931973';
 export const DEVICE_CALL_QUEUE_SETUP_GUIDE =

@@ -142,7 +142,6 @@ export const GET = async (requestEvent: RequestEvent) => {
           body: { demo, role: query.role, embeddable: requestEvent.url.searchParams.has('embeddable') }
         };
       }
-
       return { status: 302, headers: { Location: '/auth' } };
     });
 };
