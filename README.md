@@ -1,6 +1,6 @@
-# Webex WebRTC Video Call Queue
+# Webex Video Call Queue
 
-**Create a fully customized WebRTC video call queue.**
+**Create a fully customized video call queue.**
 
 This is a proof-of-concept custom-branded application that enables users to dial into a video call queue powered by Webex Call Management Group, facilitating a structured connection between the requester and the agent.
 
