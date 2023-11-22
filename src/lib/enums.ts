@@ -1,9 +1,3 @@
-export enum MEETING_TYPE_OPTIONS {
-  BROWSER_SDK = 'SDK',
-  INSTANT_CONNECT = 'IC',
-  SIP_URI_DIALING = 'SIP'
-}
-
 export enum StateKey {
   WEBEX_TOKEN = 'WEBEX_TOKEN',
   QUEUE_ORDER = 'QUEUE_ORDER',

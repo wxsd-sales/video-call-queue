@@ -2,7 +2,6 @@ import macroTemplate from '$lib/static/sip-macro-template.txt?raw';
 
 export const generateMacro = (queues) => {
   let queuesSTR = '';
-
   for (const { extensionNumber, videoLink } of queues)
     queuesSTR = queuesSTR.concat(`
        {
@@ -13,7 +12,5 @@ export const generateMacro = (queues) => {
           target: 'OSD'     // OSD | Controller
         },`);
 
-  queuesSTR = queuesSTR.slice(0, -1);
-
-  return macroTemplate.replace('${queues}', queuesSTR);
+  return macroTemplate.replace('${queues}', queuesSTR.slice(0, -1));
 };

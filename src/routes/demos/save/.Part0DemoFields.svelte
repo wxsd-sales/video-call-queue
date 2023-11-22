@@ -2,7 +2,6 @@
   import { previewedDemoStore } from '$lib/store';
 
   export let name: string;
-  export let description: string;
 </script>
 
 <div class="columns is-multiline">
@@ -13,7 +12,7 @@
       <div class="message-body content ">
         <p class="is-italic">
           An <strong>"Instance"</strong> is a single Video Queue implementation accessible between a requestor and an agent.
-          This means users can now request support from a device to be connected to an agent in a FIFO order. No authentication
+          This means users can now request support from a device to be connected to an agent in order. No authentication
           has been implemented for simplicity.
         </p>
         <p class="has-text-weight-semibold">

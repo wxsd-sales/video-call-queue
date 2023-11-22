@@ -15,16 +15,10 @@
 
   export let form = undefined;
   export let name = undefined;
-  export let description = undefined;
   export let poster = undefined;
   export let brightness = undefined;
   export let logo = undefined;
-  export let title = undefined;
-  export let subtitle = undefined;
   export let cityId = undefined;
-  export let isSDK = false;
-  export let isIC = false;
-  export let isSIP = false;
   export let units = undefined;
   export let SIPQueues = undefined;
   export let displayFootnote = true;
@@ -35,17 +29,11 @@
 
   $previewedDemoStore = {
     name,
-    description,
     poster: poster,
     brightness,
     logo: logo,
-    title,
-    subtitle,
-    cityId: cityId || 4887398,
-    SDK: isSDK,
-    IC: isIC,
-    SIP: isSIP || (!isSDK && !isIC && true),
-    units: units || 'imperial',
+    cityId,
+    units,
     SIPQueues,
     displayFootnote,
     displayWeather: !!cityId
@@ -77,7 +65,7 @@
   enctype="multipart/form-data"
   bind:this={formElement}
 >
-  <DemoFields {name} {description} />
+  <DemoFields {name} />
   <hr />
   {#await toFileList(poster) then poster}
     <BackgroundFields {poster} {brightness} />
@@ -86,12 +74,12 @@
   {/await}
   <hr />
   {#await toFileList(logo) then logo}
-    <BrandFields {logo} {title} {subtitle} />
+    <BrandFields {logo} />
   {:catch e}
-    <BrandFields {title} {subtitle} />
+    <BrandFields />
   {/await}
   <hr />
-  <MeetingTypesOptionsFields {isSDK} {isIC} {isSIP} {SIPQueues} {id} />
+  <MeetingTypesOptionsFields {SIPQueues} {id} />
   <hr />
   <MiscFields {units} {cityId} {displayFootnote} />
   <hr />

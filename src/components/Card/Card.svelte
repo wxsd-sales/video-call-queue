@@ -6,17 +6,15 @@
   export let extensionNumber: number;
   export let title: string;
   export let img: string;
+  export let index: number;
   export let isDevice: boolean;
 
-  let isLoading = false;
-  let SIPrequestIsSubmitted = false;
   let buttonIsLoading = false;
   let timer = 5;
   let displayNotification = false;
 
   /** Submits a request and append it to the queue */
   const submitRequest = () => {
-    SIPrequestIsSubmitted = true;
     window.location.hash = String(extensionNumber);
     window.location.hash = '';
     buttonIsLoading = true;
@@ -34,12 +32,14 @@
         }
       }, 1000);
     } else {
-      buttonIsLoading = false;
+      setTimeout(() => {
+        buttonIsLoading = false;
+      }, 1000);
     }
   };
 </script>
 
-<div class="card is-translucent-black p-3">
+<div id={index} class="card is-translucent-black p-3">
   <div class="card-image">
     <figure class="image is-5by3">
       <img src={img} alt="support-figure" />
@@ -49,8 +49,8 @@
     <div class="content">
       <button
         class="button is-size-4 is-primary is-centered  {buttonIsLoading && 'is-loading'}"
-        on:click={submitRequest}
         disabled={!isDevice}
+        on:click={submitRequest}
         >{title}
       </button>
     </div>

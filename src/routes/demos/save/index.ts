@@ -65,23 +65,17 @@ const generateSIPQueues = (response) => {
 const fields = [
   'uuid',
   'name',
-  'description',
   'backgroundBrightness',
   'backgroundPoster.bits',
   'backgroundPoster.name',
   'backgroundPoster.type',
   'backgroundPoster.lastModified',
-  'brandTitle',
-  'brandSubtitle',
   'brandLogo.bits',
   'brandLogo.name',
   'brandLogo.type',
   'brandLogo.lastModified',
   'weatherUnits',
   'weatherCityId',
-  'isSDK',
-  'isIC',
-  'isSIP',
   'videoLink1',
   'extensionNumber1',
   'sipTitle1',
@@ -123,17 +117,11 @@ export const GET = async (requestEvent: RequestEvent) => {
             status: 200,
             body: {
               name: r.name,
-              description: r.description,
               poster: toFile(r.backgroundPoster),
               brightness: r.backgroundBrightness,
               logo: toFile(r.brandLogo),
-              title: r.brandTitle,
-              subtitle: r.brandSubtitle,
               cityId: r.weatherCityId,
               units: r.weatherUnits,
-              isSDK: r.isSDK,
-              isIC: r.isIC,
-              isSIP: r.isSIP && qs.length,
               SIPQueues: qs,
               displayFootnote: Boolean(r.displayFootnote)
             }
@@ -141,11 +129,23 @@ export const GET = async (requestEvent: RequestEvent) => {
         })
         .catch({
           status: 200,
-          body: { brightness: 55, title: 'Cisco', subtitle: 'Bridge to Possible', units: 'imperial', cityId: 4887398 }
+          body: { brightness: 55, units: 'imperial', cityId: 4887398 }
         })
     : {
         status: 200,
-        body: { brightness: 55, title: 'Cisco', subtitle: 'Bridge to Possible', units: 'imperial', cityId: 4887398 }
+        body: {
+          brightness: 55,
+          units: 'imperial',
+          cityId: 4887398,
+          SIPQueues: [
+            {
+              extensionNumber: 1111,
+              videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
+              sipTitle: 'Looking For Assistance?',
+              sipImage: null
+            }
+          ]
+        }
       };
 };
 
@@ -157,12 +157,6 @@ export const POST = async (requestEvent: RequestEvent) => {
     @MaxLength(64)
     @Transform(({ obj }: { obj: FormData }) => obj.get('name'), { toClassOnly: true })
     public readonly name!: string;
-
-    @Expose()
-    @MaxLength(256)
-    @ValidateIf(({ obj }) => obj?.description)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('description'), { toClassOnly: true })
-    public readonly description?: string;
 
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('poster'), { toClassOnly: true })
@@ -178,28 +172,6 @@ export const POST = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('logo'), { toClassOnly: true })
     public readonly logo!: File;
-
-    @Expose()
-    @MaxLength(16)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('title'), { toClassOnly: true })
-    public readonly title!: string;
-
-    @Expose()
-    @MaxLength(64)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('subtitle'), { toClassOnly: true })
-    public readonly subtitle!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SDK')), { toClassOnly: true })
-    public readonly isSDK!: boolean;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('IC')), { toClassOnly: true })
-    public readonly isIC!: boolean;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SIP')), { toClassOnly: true })
-    public readonly isSIP!: boolean;
 
     @Expose()
     @IsIn(['imperial', 'metric', 'standard', null])
@@ -307,17 +279,11 @@ export const POST = async (requestEvent: RequestEvent) => {
       const demo = new Demo({
         user: session.user,
         name: formData.name,
-        description: formData?.description,
         backgroundPoster: await toData(formData.poster),
         backgroundBrightness: formData.brightness,
         brandLogo: await toData(formData.logo),
-        brandTitle: formData.title,
-        brandSubtitle: formData.subtitle,
         weatherUnits: formData.units,
         weatherCityId: formData.cityId,
-        isSDK: formData.isSDK,
-        isIC: formData.isIC,
-        isSIP: formData.isSIP,
         videoLink1: formData.videoLink1,
         extensionNumber1: formData.extensionNumber1,
         sipTitle1: formData.sipTitle1,
@@ -362,12 +328,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     public readonly name!: string;
 
     @Expose()
-    @MaxLength(256)
-    @ValidateIf(({ obj }) => obj?.description)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('description'), { toClassOnly: true })
-    public readonly description?: string;
-
-    @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('poster'), { toClassOnly: true })
     public readonly poster!: File;
 
@@ -381,28 +341,6 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     @Expose()
     @Transform(({ obj }: { obj: FormData }) => obj.get('logo'), { toClassOnly: true })
     public readonly logo!: File;
-
-    @Expose()
-    @MaxLength(16)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('title'), { toClassOnly: true })
-    public readonly title!: string;
-
-    @Expose()
-    @MaxLength(64)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('subtitle'), { toClassOnly: true })
-    public readonly subtitle!: string;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SDK')), { toClassOnly: true })
-    public readonly isSDK!: boolean;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('IC')), { toClassOnly: true })
-    public readonly isIC!: boolean;
-
-    @Expose()
-    @Transform(({ obj }: { obj: FormData }) => Boolean(obj.get('SIP')), { toClassOnly: true })
-    public readonly isSIP!: boolean;
 
     @Expose()
     @IsIn(['imperial', 'metric', 'standard', null])
@@ -518,23 +456,17 @@ export const PATCH = async (requestEvent: RequestEvent) => {
         )
         .then(async (r) => {
           r.name = formData.name;
-          r.description = formData.description;
           r.backgroundBrightness = formData.brightness;
           r.backgroundPoster.bits = Buffer.from(await formData.poster.arrayBuffer());
           r.backgroundPoster.type = formData.poster.type;
           r.backgroundPoster.name = formData.poster.name;
           r.backgroundPoster.lastModified = formData.poster.lastModified;
-          r.brandTitle = formData.title;
-          r.brandSubtitle = formData.subtitle;
           r.brandLogo.bits = Buffer.from(await formData.logo.arrayBuffer());
           r.brandLogo.type = formData.logo.type;
           r.brandLogo.name = formData.logo.name;
           r.brandLogo.lastModified = formData.logo.lastModified;
           r.weatherUnits = formData.units;
           r.weatherCityId = formData.cityId;
-          r.isSDK = formData.isSDK;
-          r.isIC = formData.isIC;
-          r.isSIP = formData.isSIP;
           r.videoLink1 = formData.videoLink1;
           r.extensionNumber1 = formData.extensionNumber1;
           r.sipTitle1 = formData.sipTitle1;

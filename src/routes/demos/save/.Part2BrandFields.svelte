@@ -4,8 +4,6 @@
   import { onMount } from 'svelte';
 
   export let logo: FileList = undefined;
-  export let title: string = undefined;
-  export let subtitle: string = undefined;
   export let acceptedFileTypes: string = '.png, .svg, .gif, .webp, .avif, .apng';
   export let maxFileSize: number = 200000;
 
@@ -92,7 +90,7 @@
       <div class=" help is-mobile mb-1">
         <p class=" label mb-0">Preview</p>
       </div>
-      <Brand title={window.URL.createObjectURL(logo[0])} {subtitle} on:load={handleLogoLoad} />
+      <Brand title={window.URL.createObjectURL(logo[0])} on:load={handleLogoLoad} />
       <p class="help">
         Dimensions:
         {clientWidth}W &#10005; {clientHeight}H (scaled); {naturalWidth}W &#10005; {naturalHeight}H (original)

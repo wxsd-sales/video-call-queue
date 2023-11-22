@@ -1,6 +1,7 @@
 <script lang="ts">
   import Prism from 'prismjs';
   import 'prism-themes/themes/prism-coy-without-shadows.css';
+  import copy from 'copy-to-clipboard';
 
   export let language: string;
   export let code: string;
@@ -43,7 +44,7 @@
     copyIsLoading = true;
 
     setTimeout(async () => {
-      await navigator.clipboard.writeText(code);
+      copy(code);
       copyIsLoading = false;
       isCopied = true;
 

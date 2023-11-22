@@ -1,6 +1,5 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
-  import { MEETING_TYPE_OPTIONS } from '$lib/enums';
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
   import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
@@ -11,43 +10,13 @@
 
   import { onMount } from 'svelte';
 
-  export let isSDK: boolean;
-  export let isIC: boolean;
-  export let isSIP: boolean;
   export let id: string;
   export let SIPQueues = [];
 
-  let SDKCheckBoxElement: HTMLInputElement;
-  let ICCheckBoxElement: HTMLInputElement;
-  let SIPCheckBoxElement: HTMLInputElement;
   let generateIsLoading = false;
   let macroButtonIsDisabled = false;
   let code = generateMacro(SIPQueues);
   let showModal = false;
-
-  /**
-   * All checkboxes required statues may disable if only one checkbox is checked.
-   *
-   * @returns {void}
-   */
-  const handleCheckboxesRequiredStatus = () => {
-    $previewedDemoStore.IC = ICCheckBoxElement.checked;
-    $previewedDemoStore.SDK = SDKCheckBoxElement.checked;
-    $previewedDemoStore.SIP = SIPCheckBoxElement.checked;
-  };
-
-  //IC & SDK option will be disabled if multiple SIP queues is enabled
-  $: isIC = $previewedDemoStore.IC = SIPQueues.length > 1 ? false : isIC;
-  $: isSDK = $previewedDemoStore.SDK = SIPQueues.length > 1 ? false : isSDK;
-  $: if (!isSIP)
-    $previewedDemoStore.SIPQueues = SIPQueues = [
-      {
-        videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
-        extensionNumber: 1111,
-        sipTitle: 'Looking For Assistance?',
-        sipImage: null
-      }
-    ];
 
   onMount(() => {
     $SIPQueuesStore = {
@@ -103,34 +72,37 @@
         <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>setup guide</a>.
       </p>
     </div>
-    {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
-      <SIPQueueField
-        {extensionNumber}
-        {videoLink}
-        index={i}
-        {sipTitle}
-        {sipImage}
-        on:queueIsValid={({ detail: formIsValid }) => (macroButtonIsDisabled = !formIsValid)}
-        on:sipQs={({ detail: { event, payload } }) => {
-          switch (event) {
-            case 'update':
-              const { index, videoLink, sipTitle, extensionNumber, sipImage } = payload;
-              SIPQueues[index] = {
-                videoLink,
-                sipTitle,
-                extensionNumber,
-                sipImage
-              };
-              $SIPQueuesStore[`${id}`] = SIPQueues;
-              break;
-            case 'remove':
-              SIPQueues = [...SIPQueues.slice(0, payload.index), ...SIPQueues.slice(payload.index + 1)];
-              break;
-          }
-          $previewedDemoStore.SIPQueues = SIPQueues;
-        }}
-      />
-    {/each}
+    <div class="column is-full">
+      {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
+        <SIPQueueField
+          {extensionNumber}
+          {videoLink}
+          index={i}
+          {sipTitle}
+          {sipImage}
+          on:queueIsValid={({ detail: formIsValid }) => (macroButtonIsDisabled = !formIsValid)}
+          on:sipQs={({ detail: { event, payload } }) => {
+            switch (event) {
+              case 'update':
+                const { index, videoLink, sipTitle, extensionNumber, sipImage } = payload;
+                SIPQueues[index] = {
+                  videoLink,
+                  sipTitle,
+                  extensionNumber,
+                  sipImage
+                };
+                $SIPQueuesStore[`${id}`] = SIPQueues;
+                break;
+              case 'remove':
+                SIPQueues = [...SIPQueues.slice(0, payload.index), ...SIPQueues.slice(payload.index + 1)];
+                break;
+            }
+            $previewedDemoStore.SIPQueues = SIPQueues;
+          }}
+        />
+      {/each}
+    </div>
+
     <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
       <hr class="column is-three-quarters p-0" />
     </div>

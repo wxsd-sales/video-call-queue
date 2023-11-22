@@ -394,7 +394,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "is_ic": {
@@ -403,7 +403,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "is_sip": {
@@ -412,7 +412,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "sip_title1": {
@@ -571,6 +571,15 @@
           "primary": false,
           "nullable": true,
           "default": "true",
+          "mappedType": "integer"
+        },
+        "display_weather": {
+          "name": "display_weather",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "mappedType": "integer"
         }
       },

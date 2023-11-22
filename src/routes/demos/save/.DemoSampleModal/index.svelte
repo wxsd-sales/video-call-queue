@@ -35,7 +35,7 @@
       <div class="container is-block">
         <div class="columns m-0">
           <div id="brand" class="column is-7 is-flex is-align-self-center">
-            <Brand title={$previewedDemoStore.logo?.bits || CiscoLogo} subtitle={$previewedDemoStore.brandSubtitle} />
+            <Brand title={$previewedDemoStore.logo?.bits || CiscoLogo} />
           </div>
           {#if $previewedDemoStore.displayWeather}
             <div id="weather" class="column is-5 is-align-self-center">
@@ -50,13 +50,7 @@
   </div>
   <div class="prompts is-flex is-justify-content-space-evenly">
     {#each $previewedDemoStore.SIPQueues as { sipTitle, sipImage }, index (index)}
-      <CallPrompt
-        isIC={$previewedDemoStore.IC}
-        isSDK={$previewedDemoStore.SDK}
-        isSIP={$previewedDemoStore.SIP}
-        title={sipTitle}
-        sipImage={sipImage?.bits || CustomerSupportImg}
-      />
+      <CallPrompt title={sipTitle} sipImage={sipImage?.bits || CustomerSupportImg} />
     {/each}
   </div>
   <div class="mx-2 p-2 is-align-self-flex-end">

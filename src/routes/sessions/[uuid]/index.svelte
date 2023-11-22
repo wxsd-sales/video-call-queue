@@ -21,26 +21,15 @@
   export let role: string;
 
   let getWeatherResponse;
-  let isDevice = true;
+  let isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
 
   const httpApiRequest = jsonRequest('/api');
   if (demo.weatherCityId) {
     getWeatherResponse = (id: number, units: string) =>
       httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
   }
-
-  onMount(() => {
-    setTimeout(() => {
-      isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
-    }, 500);
-  });
 </script>
 
-<svelte:head>
-  {#if demo.isSDK || demo.isIC}
-    <script crossorigin src="https://unpkg.com/webex@^2/umd/webex.min.js"></script>
-  {/if}
-</svelte:head>
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
 <section id="hero" class="hero is-fullheight has-text-white is-dark">
   <!-- hero-head start -->
@@ -49,7 +38,7 @@
       <div class="container is-block">
         <div class="columns m-0">
           <div id="brand" class="column is-7 is-flex is-align-self-center">
-            <Brand title={demo.brandLogo} subtitle={demo.brandSubtitle} />
+            <Brand title={demo.brandLogo} />
           </div>
           {#if demo.weatherCityId !== null}
             <div id="weather" class="column is-5 is-align-self-center">
@@ -65,11 +54,9 @@
   <!-- hero-head end -->
   <!-- hero-body start -->
   <div id="body-widgets" class="hero-body p-1">
-    <div class="container">
-      <!--lhs start-->
-      <div id="is-flex is-align-items-center is-justify-content-center">
-        <Session {demo} />
-      </div>
+    <!--lhs start-->
+    <div class="is-flex is-justify-content-space-evenly" style="width: 100%">
+      <Session {demo} {isDevice} />
     </div>
   </div>
   <!-- hero-body end -->
@@ -97,9 +84,9 @@
 </section>
 
 <Notification type={NOTIFICATION_TYPES.ERROR} display={!isDevice}>
-  In order to experience our <strong>SIP URI Dialing</strong> flow, you must launch this demo on Cisco roomOS devices in
-  kiosk mode with proper macro setup enabled on the device and enable WxC video calling queue. For more information
-  please visit our
+  To experience our <strong>SIP URI Dialing </strong> flow, please ensure that you launch this demo on Cisco RoomOS
+  devices in kiosk mode with the proper macro setup enabled. Additionally, make sure to enable the WxC video calling
+  queue on the device. For more information please visit our
   <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>page</a>.
 </Notification>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/env';
+  import copy from 'copy-to-clipboard';
 
   export let url: string;
   export let label: string;
@@ -10,7 +11,7 @@
   const copyUrl = () => {
     browser &&
       Promise.resolve((isCopyLoading = true))
-        .then(() => navigator.clipboard.writeText(url))
+        .then(() => copy(url))
         .finally(() =>
           setTimeout(() => {
             isCopyLoading = false;
