@@ -13,6 +13,7 @@ const config = {
   },
   resolve: {
     alias: {
+      $widgets: resolve('./src/widgets'),
       $components: resolve('./src/components'),
       $entities: resolve('./src/entities')
     }

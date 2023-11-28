@@ -38,13 +38,13 @@ This web application offers a support queue system that can be integrated into E
 
 ## Prerequisites
 
-This PoC leverages a Webex Group Call Management feature powered by Webex Cloud Calling behind the scene to provide a FIFO orderly queue system to manage requests and establish a SIP connections between the responder and requester. Here is the list of services that are required before launching the application. For more information please click [here](https://cisco.sharepoint.com/:b:/s/WXSD-WebexSolutionsDevelopment/EQJu96KU411LpGw16KdT4ewBwZsAOl7NEH_Tnprt6UX4tA)
+This PoC leverages a Webex Group Call Management feature powered by Webex Cloud Calling behind the scene to provide queue system to manage requests and establish a SIP connections between the responder and requester. Here is the list of services that are required before launching the application. For more information please click [here](https://cisco.sharepoint.com/:b:/s/WXSD-WebexSolutionsDevelopment/EQJu96KU411LpGw16KdT4ewBwZsAOl7NEH_Tnprt6UX4tA)
 
 ## SIP URI Dialing
 
 ### Requester Flow
 
-User dials into call queue in kiosk mode with SIP protocol handler feature enabled on the device, to connect to the responder in FIFO orderly manner.
+User dials into call queue in kiosk mode with SIP protocol handler feature enabled on the device, to connect to the responder.
 
 ### Responder Flow
 

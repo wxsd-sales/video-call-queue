@@ -6,70 +6,62 @@
   import Brand from '$components/Brand/Brand.svelte';
   import Clock from '$components/Clock/Clock.svelte';
   import Weather from '$components/Weather/Weather.svelte';
+  import Notification from '$components/Notification/Notification.svelte';
 
-  import Responder from './.Responder.svelte';
-  import Requester from './.Requester/.Requester.svelte';
+  import Session from '$widgets/Session/Session.svelte';
+  import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
 
   import type { Demo } from 'src/database/entities';
+  import { NOTIFICATION_TYPES } from '$components/Notification/enums';
+
+  import { browser } from '$app/env';
+  import { onMount } from 'svelte';
 
   export let demo: Demo;
   export let role: string;
-  export let embeddable: boolean;
 
   let getWeatherResponse;
-  const httpApiRequest = jsonRequest('/api');
+  let isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
 
+  const httpApiRequest = jsonRequest('/api');
   if (demo.weatherCityId) {
     getWeatherResponse = (id: number, units: string) =>
       httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
   }
 </script>
 
-<svelte:head>
-  {#if demo.isSDK || demo.isIC}
-    <script crossorigin src="https://unpkg.com/webex@^2/umd/webex.min.js"></script>
-  {/if}
-</svelte:head>
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
 <section id="hero" class="hero is-fullheight has-text-white is-dark">
-  {#if !embeddable}
-    <!-- hero-head start -->
-    <div id="head-widgets" class="hero-head">
-      <nav class="navbar is-translucent-black">
-        <div class="container is-block">
-          <div class="columns m-0">
-            <div id="brand" class="column is-7 is-flex is-align-self-center">
-              <Brand title={demo.brandLogo} subtitle={demo.brandSubtitle} />
-            </div>
-            {#if demo.weatherCityId !== null}
-              <div id="weather" class="column is-5 is-align-self-center">
-                <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
-                  <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
-                </Weather>
-              </div>
-            {/if}
+  <!-- hero-head start -->
+  <div id="head-widgets" class="hero-head">
+    <nav class="navbar is-translucent-black">
+      <div class="container is-block">
+        <div class="columns m-0">
+          <div id="brand" class="column is-7 is-flex is-align-self-center">
+            <Brand title={demo.brandLogo} />
           </div>
+          {#if demo.weatherCityId !== null}
+            <div id="weather" class="column is-5 is-align-self-center">
+              <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
+                <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
+              </Weather>
+            </div>
+          {/if}
         </div>
-      </nav>
-    </div>
-  {/if}
+      </div>
+    </nav>
+  </div>
   <!-- hero-head end -->
   <!-- hero-body start -->
   <div id="body-widgets" class="hero-body p-1">
-    <div class="container">
-      <!--lhs start-->
-      <div id="is-flex is-align-items-center is-justify-content-center" class:embeddable>
-        {#if role === 'responder'}
-          <Responder socketID={demo.uuid} {embeddable} />
-        {:else}
-          <Requester {demo} {embeddable} />
-        {/if}
-      </div>
+    <!--lhs start-->
+    <div class="is-flex is-justify-content-space-evenly" style="width: 100%">
+      <Session {demo} {isDevice} />
     </div>
   </div>
   <!-- hero-body end -->
   <!-- hero-foot start -->
-  {#if demo.displayFootnote && !embeddable}
+  {#if demo.displayFootnote}
     <div id="foot-widgets" class="hero-foot mx-2 p-2">
       <nav class="tabs">
         <div class="container">
@@ -91,6 +83,13 @@
   <!-- hero-foot end -->
 </section>
 
+<Notification type={NOTIFICATION_TYPES.ERROR} display={!isDevice}>
+  To experience our <strong>SIP URI Dialing </strong> flow, please ensure that you launch this demo on Cisco RoomOS
+  devices in kiosk mode with the proper macro setup enabled. Additionally, make sure to enable the WxC video calling
+  queue on the device. For more information please visit our
+  <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>page</a>.
+</Notification>
+
 <style lang="scss">
   @use 'bulma/sass/helpers/typography';
   @use 'bulma/sass/helpers/color';
@@ -107,20 +106,5 @@
   .is-translucent-black {
     background-color: hsl(0, 0%, 0%, 0.8) !important;
     box-shadow: none !important;
-  }
-
-  .embeddable {
-    zoom: 0.85;
-  }
-
-  #app-model :global(.modal-content) {
-    @extend .p-2;
-    @extend .is-translucent-black;
-    border-radius: var(--border-radius-large);
-    width: calc(100% - 10vw);
-  }
-
-  #app-model :global(iframe) {
-    border-radius: var(--border-radius-large);
   }
 </style>

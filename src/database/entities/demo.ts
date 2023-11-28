@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import type { MEETING_TYPE_OPTIONS } from '$lib/enums';
 import { Entity, ManyToOne, Property, types } from '@mikro-orm/core';
 import { BaseEntity } from './base-entity';
 import { User } from './user';
@@ -37,13 +36,13 @@ export class Demo extends BaseEntity {
   @Property({ type: types.integer, nullable: true })
   weatherCityId!: number;
 
-  @Property({ type: types.boolean })
+  @Property({ type: types.boolean, nullable: true })
   isSDK: boolean;
 
-  @Property({ type: types.boolean })
+  @Property({ type: types.boolean, nullable: true })
   isIC: boolean;
 
-  @Property({ type: types.boolean })
+  @Property({ type: types.boolean, nullable: true })
   isSIP: boolean;
 
   @Property({ type: types.string, nullable: true })
@@ -97,6 +96,9 @@ export class Demo extends BaseEntity {
   @Property({ type: types.boolean, default: true, nullable: true })
   displayFootnote: boolean;
 
+  @Property({ type: types.boolean, nullable: true })
+  displayWeather: boolean;
+
   constructor(obj: {
     user: User;
     name: string;
@@ -128,6 +130,7 @@ export class Demo extends BaseEntity {
     extensionNumber4: number;
     videoLink4: string;
     displayFootnote: boolean;
+    displayWeather: boolean;
   }) {
     super();
     this.user = obj.user;
@@ -160,5 +163,6 @@ export class Demo extends BaseEntity {
     this.extensionNumber4 = obj.extensionNumber4;
     this.videoLink4 = obj.videoLink4;
     this.displayFootnote = obj.displayFootnote;
+    this.displayWeather = obj.displayWeather;
   }
 }

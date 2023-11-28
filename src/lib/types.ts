@@ -1,17 +1,4 @@
-import type {
-  MEETING_TYPE_OPTIONS,
-  SESSION_STATUS,
-  BROWSER_VISIBILITY_STATUS,
-  WEATHER_RESPONSE_UNITS
-} from '$lib/enums';
-
-export type RequestInfo = {
-  id: string;
-  sessionStatus: SESSION_STATUS;
-  timeStamp?: Date;
-  meetingType: MEETING_TYPE_OPTIONS;
-  visibilityStatus: BROWSER_VISIBILITY_STATUS;
-};
+import type { WEATHER_RESPONSE_UNITS } from '$lib/enums';
 
 export interface TokenResponse {
   id?: string;

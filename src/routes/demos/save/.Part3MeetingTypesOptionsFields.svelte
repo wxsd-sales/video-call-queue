@@ -1,6 +1,5 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
-  import { MEETING_TYPE_OPTIONS } from '$lib/enums';
   import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
   import Modal from '$components/Modal/Modal.svelte';
   import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
@@ -11,43 +10,13 @@
 
   import { onMount } from 'svelte';
 
-  export let isSDK: boolean;
-  export let isIC: boolean;
-  export let isSIP: boolean;
   export let id: string;
   export let SIPQueues = [];
 
-  let SDKCheckBoxElement: HTMLInputElement;
-  let ICCheckBoxElement: HTMLInputElement;
-  let SIPCheckBoxElement: HTMLInputElement;
   let generateIsLoading = false;
   let macroButtonIsDisabled = false;
   let code = generateMacro(SIPQueues);
   let showModal = false;
-
-  /**
-   * All checkboxes required statues may disable if only one checkbox is checked.
-   *
-   * @returns {void}
-   */
-  const handleCheckboxesRequiredStatus = () => {
-    $previewedDemoStore.IC = ICCheckBoxElement.checked;
-    $previewedDemoStore.SDK = SDKCheckBoxElement.checked;
-    $previewedDemoStore.SIP = SIPCheckBoxElement.checked;
-  };
-
-  //IC & SDK option will be disabled if multiple SIP queues is enabled
-  $: isIC = $previewedDemoStore.IC = SIPQueues.length > 1 ? false : isIC;
-  $: isSDK = $previewedDemoStore.SDK = SIPQueues.length > 1 ? false : isSDK;
-  $: if (!isSIP)
-    $previewedDemoStore.SIPQueues = SIPQueues = [
-      {
-        videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
-        extensionNumber: 1111,
-        sipTitle: 'Looking For Assistance?',
-        sipImage: null
-      }
-    ];
 
   onMount(() => {
     $SIPQueuesStore = {
@@ -58,10 +27,10 @@
 </script>
 
 <div class="columns is-multiline">
-  <div class="column mb-4">
+  <div class="column ">
     <h2 class="title">Video SIP Call Configuration</h2>
   </div>
-  <div class="column mb-4 is-flex  is-justify-content-flex-end is-align-items-center">
+  <div class="column is-flex  is-justify-content-flex-end is-align-items-center">
     <button
       class="button is-rounded is-success is-outlined"
       type="button"
@@ -85,77 +54,8 @@
       <span>Add More SIP URIs</span>
     </button>
   </div>
-
-  <!-- A -->
-  <div class="column is-one-third is-hidden">
-    <label class="label" for="subtitle">Options <sup class="has-text-danger" title="required">*</sup></label>
-    <label class="checkbox">
-      <input
-        type="checkbox"
-        bind:value={isSDK}
-        bind:checked={isSDK}
-        id={MEETING_TYPE_OPTIONS.BROWSER_SDK}
-        name={MEETING_TYPE_OPTIONS.BROWSER_SDK}
-        bind:this={SDKCheckBoxElement}
-        on:input={handleCheckboxesRequiredStatus}
-        disabled={SIPQueues.length > 1}
-      />
-      <span class:has-text-grey-light={SIPQueues.length > 1}> Meeting Browser SDK </span>
-    </label>
-    <div class="help">
-      <p>
-        For more information click <a target="_blank" href={import.meta.env.PUBLIC_BROWSER_SDK_GETTING_STARTED_URL}
-          >here</a
-        >
-      </p>
-    </div>
-  </div>
-  <div class="column is-one-third is-flex is-flex-direction-column is-justify-content-flex-end is-hidden">
-    <label class="checkbox">
-      <label class="label" for="subtitle"> <sup class="has-text-danger" title="required" /> </label>
-      <input
-        type="checkbox"
-        bind:checked={isIC}
-        id={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
-        name={MEETING_TYPE_OPTIONS.INSTANT_CONNECT}
-        bind:this={ICCheckBoxElement}
-        on:input={handleCheckboxesRequiredStatus}
-        disabled={SIPQueues.length > 1}
-      />
-      <span class:has-text-grey-light={SIPQueues.length > 1}> Instant Connect </span>
-    </label>
-    <div class="help">
-      <p>
-        For more information click <a target="_blank" href={import.meta.env.PUBLIC_INSTANT_CONNECT_GETTING_STARTED_URL}
-          >here</a
-        >
-      </p>
-    </div>
-  </div>
-  <div class="column is-one-third is-flex is-flex-direction-column is-justify-content-flex-end is-hidden">
-    <label class="checkbox">
-      <input
-        type="checkbox"
-        bind:checked={isSIP}
-        id={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
-        name={MEETING_TYPE_OPTIONS.SIP_URI_DIALING}
-        bind:this={SIPCheckBoxElement}
-        on:input={handleCheckboxesRequiredStatus}
-      />
-      SIP URI Dialing
-    </label>
-    <div class="help">
-      <p>
-        For more information click <a
-          target="_blank"
-          href="https://community.cisco.com/t5/collaboration-knowledge-base/sip-uri-dialing/ta-p/3157406">here</a
-        >
-      </p>
-    </div>
-  </div>
-
-  <div transition:slide class="columns mx-2 is-multiline">
-    <div class="column is-full content mb-3">
+  <div transition:slide class="columns m-2 is-multiline">
+    <div class="column is-full content ">
       <p>
         <span class="is-italic"> SIP URI Dialing</span> feature will only be available on Cisco roomOS devices. This
         feature also requires users to create a call queue under
@@ -172,10 +72,7 @@
         <a target="_blank" href={DEVICE_CALL_QUEUE_SETUP_GUIDE}>setup guide</a>.
       </p>
     </div>
-    <div class="column is-full is-flex is-align-items-center is-justify-content-center p-0 ">
-      <hr class="column is-three-quarters p-0" />
-    </div>
-    <div class="mx-5">
+    <div class="column is-full">
       {#each SIPQueues as { videoLink, extensionNumber, sipTitle, sipImage }, i (i)}
         <SIPQueueField
           {extensionNumber}

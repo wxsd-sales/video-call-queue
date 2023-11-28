@@ -56,11 +56,6 @@
       <div class="column is-full">
         <CopyLink url={`${url}/${demo.uuid}/?role=requester`} label={`Requester View Link`} />
       </div>
-      {#if demo.isSDK || demo.isIC}
-        <div class="column is-full">
-          <CopyLink url={`${url}/${demo.uuid}/?role=responder`} label={'Responder View Link'} />
-        </div>
-      {/if}
     </div>
   {/each}
 </div>
