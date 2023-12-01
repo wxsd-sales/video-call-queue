@@ -126,6 +126,7 @@ export const handleError: HandleError = async ({ error, event }) => {
 
 export const getSession: GetSession = async (event) => {
   const email = event.locals.session?.user?.email;
+  const userId = event.locals.session?.user?.uuid;
 
-  return { email };
+  return { email, userId };
 };
