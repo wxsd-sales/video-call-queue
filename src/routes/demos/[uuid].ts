@@ -101,7 +101,6 @@ export const GET = async (requestEvent: RequestEvent) => {
   const db = requestEvent.locals.db;
   const session = requestEvent.locals.session;
 
-  console.log(demoId);
   return demoId != null
     ? await db
         ?.findOneOrFail(
@@ -318,7 +317,7 @@ export const PATCH = async (requestEvent: RequestEvent) => {
     @Expose()
     @IsNotEmpty()
     @IsUUID(4)
-    @Transform(({ obj }: { obj: FormData }) => obj.get('id'), { toClassOnly: true })
+    @Transform(() => requestEvent.params.uuid, { toClassOnly: true })
     public readonly id!: string;
 
     @Expose()
@@ -429,6 +428,7 @@ export const PATCH = async (requestEvent: RequestEvent) => {
   const formData = plainToInstance(RequestFormDataDTO, await requestEvent.request.formData(), classTransformOptions);
   const formDataValidationErrors = validateSync(formData, classValidationOptions);
   if (formDataValidationErrors.length > 0) {
+    console.log(formDataValidationErrors);
     return { status: 422, body: { form: 'Invalid submission.' }, headers: { Location: '/demos/create' } };
   }
 

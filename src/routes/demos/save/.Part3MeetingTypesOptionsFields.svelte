@@ -99,7 +99,7 @@
       <hr class="column is-three-quarters p-0" />
     </div>
     <div class="column is-flex p-0 is-justify-content-space-between is-align-items-center">
-      <div class="mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
+      <div class="ml-2 mb-0 has-text-dark title is-size-7">Total number of Queues: {SIPQueues.length} / 4</div>
       <button
         disabled={macroButtonIsDisabled}
         class:is-loading={generateIsLoading}

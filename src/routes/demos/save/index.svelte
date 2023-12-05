@@ -59,12 +59,17 @@
 
 <form
   id="demo-create"
-  class="container px-4 mb-6"
+  class="container demo px-4 mb-6"
   action={'./save' + (id == null ? '' : '?_method=PATCH')}
   method="post"
   enctype="multipart/form-data"
   bind:this={formElement}
 >
+  <div class="columns is-multiline">
+    <div class="column">
+      <h2 class="title">Create a New Kiosk Instance</h2>
+    </div>
+  </div>
   <DemoFields {name} />
   <hr />
   {#await toFileList(poster) then poster}
@@ -135,6 +140,10 @@
 {/key}
 
 <style>
+  .demo {
+    height: 100vh;
+    overflow: auto;
+  }
   .sample {
     position: fixed;
     bottom: 0;

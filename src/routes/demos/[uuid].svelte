@@ -22,7 +22,7 @@
   export let units = undefined;
   export let SIPQueues = undefined;
   export let displayFootnote = true;
-  const id = $page.url.searchParams.get('id');
+  const id = $page.params.uuid;
 
   let formElement: HTMLFormElement;
   let showModal = false;
@@ -59,85 +59,67 @@
 
 <form
   id="demo-create"
-  class="container px-4 mb-6"
-  action={'./save' + (id == null ? '' : '?_method=PATCH')}
+  class="container px-4 mb-2"
+  action={id == null ? '' : '?_method=PATCH'}
   method="post"
   enctype="multipart/form-data"
   bind:this={formElement}
 >
-  <DemoFields {name} />
-  <hr />
-  {#await toFileList(poster) then poster}
-    <BackgroundFields {poster} {brightness} />
-  {:catch e}
-    <BackgroundFields {brightness} />
-  {/await}
-  <hr />
-  {#await toFileList(logo) then logo}
-    <BrandFields {logo} />
-  {:catch e}
-    <BrandFields />
-  {/await}
-  <hr />
-  <MeetingTypesOptionsFields {SIPQueues} {id} />
-  <hr />
-  <MiscFields {units} {cityId} {displayFootnote} />
-  <hr />
-
-  <div class="columns is-multiline">
-    {#if id != null}
-      <div class="column is-12 is-hidden">
-        <input class="input" name="id" value={id} readonly />
-      </div>
-    {/if}
-    <div class="column is-12">
-      <div class="columns">
-        <button
-          type="button"
-          on:click={() => {
-            showModal = true;
-          }}
-          class="column is-one-third button is-medium is-rounded is-info mr-4 "
-        >
-          <span class="icon">
-            <i class="mdi mdi-eye-circle-outline" />
-          </span>
-          <span>Preview Demo</span>
-        </button>
-        <button class="column button is-medium is-rounded is-success " type="submit">
-          <span class="icon">
-            <i class="mdi mdi-content-save-plus" />
-          </span>
-          <span>Save</span>
-        </button>
-      </div>
+  <div class="level">
+    <div class="level-left">
+      <h2 class="title">Create a New Kiosk Instance</h2>
     </div>
-    <div class="column is-12 has-text-danger">
-      {form ?? ''}
+    <div class="level-right">
+      <button
+        type="button"
+        on:click={() => {
+          showModal = true;
+        }}
+        class="button is-medium is-rounded is-info mr-4 "
+      >
+        <span class="icon">
+          <i class="mdi mdi-eye-circle-outline" />
+        </span>
+        <span>Preview Demo</span>
+      </button>
+      <button class=" button is-medium is-rounded is-success " type="submit">
+        <span class="icon">
+          <i class="mdi mdi-content-save-plus" />
+        </span>
+        <span>Save</span>
+      </button>
     </div>
   </div>
-
-  <button
-    on:click={() => {
-      showModal = true;
-    }}
-    type="button"
-    class="sample button is-rounded is-info is-light px-5"
-  >
-    Preview Demo
-  </button>
+  <div class="demo">
+    <DemoFields {name} />
+    <hr />
+    {#await toFileList(poster) then poster}
+      <BackgroundFields {poster} {brightness} />
+    {:catch e}
+      <BackgroundFields {brightness} />
+    {/await}
+    <hr />
+    {#await toFileList(logo) then logo}
+      <BrandFields {logo} />
+    {:catch e}
+      <BrandFields />
+    {/await}
+    <hr />
+    <MeetingTypesOptionsFields {SIPQueues} {id} />
+    <hr />
+    <MiscFields {units} {cityId} {displayFootnote} />
+  </div>
 </form>
 
-<!-- {#key $previewedDemoStore}
+{#key $previewedDemoStore}
   <Modal bind:showModal>
     <DemoSampleModal />
   </Modal>
-{/key} -->
+{/key}
+
 <style>
-  .sample {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 2.5rem;
+  .demo {
+    height: 80vh;
+    overflow: auto;
   }
 </style>
