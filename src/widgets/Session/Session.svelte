@@ -9,6 +9,8 @@
   const queues = demo.queues ?? [{ title: 'Looking for Assistance?', extensionNumber: 1111, img: null }];
 </script>
 
-{#each queues as { extensionNumber, title, img }, index}
-  <Card {index} {isDevice} {extensionNumber} {title} img={img || customerSupportSVG} />
-{/each}
+<div class="tile is-ancestor" style="width: 100%">
+  {#each queues as { extensionNumber, title, img }, index}
+    <Card {index} {isDevice} {extensionNumber} {title} img={img || customerSupportSVG} />
+  {/each}
+</div>

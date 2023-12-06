@@ -39,20 +39,22 @@
   };
 </script>
 
-<div id={index} class="card is-translucent-black p-3">
-  <div class="card-image fixed-card-width container">
-    <figure class="image is-3by2">
-      <img src={img} alt="support-figure" class="is-fullwidth" />
-    </figure>
-  </div>
-  <div class="card-content">
-    <div class="content">
-      <button
-        class="button fixed-card-width is-size-5 is-primary is-centered is-fullwidth {buttonIsLoading && 'is-loading'}"
-        disabled={!isDevice}
-        on:click={submitRequest}
-        >{title}
-      </button>
+<div class="tile is-justify-content-center m-2 ">
+  <div id={index} class="card is-translucent-black p-3 ">
+    <div class="card-image">
+      <figure class="image is-3by2">
+        <img src={img} alt="support-figure" class="is-fullwidth" />
+      </figure>
+    </div>
+    <div class="card-content">
+      <div class="content">
+        <button
+          class="button  is-size-5 is-primary is-centered is-fullwidth {buttonIsLoading && 'is-loading'}"
+          disabled={!isDevice}
+          on:click={submitRequest}
+          >{title}
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -76,7 +78,7 @@
 </Notification>
 
 <style>
-  .fixed-card-width {
-    width: 18rem;
+  .card {
+    min-width: 20rem;
   }
 </style>

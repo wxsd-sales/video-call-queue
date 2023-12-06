@@ -55,9 +55,7 @@
   <!-- hero-body start -->
   <div id="body-widgets" class="hero-body p-1">
     <!--lhs start-->
-    <div class="is-flex is-justify-content-space-evenly" style="width: 100%">
-      <Session {demo} {isDevice} />
-    </div>
+    <Session {demo} {isDevice} />
   </div>
   <!-- hero-body end -->
   <!-- hero-foot start -->
