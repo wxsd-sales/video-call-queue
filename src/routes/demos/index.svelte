@@ -3,9 +3,20 @@
   import { browser } from '$app/env';
 
   import CopyLink from '$components/CopyLink/CopyLink.svelte';
+  import Notification from '$components/Notification/Notification.svelte';
+
+  import { NOTIFICATION_TYPES } from '$components/Notification/enums';
+  import { onMount } from 'svelte';
 
   export let demos: Array<Demo>;
+
   const url = browser && `${window.location.protocol}//${browser && window.location.host}/sessions`;
+
+  let showNotification = false;
+
+  setTimeout(() => {
+    showNotification = demos.some((demo) => demo.isIC || demo.isSDK);
+  }, 500);
 </script>
 
 <div class="container px-4 mb-6">
@@ -30,7 +41,7 @@
     <hr />
     <div class="columns is-vcentered is-mobile">
       <div class="column is-6">
-        <p class="title is-size-5 has-text-weight-bold">{demo.name}</p>
+        <p class:has-text-grey={demo.isIC || demo.isSDK} class="title is-size-5 has-text-weight-bold">{demo.name}</p>
       </div>
       <div class="column is-3">
         <a
@@ -54,8 +65,17 @@
     </div>
     <div class="columns is-multiline is-flex-direction-column">
       <div class="column is-full">
-        <CopyLink url={`${url}/${demo.uuid}/?role=requester`} label={`Requester View Link`} />
+        <CopyLink
+          url={`${url}/${demo.uuid}/?role=requester`}
+          label={`Session Link`}
+          disabled={demo.isIC || demo.isSDK}
+        />
       </div>
     </div>
   {/each}
 </div>
+
+<Notification type={NOTIFICATION_TYPES.ERROR} display={showNotification}>
+  It appears that some instances are still leveraging outdated WebRTC solutions. Several links have been disabled,
+  indicating the need for an update to support SIP URI Dialing.
+</Notification>

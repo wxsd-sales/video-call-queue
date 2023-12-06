@@ -484,6 +484,8 @@ export const PATCH = async (requestEvent: RequestEvent) => {
           r.sipTitle4 = formData.sipTitle4;
           r.sipImage4 = formData.sipImage4 ? await toData(formData.sipImage4) : null;
           r.displayFootnote = formData.displayFootnote;
+          r.isSDK = false;
+          r.isIC = false;
 
           await db.persistAndFlush(r);
 

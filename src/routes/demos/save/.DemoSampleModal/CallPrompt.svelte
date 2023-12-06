@@ -3,20 +3,21 @@
   export let sipImage: string;
 </script>
 
-<div class="prompt box is-translucent-black is-flex is-flex-direction-column">
-  <img src={sipImage} alt="sipImage" class="is-align-self-center mb-2" on:load />
-  <button disabled class="button is-primary is-centered mb-4 mx-2">{title} </button>
-  <div class="control is-justify-content-space-around is-flex has-text-white is-size-6 mb-2" />
+<div class="card is-translucent-black p-3">
+  <div class="container card-image">
+    <figure class="image  is-3by2">
+      <img src={sipImage} alt="support-figure" />
+    </figure>
+  </div>
+  <div class="card-content">
+    <div class="content">
+      <button class="button fixed is-size-6 is-primary is-centered is-fullwidth" disabled>{title} </button>
+    </div>
+  </div>
 </div>
 
 <style>
-  .prompt {
-    z-index: 1;
-    width: 20rem;
-    height: 18rem;
-  }
-
-  .prompt img {
-    width: 11rem;
+  .fixed {
+    width: 15rem;
   }
 </style>

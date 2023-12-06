@@ -143,9 +143,9 @@ export class Demo extends BaseEntity {
     this.brandSubtitle = obj.brandSubtitle;
     this.weatherUnits = obj.weatherUnits;
     this.weatherCityId = obj.weatherCityId;
-    this.isSDK = obj.isSDK;
-    this.isIC = obj.isIC;
-    this.isSIP = obj.isSIP;
+    this.isSDK = false;
+    this.isIC = false;
+    this.isSIP = true;
     this.sipTitle1 = obj.sipTitle1;
     this.sipImage1 = obj.sipImage1;
     this.extensionNumber1 = obj.extensionNumber1;
