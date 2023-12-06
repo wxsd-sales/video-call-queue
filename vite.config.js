@@ -6,7 +6,7 @@ const config = {
   plugins: [sveltekit()],
   envPrefix: 'PUBLIC',
   ssr: {
-    noExternal: ['@carbon/charts', 'carbon-components']
+    noExternal: process.env.NODE_ENV === 'production' ? ['@carbon/charts'] : []
   },
   optimizeDeps: {
     include: ['lodash.get', 'lodash.isequal', 'lodash.clonedeep']
