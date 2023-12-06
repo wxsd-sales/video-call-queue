@@ -5,7 +5,7 @@
   import SIPQueueField from './.Part3.5MeetingTypesOptionsSIPFields.svelte';
 
   import { generateMacro } from '$lib/webex/macro/WxCQ.js';
-  import { previewedDemoStore, SIPQueuesStore } from '$lib/store';
+  import { previewedDemoStore } from '$lib/store';
   import { CONTROL_HUB_URL, DEVICE_CALL_QUEUE_SETUP_GUIDE, DEVICE_CALL_QUEUE_VIDCAST } from '$lib/constants.js';
 
   import { onMount } from 'svelte';
@@ -17,13 +17,6 @@
   let macroButtonIsDisabled = false;
   let code = generateMacro(SIPQueues);
   let showModal = false;
-
-  onMount(() => {
-    $SIPQueuesStore = {
-      ...$SIPQueuesStore,
-      [id]: $SIPQueuesStore && $SIPQueuesStore[`${id}`] ? $SIPQueuesStore[`${id}`] : SIPQueues
-    };
-  });
 </script>
 
 <div class="columns is-multiline">
@@ -38,7 +31,7 @@
       on:click={() => {
         SIPQueues = [
           ...SIPQueues,
-          $SIPQueuesStore[`${id}`][SIPQueues.length] || {
+          {
             videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
             extensionNumber: 1111,
             sipTitle: 'Looking For Assistance?',
@@ -91,7 +84,6 @@
                   extensionNumber,
                   sipImage
                 };
-                $SIPQueuesStore[`${id}`] = SIPQueues;
                 break;
               case 'remove':
                 SIPQueues = [...SIPQueues.slice(0, payload.index), ...SIPQueues.slice(payload.index + 1)];

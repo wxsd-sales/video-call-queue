@@ -40,7 +40,7 @@
 </script>
 
 <div id={index} class="card is-translucent-black p-3">
-  <div class="card-image container" style="width: 18rem">
+  <div class="card-image fixed-card-width container">
     <figure class="image is-3by2">
       <img src={img} alt="support-figure" class="is-fullwidth" />
     </figure>
@@ -48,7 +48,7 @@
   <div class="card-content">
     <div class="content">
       <button
-        class="button is-size-5 is-primary is-centered is-fullwidth {buttonIsLoading && 'is-loading'}"
+        class="button fixed-card-width is-size-5 is-primary is-centered is-fullwidth {buttonIsLoading && 'is-loading'}"
         disabled={!isDevice}
         on:click={submitRequest}
         >{title}
@@ -74,3 +74,9 @@
     <p class="is-size-7 pt-2 is-align-self-center">* This notification automatically closes in {timer} seconds.</p>
   </div>
 </Notification>
+
+<style>
+  .fixed-card-width {
+    width: 18rem;
+  }
+</style>
