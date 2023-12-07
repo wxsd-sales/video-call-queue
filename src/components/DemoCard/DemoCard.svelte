@@ -1,24 +1,34 @@
 <script lang="ts">
   import { browser } from '$app/env';
   import { goto } from '$app/navigation';
+  import reactiveURL from '$lib/shared/reactive-url';
   import loading from '$lib/static/gif/loading.gif';
 
-  export let name;
-  export let brandLogo;
-  export let uuid;
+  import type { Data } from '../../database/entities/data';
+
+  export let name: string;
+  export let brandLogo: Data;
+  export let uuid: string;
 
   let isLoading = name == '+ New Demo +';
+  let isSelected = false;
   let copyIsLoading = false;
   let copied = false;
 
   const url = browser && `${window.location.protocol}//${window.location.host}/sessions`;
+  reactiveURL.subscribe((url) => (isSelected = url?.pathname.includes(uuid)));
 </script>
 
-<div class="card demo is-clickable mb-4" class:not-allowed={isLoading}>
+<div
+  tabindex="-1"
+  class="card demo m-3 is-clickable mb-4"
+  class:not-allowed={isLoading}
+  class:is-selected={isSelected || isLoading}
+>
   <div class="card-content " on:click={() => !isLoading && goto(`/demos/${uuid}`)}>
     <article class="media">
       <figure class="my-img-container media-left image is-64x64">
-        <img src={isLoading ? loading : brandLogo} />
+        <img src={isLoading ? loading : brandLogo} alt="logo" />
       </figure>
       <div class="media-content">
         <div class="content">
@@ -34,12 +44,19 @@
         <nav class="level is-mobile">
           <div class="level-left" />
           <div class="level-right">
-            <a disabled={isLoading} class="button is-white" href={`${url}/${uuid}`} target="_blank">
+            <a
+              class="button is-white"
+              href={`${url}/${uuid}`}
+              target="_blank"
+              class:is-light={isSelected || isLoading}
+              class:is-disabled={isLoading}
+            >
               <span class="icon is-medium has-text-success"><i class="mdi mdi-24px mdi-open-in-new" /></span>
             </a>
             <button
               class="button level-item  m-0"
               style="border: none"
+              class:is-light={isSelected || isLoading}
               class:is-white={!copyIsLoading}
               class:is-loading={copyIsLoading && !copied}
               disabled={isLoading}
@@ -64,7 +81,7 @@
               >
             </button>
             <form action="/demos/{uuid}?_method=DELETE" method="post" class="level-item is-clickable">
-              <button class="button is-white" disabled={isLoading}>
+              <button class="button is-white" disabled={isLoading} class:is-light={isSelected || isLoading}>
                 <span class="icon is-small has-text-danger"><i class="mdi mdi-24px mdi-delete" /></span>
               </button>
             </form>
@@ -84,6 +101,18 @@
     height: 0.5rem;
   }
 
+  .is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .is-selected {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    transform: scale(1.05);
+    transition: 0.25s ease;
+    background-color: hsl(0, 0%, 96%);
+  }
   .demo:hover {
     -webkit-transform: scale(1.05);
     -ms-transform: scale(1.05);

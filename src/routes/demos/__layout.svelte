@@ -6,7 +6,6 @@
 
     return {
       props: {
-        status: 200,
         demos: demos.reverse()
       }
     };
@@ -15,33 +14,63 @@
 
 <script lang="ts">
   import { browser } from '$app/env';
-  import DemoCard from '$components/DemoCard/DemoCard.svelte';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import type { Demo } from '../../database/entities/demo';
+  import reactiveURL from '$lib/shared/reactive-url';
+  import DemoCard from '$components/DemoCard/DemoCard.svelte';
 
-  export let demos = [];
+  export let demos: Array<Demo> = [];
+  let newIsLoading = false;
   const url = browser && `${window.location.protocol}//${browser && window.location.host}/sessions`;
+
+  reactiveURL.subscribe((url) => {
+    if (url?.pathname.includes('new') && !demos.some((demo) => demo.name === '+ New Demo +')) {
+      demos = [{ name: '+ New Demo +' }, ...demos];
+      newIsLoading = true;
+    }
+
+    if (!url?.pathname.includes('new')) {
+      demos = demos.filter((demo) => demo.name !== '+ New Demo +');
+      newIsLoading = false;
+    }
+  });
 
   const addDemo = () => {
     demos = [{ name: '+ New Demo +' }, ...demos];
     goto('/demos/new');
   };
+
+  $: newIsLoading = $page.params.uuid === 'new';
 </script>
 
 <div class="columns px-4">
-  <div class="column is-one-fifth px-4 is-clickable">
+  <div class="column is-3 px-4 is-clickable">
     <div class="level ">
       <div class="level-left" />
       <div class="level-right">
         <div class="level-item">
-          <button class="button is-fullwidth is-rounded is-light " on:click={addDemo}>
-            <span class="icon">
-              <i class="mdi mdi-plus-box" />
-            </span>
-            <span>New</span>
-          </button>
+          {#if !newIsLoading}
+            <button class="button is-fullwidth is-rounded is-light " on:click={addDemo}>
+              <span class="icon">
+                <i class="mdi mdi-plus-box" />
+              </span>
+              <span>New</span>
+            </button>
+          {:else}
+            <a class="button is-fullwidth is-rounded is-danger " href="/demos">
+              <span class="icon">
+                <i class="mdi mdi-close" />
+              </span>
+              <span>Cancel</span>
+            </a>
+          {/if}
         </div>
       </div>
     </div>
+    {#if !demos.length}
+      <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
+    {/if}
     <div class="demos">
       {#each demos as { name, brandLogo, uuid } (uuid)}
         <DemoCard {name} {brandLogo} {uuid} />
