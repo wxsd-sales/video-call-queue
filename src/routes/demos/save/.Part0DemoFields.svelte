@@ -19,10 +19,9 @@
         bind:value={name}
         on:input={(e) => ($previewedDemoStore.name = e.target.value)}
       />
-      <span class="icon is-left" />
     </div>
     <div class="help">
-      <p>This is only for your reference</p>
+      <p>max. 64 characters</p>
     </div>
   </div>
 </div>

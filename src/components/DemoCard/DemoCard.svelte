@@ -3,6 +3,7 @@
   import { goto } from '$app/navigation';
   import reactiveURL from '$lib/shared/reactive-url';
   import loading from '$lib/static/gif/loading.gif';
+  import { formIsUnsavedStore, showUnsavedModal } from '$lib/store';
 
   import type { Data } from '../../database/entities/data';
 
@@ -15,6 +16,12 @@
   let copyIsLoading = false;
   let copied = false;
 
+  const switchDemoCard = (e) => {
+    if (e.target.tagName != 'I' && !isLoading) {
+      $formIsUnsavedStore ? ($showUnsavedModal = true) : goto(`/demos/${uuid}`);
+    }
+  };
+
   const url = browser && `${window.location.protocol}//${window.location.host}/sessions`;
   reactiveURL.subscribe((url) => (isSelected = url?.pathname.includes(uuid)));
 </script>
@@ -25,7 +32,7 @@
   class:not-allowed={isLoading}
   class:is-selected={isSelected || isLoading}
 >
-  <div class="card-content " on:click={() => !isLoading && goto(`/demos/${uuid}`)}>
+  <div class="card-content " on:click={(e) => switchDemoCard(e)}>
     <article class="media">
       <figure class="my-img-container media-left image is-64x64">
         <img src={isLoading ? loading : brandLogo} alt="logo" />

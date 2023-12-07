@@ -13,7 +13,6 @@
 </script>
 
 <script lang="ts">
-  import { browser } from '$app/env';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import type { Demo } from '../../database/entities/demo';
@@ -24,8 +23,7 @@
 
   let newIsLoading = false;
   let demosRef;
-
-  const url = browser && `${window.location.protocol}//${browser && window.location.host}/sessions`;
+  let showModal = false;
 
   reactiveURL.subscribe((url) => {
     if (url?.pathname.includes('new') && !demos.some((demo) => demo.name === '+ New Demo +')) {

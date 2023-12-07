@@ -7,11 +7,10 @@
   import DemoSampleModal from './save/.DemoSampleModal/index.svelte';
 
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
   import { urlEncodedRequest } from '$lib/shared/urlencoded-request';
 
   import Modal from '$components/Modal/Modal.svelte';
-  import { previewedDemoStore } from '$lib/store';
+  import { previewedDemoStore, formIsUnsavedStore, showUnsavedModal } from '$lib/store';
 
   export let form = undefined;
   export let name = undefined;
@@ -22,10 +21,10 @@
   export let units = undefined;
   export let SIPQueues = undefined;
   export let displayFootnote = true;
-  const id = $page.params.uuid;
 
   let formElement: HTMLFormElement;
   let showModal = false;
+  let formIsUnsaved = false;
 
   $previewedDemoStore = {
     name,
@@ -51,15 +50,13 @@
             return container.files;
           })
       : Promise.reject();
-
-  onMount(() => {
-    return form && scrollTo(null, formElement.scrollHeight);
-  });
 </script>
 
 <form
   id="demo-create"
   class="container px-4 mb-2"
+  on:input={() => ($formIsUnsavedStore = true)}
+  on:submit={(e) => ($formIsUnsavedStore = false)}
   action={$page.params.uuid == 'new' ? '' : '?_method=PATCH'}
   method="post"
   enctype="multipart/form-data"
@@ -82,7 +79,7 @@
         </span>
         <span>Preview Demo</span>
       </button>
-      <button class=" button is-medium is-rounded is-success " type="submit">
+      <button class=" button is-medium is-rounded is-success" class:is-light={$formIsUnsavedStore} type="submit">
         <span class="icon">
           <i class="mdi mdi-content-save-plus" />
         </span>
@@ -105,10 +102,51 @@
       <BrandFields />
     {/await}
     <hr />
-    <MeetingTypesOptionsFields {SIPQueues} {id} />
+    <MeetingTypesOptionsFields {SIPQueues} id={$page.params.uuid} />
     <hr />
     <MiscFields {units} {cityId} {displayFootnote} />
   </div>
+
+  <Modal bind:showModal={$showUnsavedModal}>
+    <div class="modal-content is-translucent-black">
+      <article class="message is-danger pb-4">
+        <div class="message-header">
+          <p>Oops! You're Exiting Edit Mode</p>
+          <button
+            type="button"
+            class="delete"
+            aria-label="delete"
+            on:click={() => {
+              $showUnsavedModal = false;
+            }}
+          />
+        </div>
+        <div class="message-body">
+          It seems you're leaving edit mode without saving your changes. Your edits won't be preserved! Are you sure you
+          want to exit?
+        </div>
+        <div class="level level-right mt-2 mx-4">
+          <div class="field is-grouped">
+            <p class="control">
+              <button class="button is-success is-outlined" type="submit"> Save changes </button>
+            </p>
+            <p class="control">
+              <button
+                type="button"
+                class="button is-danger is-outlined"
+                on:click={() => {
+                  $formIsUnsavedStore = false;
+                  $showUnsavedModal = false;
+                }}
+              >
+                Discard Changes
+              </button>
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </Modal>
 </form>
 
 {#key $previewedDemoStore}

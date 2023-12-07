@@ -7,7 +7,6 @@
   import DemoSampleModal from './.DemoSampleModal/index.svelte';
 
   import { page } from '$app/stores';
-  import { onMount } from 'svelte';
   import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
 
   import Modal from '$components/Modal/Modal.svelte';
@@ -51,10 +50,6 @@
             return container.files;
           })
       : Promise.reject();
-
-  onMount(() => {
-    return form && scrollTo(null, formElement.scrollHeight);
-  });
 </script>
 
 <form
