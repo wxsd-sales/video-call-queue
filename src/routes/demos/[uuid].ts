@@ -101,7 +101,7 @@ export const GET = async (requestEvent: RequestEvent) => {
   const db = requestEvent.locals.db;
   const session = requestEvent.locals.session;
 
-  return demoId != null
+  return demoId != 'new'
     ? await db
         ?.findOneOrFail(
           Demo,

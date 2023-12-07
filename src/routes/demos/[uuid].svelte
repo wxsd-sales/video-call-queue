@@ -60,7 +60,7 @@
 <form
   id="demo-create"
   class="container px-4 mb-2"
-  action={id == null ? '' : '?_method=PATCH'}
+  action={$page.params.uuid == 'new' ? '' : '?_method=PATCH'}
   method="post"
   enctype="multipart/form-data"
   bind:this={formElement}

@@ -6,9 +6,6 @@
 
 <div class="columns is-multiline">
   <div class="column is-full">
-    <h2 class="title">Create a New Kiosk Instance</h2>
-  </div>
-  <div class="column is-full">
     <label class="label" for="name">Name <sup class="has-text-danger" title="required">*</sup></label>
     <div class="control ">
       <input
