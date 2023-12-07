@@ -71,10 +71,11 @@
         </div>
       </div>
     </div>
-    {#if !demos.length}
-      <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
-    {/if}
+
     <div class="demos" bind:this={demosRef}>
+      {#if !demos.length}
+        <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
+      {/if}
       {#each demos as { name, brandLogo, uuid } (uuid)}
         <DemoCard {name} {brandLogo} {uuid} />
       {/each}
