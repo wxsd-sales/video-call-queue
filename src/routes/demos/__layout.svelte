@@ -54,14 +54,14 @@
       <div class="level-right">
         <div class="level-item">
           {#if !newIsLoading}
-            <button class="button is-fullwidth is-rounded is-light " on:click={addDemo}>
+            <button class="button is-size-6 is-fullwidth is-rounded is-light " on:click={addDemo}>
               <span class="icon">
                 <i class="mdi mdi-plus-box" />
               </span>
               <span>New</span>
             </button>
           {:else}
-            <a class="button is-fullwidth is-rounded is-danger " href="/demos">
+            <a class="button is-size-7 is-rounded is-danger " href="/demos">
               <span class="icon">
                 <i class="mdi mdi-close" />
               </span>

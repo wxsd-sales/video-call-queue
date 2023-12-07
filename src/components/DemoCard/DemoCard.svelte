@@ -1,9 +1,11 @@
 <script lang="ts">
   import { browser } from '$app/env';
+
   import { goto } from '$app/navigation';
   import reactiveURL from '$lib/shared/reactive-url';
   import loading from '$lib/static/gif/loading.gif';
   import { formIsUnsavedStore, showUnsavedModal } from '$lib/store';
+  import copy from 'copy-to-clipboard';
 
   import type { Data } from '../../database/entities/data';
 
@@ -26,12 +28,7 @@
   reactiveURL.subscribe((url) => (isSelected = url?.pathname.includes(uuid)));
 </script>
 
-<div
-  tabindex="-1"
-  class="card demo m-3 is-clickable mb-4"
-  class:not-allowed={isLoading}
-  class:is-selected={isSelected || isLoading}
->
+<div class="card demo m-3 is-clickable mb-4" class:not-allowed={isLoading} class:is-selected={isSelected || isLoading}>
   <div class="card-content " on:click={(e) => switchDemoCard(e)}>
     <article class="media">
       <figure class="my-img-container media-left image is-64x64">
@@ -52,7 +49,7 @@
           <div class="level-left" />
           <div class="level-right">
             <a
-              class="button is-white"
+              class="button is-white mr-1"
               href={`${url}/${uuid}`}
               target="_blank"
               class:is-light={isSelected || isLoading}
@@ -61,10 +58,8 @@
               <span class="icon is-medium has-text-success"><i class="mdi mdi-24px mdi-open-in-new" /></span>
             </a>
             <button
-              class="button level-item  m-0"
-              style="border: none"
+              class="button level-item is-white mr-1"
               class:is-light={isSelected || isLoading}
-              class:is-white={!copyIsLoading}
               class:is-loading={copyIsLoading && !copied}
               disabled={isLoading}
               on:click={() => {
@@ -75,16 +70,13 @@
                   setTimeout(() => {
                     copied = false;
                     copyIsLoading = false;
-                  }, 1000);
+                    copy(`${url}/${uuid}`);
+                  }, 500);
                 }, 1000);
               }}
             >
               <span class="icon is-medium has-text-info "
-                ><i
-                  class="mdi mdi-24px "
-                  class:mdi-content-copy={!copyIsLoading || name}
-                  class:mdi-check-bold={copied}
-                /></span
+                ><i class="mdi mdi-24px " class:mdi-content-copy={!copyIsLoading} class:mdi-check-bold={copied} /></span
               >
             </button>
             <form action="/demos/{uuid}?_method=DELETE" method="post" class="level-item is-clickable">
