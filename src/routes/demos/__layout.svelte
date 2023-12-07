@@ -21,7 +21,10 @@
   import DemoCard from '$components/DemoCard/DemoCard.svelte';
 
   export let demos: Array<Demo> = [];
+
   let newIsLoading = false;
+  let demosRef;
+
   const url = browser && `${window.location.protocol}//${browser && window.location.host}/sessions`;
 
   reactiveURL.subscribe((url) => {
@@ -38,6 +41,8 @@
 
   const addDemo = () => {
     demos = [{ name: '+ New Demo +' }, ...demos];
+    demosRef.scroll(0, 0);
+
     goto('/demos/new');
   };
 
@@ -71,7 +76,7 @@
     {#if !demos.length}
       <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
     {/if}
-    <div class="demos">
+    <div class="demos" bind:this={demosRef}>
       {#each demos as { name, brandLogo, uuid } (uuid)}
         <DemoCard {name} {brandLogo} {uuid} />
       {/each}
@@ -90,6 +95,6 @@
 
   .demos {
     height: 80vh;
-    overflow: auto;
+    overflow: scroll;
   }
 </style>
