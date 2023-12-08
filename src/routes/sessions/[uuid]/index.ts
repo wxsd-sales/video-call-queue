@@ -21,10 +21,6 @@ export const GET = async (requestEvent: RequestEvent) => {
     @Expose()
     @IsUUID(4)
     public readonly uuid!: string;
-
-    @Expose()
-    @IsNotEmpty()
-    public readonly role!: 'responder' | 'requester';
   }
 
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);

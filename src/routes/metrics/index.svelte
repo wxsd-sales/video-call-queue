@@ -28,8 +28,6 @@
       alignment: 'center'
     }
   };
-
-  $: console.log(tree);
 </script>
 
 <div class="hero p-6">

@@ -15,6 +15,8 @@ export const GET = async (requestEvent: RequestEvent) => {
       .then((r) => r?.demos.toJSON())
       .then((r) => r?.map(({ ...demo }) => demo));
 
+    if (demos.length) return { status: 302, headers: { Location: `/demos/${demos[demos.length - 1].uuid}` } };
+
     return { status: 200, body: { demos } };
   }
 

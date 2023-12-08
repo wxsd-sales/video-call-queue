@@ -34,12 +34,7 @@
   export let email = undefined;
   export let isError = false;
 
-  let isNavVisible = !(
-    $page.url.pathname === base ||
-    $page.url.pathname.includes('sessions') ||
-    $page.url.pathname === '/metrics' ||
-    !isError
-  );
+  let isNavVisible = !($page.url.pathname === base || $page.url.pathname.includes('sessions') || !isError);
 
   let form: HTMLFormElement;
 
@@ -246,21 +241,9 @@
   </nav>
 {/if}
 
-<main id="app" class="is-invisible" class:mt-6={isNavVisible} class:mb-6={isNavVisible}>
+<main id="app" class="is-invisible" class:mt-6={isNavVisible}>
   <slot />
 </main>
-
-{#if isNavVisible}
-  <footer class="footer has-background-grey-lighter">
-    <div class="content has-text-centered">
-      <p>
-        <strong>Video Call Queue</strong> by
-        <a href="https://github.com/wxsd-sales" target="_blank" referrerpolicy="no-referrer">WXSD-Sales</a>.<br />
-        &copy; {new Date().getUTCFullYear()} Webex by Cisco
-      </p>
-    </div>
-  </footer>
-{/if}
 
 <style lang="scss" global>
   @use '../app.scss';
