@@ -19,6 +19,7 @@
   let copied = false;
 
   const switchDemoCard = (e) => {
+    // The utility buttons <I> should not execute the following logic
     if (e.target.tagName != 'I' && !isLoading) {
       $formIsUnsavedStore ? ($showUnsavedModal = true) : goto(`/demos/${uuid}`);
     }

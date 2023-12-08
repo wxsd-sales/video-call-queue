@@ -94,5 +94,6 @@
   .demos {
     height: 80vh;
     overflow: scroll;
+    scrollbar-width: none;
   }
 </style>

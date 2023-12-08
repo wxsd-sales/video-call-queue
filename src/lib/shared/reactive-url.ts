@@ -1,3 +1,5 @@
+/** History API changes are not reactive. This module allows us to subscribe to url changes */
+
 /* eslint-disable prefer-rest-params */
 import { derived, writable } from 'svelte/store';
 

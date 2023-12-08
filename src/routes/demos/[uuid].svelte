@@ -159,5 +159,6 @@
   .demo {
     height: 80vh;
     overflow: auto;
+    scrollbar-width: none;
   }
 </style>
