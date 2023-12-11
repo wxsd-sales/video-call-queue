@@ -25,6 +25,7 @@
   let formElement: HTMLFormElement;
   let showModal = false;
   let formIsUnsaved = false;
+  let saveIsLoading = false;
 
   $previewedDemoStore = {
     name,
@@ -56,7 +57,10 @@
   id="demo-create"
   class="container px-4 mb-2"
   on:input={() => ($formIsUnsavedStore = true)}
-  on:submit={(e) => ($formIsUnsavedStore = false)}
+  on:submit={(e) => {
+    $formIsUnsavedStore = false;
+    saveIsLoading = true;
+  }}
   action={$page.params.uuid == 'new' ? '' : '?_method=PATCH'}
   method="post"
   enctype="multipart/form-data"
@@ -68,6 +72,7 @@
     </div>
     <div class="level-right">
       <button
+        disabled={saveIsLoading}
         type="button"
         on:click={() => {
           showModal = true;
@@ -79,7 +84,13 @@
         </span>
         <span>Preview Demo</span>
       </button>
-      <button class=" button is-medium is-rounded is-success" class:is-light={$formIsUnsavedStore} type="submit">
+      <button
+        disabled={saveIsLoading}
+        class:is-loading={saveIsLoading}
+        class=" button is-medium is-rounded is-success"
+        class:is-light={$formIsUnsavedStore}
+        type="submit"
+      >
         <span class="icon">
           <i class="mdi mdi-content-save-plus" />
         </span>
