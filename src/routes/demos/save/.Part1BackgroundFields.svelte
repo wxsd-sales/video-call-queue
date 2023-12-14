@@ -33,7 +33,7 @@
         file: { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified }
       };
 
-      $previewedDemoStore.poster = payload.file;
+      $previewedDemoStore.backgroundPoster = payload.file;
     }
     (ev.target as HTMLInputElement).reportValidity();
   };
@@ -54,12 +54,12 @@
     <p>Set a custom image to automatically cover the entire background of the device's display.</p>
   </div>
   <div class="column is-three-fifths">
-    <label class="label" for="poster">Poster <sup class="has-text-danger" title="required">*</sup></label>
+    <label class="label" for="backgroundPoster">Poster <sup class="has-text-danger" title="required">*</sup></label>
     <div class="file has-name is-fullwidth">
       <label class="file-label">
         <input
-          id="poster"
-          name="poster"
+          id="backgroundPoster"
+          name="backgroundPoster"
           class="file-input"
           type="file"
           accept={acceptedFileTypes}
@@ -81,11 +81,13 @@
     <p class="help">File must not exceed {maxFileSize / 1000}KB in size</p>
   </div>
   <div class="column is-two-fifths">
-    <label class="label" for="brightness">Brightness <sup class="has-text-danger" title="required">*</sup></label>
+    <label class="label" for="backgroundBrightness"
+      >Brightness <sup class="has-text-danger" title="required">*</sup></label
+    >
     <div class="control has-icons-left">
       <input
-        name="brightness"
-        id="brightness"
+        name="backgroundBrightness"
+        id="backgroundBrightness"
         class="input"
         type="number"
         min="0"
@@ -93,7 +95,7 @@
         placeholder="55"
         required
         bind:value={brightness}
-        on:input={(e) => ($previewedDemoStore.brightness = e.target.value)}
+        on:input={(e) => ($previewedDemoStore.backgroundBrightness = e.target.value)}
       />
       <span class="icon is-left">
         <i class="mdi mdi-brightness-percent" />

@@ -5,8 +5,7 @@
   export let units;
   export let cityId;
   export let displayFootnote: boolean;
-
-  let checked = !!cityId;
+  export let displayWeather: boolean;
 </script>
 
 <div class="columns is-multiline">
@@ -14,16 +13,16 @@
     <h2 class="title">Miscellaneous</h2>
   </div>
   <div class="column is-full content mb-0">
-    <label for="weather">
+    <label for="displayWeather">
       <p>
         <input
           type="checkbox"
-          id="weather"
-          name="weather"
-          bind:checked
+          id="displayWeather"
+          name="displayWeather"
+          bind:checked={displayWeather}
           on:input={() => {
-            cityId = checked ? null : 4887398;
-            $previewedDemoStore.displayWeather = !checked;
+            cityId = displayWeather ? null : 4887398;
+            $previewedDemoStore.displayWeather = !displayWeather;
           }}
         />
         Show weather information for a particular city using data from
@@ -31,18 +30,18 @@
       </p>
     </label>
   </div>
-  {#if checked}
+  {#if displayWeather}
     <div transition:slide class="column">
       <div class="columns">
         <div class="column is-three-fifths">
-          <label class="label" for="units">Units <sup class="has-text-danger" title="required">*</sup></label>
+          <label class="label" for="weatherUnits">Units <sup class="has-text-danger" title="required">*</sup></label>
           <div class="control has-icons-left">
             <span class="select is-empty is-fullwidth">
               <select
-                name="units"
-                id="units"
+                name="weatherUnits"
+                id="unweatherUnitsits"
                 bind:value={units}
-                on:input={(e) => ($previewedDemoStore.units = e.target.value)}
+                on:input={(e) => ($previewedDemoStore.weatherUnits = e.target.value)}
               >
                 <option value="imperial">Imperial &mdash; &deg;F</option>
                 <option value="metric">Metric &mdash; &deg;C</option>
@@ -57,17 +56,17 @@
           </div>
         </div>
         <div class="column is-two-fifths">
-          <label class="label" for="city-id">City Id <sup class="has-text-danger" title="required">*</sup></label>
+          <label class="label" for="weatherCityId">City Id <sup class="has-text-danger" title="required">*</sup></label>
           <div class="control has-icons-left">
             <input
-              name="cityId"
-              id="city-id"
+              name="weatherCityId"
+              id="weatherCityId"
               class="input"
               type="number"
               placeholder="4887398"
               required
               bind:value={cityId}
-              on:input={(e) => ($previewedDemoStore.cityId = e.target.value)}
+              on:input={(e) => ($previewedDemoStore.weatherCityId = e.target.value)}
             />
             <span class="icon is-left">
               <i class="mdi mdi-numeric" />
@@ -84,7 +83,7 @@
     </div>
   {/if}
   <div class="column is-full content mb-0">
-    <label for="weather">
+    <label for="displayFootnote">
       <p>
         <input
           type="checkbox"

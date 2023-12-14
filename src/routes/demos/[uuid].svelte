@@ -10,33 +10,72 @@
   import { urlEncodedRequest } from '$lib/shared/urlencoded-request';
 
   import Modal from '$components/Modal/Modal.svelte';
-  import { previewedDemoStore, formIsUnsavedStore, showUnsavedModal } from '$lib/store';
+  import {
+    previewedDemoStore,
+    formIsUnsavedStore,
+    showUnsavedModal,
+    selectedDemoCardStore,
+    userIdStore,
+    showErrorModalStore
+  } from '$lib/store';
+  import { goto } from '$app/navigation';
 
   export let form = undefined;
   export let name = undefined;
-  export let poster = undefined;
-  export let brightness = undefined;
-  export let logo = undefined;
-  export let cityId = undefined;
-  export let units = undefined;
+  export let backgroundPoster = undefined;
+  export let backgroundBrightness = undefined;
+  export let brandLogo = undefined;
+  export let weatherCityId = undefined;
+  export let weatherUnits = undefined;
   export let SIPQueues = undefined;
   export let displayFootnote = true;
+  export let displayWeather = false;
 
   let formElement: HTMLFormElement;
   let showModal = false;
-  let formIsUnsaved = false;
   let saveIsLoading = false;
+  let saved = false;
 
-  $previewedDemoStore = {
+  $: $previewedDemoStore = {
     name,
-    poster: poster,
-    brightness,
-    logo: logo,
-    cityId,
-    units,
+    backgroundPoster,
+    backgroundBrightness,
+    brandLogo,
+    weatherCityId,
+    weatherUnits,
     SIPQueues,
     displayFootnote,
-    displayWeather: !!cityId
+    displayWeather: !!weatherCityId
+  };
+
+  const onSubmit = async (e) => {
+    saveIsLoading = true;
+    const formData = new FormData(e.target);
+
+    formData.set('displayFootnote', formData.get('displayFootnote') === 'on' ? true : false);
+    formData.set('displayWeather', formData.get('displayWeather') === 'on' ? true : false);
+
+    const response = await fetch(`/api/users/${$userIdStore}/demos/${$page.params.uuid}`, {
+      method: $page.params.uuid === 'new' ? 'POST' : 'PATCH',
+      body: formData
+    });
+
+    if (response.status === 500) {
+      $showErrorModalStore = true;
+      goto('/demos');
+    } else {
+      $selectedDemoCardStore = await response.json();
+      $formIsUnsavedStore = false;
+      $showUnsavedModal = false;
+      saveIsLoading = false;
+      saved = true;
+
+      setTimeout(() => {
+        saved = false;
+      }, 1000);
+
+      goto($page.params.uuid === 'new' ? '/demos' : `/demos/${$selectedDemoCardStore.uuid}`);
+    }
   };
 
   const toFileList = (file?: { bits: string; name: string; lastModified: number; type: string }) =>
@@ -57,13 +96,7 @@
   id="demo-create"
   class="container px-4 mb-2"
   on:input={() => ($formIsUnsavedStore = true)}
-  on:submit={(e) => {
-    $formIsUnsavedStore = false;
-    saveIsLoading = true;
-  }}
-  action={$page.params.uuid == 'new' ? '' : '?_method=PATCH'}
-  method="post"
-  enctype="multipart/form-data"
+  on:submit|preventDefault={onSubmit}
   bind:this={formElement}
 >
   <div class="level">
@@ -92,22 +125,22 @@
         type="submit"
       >
         <span class="icon">
-          <i class="mdi mdi-content-save-plus" />
+          <i class="mdi" class:mdi-check-bold={saved} class:mdi-content-save-plus={!saved} />
         </span>
-        <span>Save</span>
+        <span>{saved ? 'Saved' : 'Save'}</span>
       </button>
     </div>
   </div>
   <div class="demo">
     <DemoFields {name} />
     <hr />
-    {#await toFileList(poster) then poster}
-      <BackgroundFields {poster} {brightness} />
+    {#await toFileList(backgroundPoster) then poster}
+      <BackgroundFields {poster} brightness={backgroundBrightness} />
     {:catch e}
-      <BackgroundFields {brightness} />
+      <BackgroundFields brightness={backgroundBrightness} />
     {/await}
     <hr />
-    {#await toFileList(logo) then logo}
+    {#await toFileList(brandLogo) then logo}
       <BrandFields {logo} />
     {:catch e}
       <BrandFields />
@@ -115,7 +148,7 @@
     <hr />
     <MeetingTypesOptionsFields {SIPQueues} id={$page.params.uuid} />
     <hr />
-    <MiscFields {units} {cityId} {displayFootnote} />
+    <MiscFields cityId={weatherCityId} units={weatherUnits} {displayFootnote} {displayWeather} />
   </div>
 
   <Modal bind:showModal={$showUnsavedModal}>

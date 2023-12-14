@@ -4,7 +4,7 @@
   import { goto } from '$app/navigation';
   import reactiveURL from '$lib/shared/reactive-url';
   import loading from '$lib/static/gif/loading.gif';
-  import { formIsUnsavedStore, showUnsavedModal } from '$lib/store';
+  import { formIsUnsavedStore, showErrorModalStore, showUnsavedModal, userIdStore } from '$lib/store';
   import copy from 'copy-to-clipboard';
 
   import type { Data } from '../../database/entities/data';
@@ -12,6 +12,7 @@
   export let name: string;
   export let brandLogo: Data;
   export let uuid: string;
+  export let removeDemoCard: () => void;
 
   let isLoading = name == '+ New Demo +';
   let isSelected = false;
@@ -22,6 +23,19 @@
     // The utility buttons <I> should not execute the following logic
     if (e.target.tagName != 'I' && !isLoading) {
       $formIsUnsavedStore ? ($showUnsavedModal = true) : goto(`/demos/${uuid}`);
+    }
+  };
+
+  const onDelete = async () => {
+    const response = await fetch(`/api/users/${$userIdStore}/demos/${uuid}`, {
+      method: 'DELETE'
+    });
+
+    if (response.status == 500) {
+      $showErrorModalStore = true;
+    } else {
+      removeDemoCard(uuid);
+      goto('/demos');
     }
   };
 
@@ -80,11 +94,14 @@
                 ><i class="mdi mdi-24px " class:mdi-content-copy={!copyIsLoading} class:mdi-check-bold={copied} /></span
               >
             </button>
-            <form action="/demos/{uuid}?_method=DELETE" method="post" class="level-item is-clickable">
-              <button class="button is-white" disabled={isLoading} class:is-light={isSelected || isLoading}>
-                <span class="icon is-small has-text-danger"><i class="mdi mdi-24px mdi-delete" /></span>
-              </button>
-            </form>
+            <button
+              class="button is-white"
+              disabled={isLoading}
+              class:is-light={isSelected || isLoading}
+              on:click={onDelete}
+            >
+              <span class="icon is-small has-text-danger"><i class="mdi mdi-24px mdi-delete" /></span>
+            </button>
           </div>
         </nav>
       </div>

@@ -22,8 +22,8 @@
 
 <div class="preview is-flex has-text-white ">
   <Background
-    imageLink={$previewedDemoStore.poster?.bits || CiscoBackground}
-    filter="brightness({$previewedDemoStore.brightness}%)"
+    imageLink={$previewedDemoStore.backgroundPoster?.bits || CiscoBackground}
+    filter="brightness({$previewedDemoStore.backgroundBrightness}%)"
   />
   <div>
     <nav class="navbar is-danger is-flex is-justify-content-center">
@@ -35,11 +35,15 @@
       <div class="container is-block">
         <div class="columns m-0">
           <div id="brand" class="column is-7 is-flex is-align-self-center">
-            <Brand title={$previewedDemoStore.logo?.bits || CiscoLogo} />
+            <Brand title={$previewedDemoStore.brandLogo?.bits || CiscoLogo} />
           </div>
           {#if $previewedDemoStore.displayWeather}
             <div id="weather" class="column is-5 is-align-self-center">
-              <Weather cityId={$previewedDemoStore.cityId} units={$previewedDemoStore.units} {getWeatherResponse}>
+              <Weather
+                cityId={$previewedDemoStore.weatherCityId}
+                units={$previewedDemoStore.weatherUnits}
+                {getWeatherResponse}
+              >
                 <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
               </Weather>
             </div>
