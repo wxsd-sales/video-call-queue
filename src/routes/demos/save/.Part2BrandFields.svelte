@@ -32,7 +32,7 @@
         file: { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified }
       };
 
-      $previewedDemoStore.logo = payload.file;
+      $previewedDemoStore.brandLogo = payload.file;
     }
     (ev.target as HTMLInputElement).reportValidity();
   };
@@ -60,8 +60,8 @@
     <div class="file has-name is-fullwidth">
       <label class="file-label">
         <input
-          name="logo"
-          id="logo"
+          name="brandLogo"
+          id="brandLogo"
           class="file-input"
           type="file"
           accept={acceptedFileTypes}
