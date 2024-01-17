@@ -4,7 +4,6 @@ import config from '../../../../../../mikro-orm.config';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { Expose, plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { classTransformOptions, classValidationOptions } from '../../../../.utils';
 
 export const GET: RequestHandler = async (requestEvent: RequestEvent) => {
   class RequestQueryDTO {
@@ -12,8 +11,8 @@ export const GET: RequestHandler = async (requestEvent: RequestEvent) => {
     public readonly userId!: string;
   }
 
-  const query = plainToInstance(RequestQueryDTO, requestEvent.params, classTransformOptions);
-  const queryValidationErrors = validateSync(query, classValidationOptions);
+  const query = plainToInstance(RequestQueryDTO, requestEvent.params);
+  const queryValidationErrors = validateSync(query);
   if (queryValidationErrors.length > 0) {
     return { status: 400, body: { query: queryValidationErrors } };
   }
