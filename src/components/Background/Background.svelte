@@ -5,11 +5,21 @@
 </script>
 
 {#if imageLink && videoLink}
-  <video class="is-brand-background" autoplay loop muted playsinline poster={imageLink} style:filter>
+  <video
+    class="is-brand-background"
+    autoplay
+    loop
+    muted
+    playsinline
+    poster={imageLink}
+    style:filter
+    on:mouseenter
+    on:mouseleave
+  >
     <source src={videoLink} />
   </video>
 {:else}
-  <img class="is-brand-background" alt="background" src={imageLink} style:filter on:load />
+  <img class="is-brand-background" alt="background" src={imageLink} style:filter on:load on:mouseenter on:mouseleave />
 {/if}
 
 <style>
