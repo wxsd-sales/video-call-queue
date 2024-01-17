@@ -73,7 +73,10 @@ export const GET = async (requestEvent: RequestEvent) => {
 
                 return {
                   status: 302,
-                  headers: { 'Location': '/demos', 'Set-Cookie': sessionCookie }
+                  headers: {
+                    'Location': `${env.PUBLIC_TUNNEL ? env.PUBLIC_TUNNEL : ''}/demos`,
+                    'Set-Cookie': sessionCookie
+                  }
                 };
               })
             : { status: 403 }
