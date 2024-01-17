@@ -1,6 +1,5 @@
 <script lang="ts">
   import { WEATHER_RESPONSE_UNITS } from '$lib/enums';
-  import { jsonRequest } from '$lib/shared/json-request';
 
   import Weather from '$components/Weather/Weather.svelte';
   import Clock from '$components/Clock/Clock.svelte';
@@ -15,9 +14,8 @@
   let displayWeatherInputsModal = false;
   let disableSaveButton = false;
 
-  const httpApiRequest = jsonRequest('/api');
-  const getWeatherResponse = (id: number, units: string) =>
-    httpApiRequest.get('weather', { id, units }).then((r) => r.json());
+  const getWeatherResponse = (id: string, units: string) =>
+    fetch('/api/weather?' + new URLSearchParams({ id, units })).then((r) => r.json());
 </script>
 
 <div

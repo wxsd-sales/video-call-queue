@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { jsonRequest } from '$lib/shared/json-request';
   import type * as TYPES from '$lib/types';
 
   import Background from '$components/Background/Background.svelte';
@@ -14,18 +13,17 @@
   import type { Demo } from 'src/database/entities';
   import { NOTIFICATION_TYPES } from '$components/Notification/enums';
 
-  import { browser } from '$app/env';
-
   export let demo: Demo;
   export let role: string;
+  export let isDevice: boolean;
 
-  let getWeatherResponse;
-  let isDevice = browser ? (window.navigator.userAgent.includes('RoomOS') ? true : false) : false;
+  let getWeatherResponse: (id: string, units: string) => Promise<TYPES.WeatherResponse>;
 
-  const httpApiRequest = jsonRequest('/api');
   if (demo.weatherCityId) {
-    getWeatherResponse = (id: number, units: string) =>
-      httpApiRequest.get('weather', { id, units }).then((r) => r.json() as Promise<TYPES.WeatherResponse>);
+    getWeatherResponse = (id: string, units: string) =>
+      fetch('/api/weather?' + new URLSearchParams({ id, units })).then(
+        (r) => r.json() as Promise<TYPES.WeatherResponse>
+      );
   }
 </script>
 

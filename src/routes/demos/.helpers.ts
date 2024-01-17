@@ -1,13 +1,21 @@
-import { urlEncodedRequest } from '$lib/shared/urlencoded-request';
+import { browser } from '$app/env';
 import type { Data } from '../../database/entities/data';
 
 export const toFileList = async (file: Data) => {
-  const response = await urlEncodedRequest(file.bits).get();
-  const blob = await response.blob();
-  const f = await new File([blob], file.name, { lastModified: file.lastModified, type: file.type });
-  const container = new DataTransfer();
-  container.items.add(f);
-  return container.files;
+  try {
+    if (browser && file) {
+      const response = await fetch(file.bits, {
+        headers: new Headers({ 'Content-type': 'application/x-www-form-urlencoded' })
+      });
+      const blob = await response.blob();
+      const f = await new File([blob], file.name, { lastModified: file.lastModified, type: file.type });
+      const container = new DataTransfer();
+      container.items.add(f);
+      return container.files;
+    }
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const horizontalSlide = (node, { delay = 0, duration = 400, easing, axis = 'x' } = {}) => {

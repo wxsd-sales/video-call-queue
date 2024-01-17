@@ -21,14 +21,13 @@
         return '&deg;K';
     }
   };
-  export let displayWeather = false;
+  export const displayWeather = false;
 
   let weatherResponse = browser ? getWeatherResponse(cityId, units) : Promise.reject(undefined);
 
   onMount(() => {
     const interval = updateInterval * 1000;
     const intervalId = setInterval(() => (weatherResponse = getWeatherResponse(cityId, units)), interval);
-
     return () => clearInterval(intervalId);
   });
 </script>

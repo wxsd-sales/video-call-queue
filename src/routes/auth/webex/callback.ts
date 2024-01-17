@@ -31,48 +31,51 @@ export const GET = async (requestEvent: RequestEvent) => {
   const db = requestEvent.locals.db;
   const body = `grant_type=${grantType}&client_id=${env.WEBEX_AUTHORIZATION_CODE_CLIENT_ID}&client_secret=${env.WEBEX_AUTHORIZATION_CODE_CLIENT_SECRET}&redirect_uri=${redirectUri}&code=${code}`;
 
-  try{ 
+  try {
+    const token = await (
+      await fetch(`${env.WEBEX_API_URL}/access_token`, {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }),
+        body
+      })
+    ).json();
 
-  const token = await (await fetch(`${env.WEBEX_API_URL}/access_token` , {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }),
-      body
-    })).json();
+    addExpiresAts(token, Date.parse(new Date().toUTCString()));
+    const me = await (
+      await fetch(`${env.WEBEX_API_URL}/people/me`, {
+        headers: new Headers({
+          'Authorization': `Bearer ${token.access_token}`,
+          'Content-Type': 'application/json'
+        })
+      })
+    ).json();
 
-  addExpiresAts(token, Date.parse(new Date().toUTCString()));
-  const me = await (await fetch(`${env.WEBEX_API_URL}/people/me`, {
-    headers: new Headers({
-      'Authorization': `Bearer ${token.access_token}`,
-      'Content-Type': 'application/json'
-    })
-  })).json();
+    const user = await db?.findOne(User, { uuid: getUserUUID(me.id) });
+    const session = new Session({
+      user: user ?? new User(getUserUUID(me.id), me.emails[0]),
+      ipAddress: prerendering ? 'unknown' : requestEvent?.clientAddress,
+      userAgent: requestEvent.request.headers.get('User-Agent') ?? undefined,
+      lastActivityAt: Date.now(),
+      payload: { webex: { ...me, orgId: me.orgId } }
+    });
+    const sessionCookie = cookie.serialize('sessionId', session.uuid, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'lax'
+    });
 
-  const user = await db?.findOne(User, { uuid: getUserUUID(me.id) })
-  const session = new Session({
-    user: user ?? new User(getUserUUID(me.id), me.emails[0]),
-    ipAddress: prerendering ? 'unknown' : requestEvent.clientAddress,
-    userAgent: requestEvent.request.headers.get('User-Agent') ?? undefined,
-    lastActivityAt: Date.now(),
-    payload: { webex: { ...me, orgId: me.orgId } }
-  });
-  const sessionCookie = cookie.serialize('sessionId', session.uuid, {
-    path: '/',
-    maxAge: 60 * 60 * 24 * 7,
-    sameSite: 'lax'
-  });
+    await db?.persistAndFlush(session);
 
-  await db?.persistAndFlush(session);
-
-  return {
-    status: 302,
-    headers: {
-      'Location': `${env.PUBLIC_TUNNEL ? env.PUBLIC_TUNNEL : ''}/demos`,
-      'Set-Cookie': sessionCookie
-    }
-  }} catch(e) {
+    return {
+      status: 302,
+      headers: {
+        'Location': `${env.PUBLIC_TUNNEL ? env.PUBLIC_TUNNEL : ''}/demos`,
+        'Set-Cookie': sessionCookie
+      }
+    };
+  } catch (e) {
     return { status: 403 };
-  };
+  }
 };
-
