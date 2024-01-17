@@ -20,19 +20,26 @@
   import reactiveURL from '$lib/shared/reactive-url';
   import DemoCard from '$components/DemoCard/DemoCard.svelte';
   import Modal from '$components/Modal/Modal.svelte';
-  import { selectedDemoCardStore, userIdStore, showErrorModalStore } from '$lib/store';
-  import { onMount } from 'svelte';
+  import {
+    selectedDemoCardStore,
+    userIdStore,
+    formIsChangedStore,
+    showDraftModal,
+    showErrorModalStore,
+    targetDemoId
+  } from '$lib/store';
 
   export let demos: Array<Demo> = [];
   export let userId: string;
 
   let newIsLoading = false;
-  let demosRef;
 
-  const removeDemoCard = (demoId) => (demos = demos.filter((demo) => demo.uuid !== demoId));
+  $userIdStore = userId;
+
+  const removeDemoCard = (demoId: string) => (demos = demos.filter((demo) => demo.uuid !== demoId));
   reactiveURL.subscribe((url) => {
     if (url?.pathname.includes('new') && !demos.some((demo) => demo.name === '+ New Demo +')) {
-      demos = [{ name: '+ New Demo +' }, ...demos];
+      demos = [{ name: '+ New Demo +' } as Demo, ...demos];
       newIsLoading = true;
     }
 
@@ -43,16 +50,19 @@
   });
 
   const addDemo = () => {
-    demos = [{ name: '+ New Demo +' }, ...demos];
-    demosRef.scroll(0, 0);
-
-    goto('/demos/new');
+    $targetDemoId = 'new';
+    if ($formIsChangedStore) {
+      $showDraftModal = true;
+    } else {
+      demos = [{ name: '+ New Demo +' } as Demo, ...demos];
+      goto('/demos/new');
+    }
   };
 
   selectedDemoCardStore.subscribe((demo) => {
     if (demos.some((demo) => demo.name === '+ New Demo +') && demo) {
       demos = demos.filter((demo) => demo.name != '+ New Demo +');
-      demos = [{ uuid: demo.uuid, brandLogo: demo.brandLogo, name: demo.name }, ...demos];
+      demos = [{ uuid: demo.uuid, brandLogo: demo.brandLogo, name: demo.name } as Demo, ...demos];
     }
 
     demos = demos.map((cursor) => {
@@ -64,10 +74,6 @@
   });
 
   $: newIsLoading = $page.params.uuid === 'new';
-
-  onMount(() => {
-    $userIdStore = userId;
-  });
 </script>
 
 <div class="columns px-4">
@@ -95,7 +101,7 @@
       </div>
     </div>
 
-    <div class="demos" bind:this={demosRef}>
+    <div class="demos">
       {#if !demos.length}
         <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
       {/if}

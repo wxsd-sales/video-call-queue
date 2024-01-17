@@ -3,6 +3,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { Demo } from '../../database/entities';
 import { LoadStrategy } from '@mikro-orm/core';
 import { generateDemo } from '$lib/shared/utilities';
+import { DEFAULT_SIP_CONFIG } from '$lib/constants';
 
 const fields = [
   'uuid',
@@ -62,7 +63,7 @@ export const GET = async (requestEvent: RequestEvent) => {
         })
         .catch({
           status: 200,
-          body: { backgroundBrightness: 55, units: 'imperial', cityId: 4887398 }
+          body: { backgroundBrightness: 55, units: 'imperial', cityId: 4887398, SIPQueues: [DEFAULT_SIP_CONFIG] }
         })
     : {
         status: 200,
@@ -70,14 +71,7 @@ export const GET = async (requestEvent: RequestEvent) => {
           backgroundBrightness: 55,
           units: 'imperial',
           cityId: 4887398,
-          SIPQueues: [
-            {
-              extensionNumber: 1111,
-              videoLink: 'https://wxsd-sales.github.io/video-queue-macro/example-content',
-              sipTitle: 'Looking For Assistance?',
-              sipImage: null
-            }
-          ]
+          SIPQueues: [DEFAULT_SIP_CONFIG]
         }
       };
 };
