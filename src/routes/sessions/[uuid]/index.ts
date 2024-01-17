@@ -1,9 +1,8 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { JSONObject } from '@sveltejs/kit/types/private';
 import { Expose, plainToInstance } from 'class-transformer';
-import { IsNotEmpty, IsUUID, validateSync } from 'class-validator';
+import { IsUUID, validateSync } from 'class-validator';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
-import { classTransformOptions, classValidationOptions } from '../../.utils';
 import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
 
@@ -24,8 +23,8 @@ export const GET = async (requestEvent: RequestEvent) => {
   }
 
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
-  const query = plainToInstance(RequestQueryDTO, { ...requestEvent.params, ...searchParams }, classTransformOptions);
-  const queryValidationErrors = validateSync(query, classValidationOptions);
+  const query = plainToInstance(RequestQueryDTO, { ...requestEvent.params, ...searchParams });
+  const queryValidationErrors = validateSync(query);
   if (queryValidationErrors.length > 0) {
     return { status: 302, headers: { Location: `/auth` } };
   }
@@ -67,7 +66,8 @@ export const GET = async (requestEvent: RequestEvent) => {
           'sipTitle4',
           'videoLink4',
           'sipImage4',
-          'displayFootnote'
+          'displayFootnote',
+          'displayWeather'
         ],
         strategy: LoadStrategy.JOINED
       }
