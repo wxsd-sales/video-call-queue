@@ -10,6 +10,7 @@ node_modules
 /static
 *.md
 *.txt
+*.avif
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
