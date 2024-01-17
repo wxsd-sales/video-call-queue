@@ -4,7 +4,6 @@ import type { JSONObject, JSONValue, ToJSON } from '@sveltejs/kit/types/private'
 import { Expose, instanceToPlain, plainToInstance, Transform, Type } from 'class-transformer';
 import { IsIn, IsInt, validateSync } from 'class-validator';
 import { jsonRequest } from '$lib/shared/json-request';
-import { classTransformOptions, classValidationOptions, onFailure } from '../../.utils';
 import env from '$lib/environment';
 
 /** @typedef {import('class-validator').ValidationError} ValidationError */
@@ -73,8 +72,8 @@ export const GET: RequestHandler = async (requestEvent: RequestEvent) => {
 
   // validate request query
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
-  const query = plainToInstance(RequestQueryDTO, searchParams, classTransformOptions);
-  const queryValidationErrors = validateSync(query, classValidationOptions);
+  const query = plainToInstance(RequestQueryDTO, searchParams);
+  const queryValidationErrors = validateSync(query);
   if (queryValidationErrors.length > 0) {
     return { status: 400, body: { query: queryValidationErrors } };
   }
@@ -84,11 +83,13 @@ export const GET: RequestHandler = async (requestEvent: RequestEvent) => {
     .then((r: Response) => r.json())
     .then((r: JSONObject) => ({
       status: 200,
-      body: plainToInstance(ResponseDTO, { units: query.units, ...r }, classTransformOptions),
+      body: plainToInstance(ResponseDTO, { units: query.units, ...r }),
       headers: {
         'Cache-Control': 'public, max-age=600',
         'Expires': new Date(Date.now() + 10 * 60 * 1000).toUTCString()
       }
     }))
-    .catch((e) => onFailure(e));
+    .catch((e) => {
+      console.log(e);
+    });
 };

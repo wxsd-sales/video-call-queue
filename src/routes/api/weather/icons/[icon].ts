@@ -3,7 +3,6 @@ import type { OwmIcon } from './.utils';
 import { Expose, plainToInstance } from 'class-transformer';
 import { IsIn, validateSync } from 'class-validator';
 import { getWeatherIconSvg, newWeatherIcon, owm } from './.utils';
-import { classTransformOptions, classValidationOptions } from '../../../.utils';
 
 /** @typedef {import('class-validator').ValidationError} ValidationError */
 
@@ -44,16 +43,16 @@ export const GET = async (requestEvent: RequestEvent) => {
   }
 
   // validate request params
-  const param = plainToInstance(RequestParamDTO, requestEvent.params, classTransformOptions);
-  const paramValidationErrors = validateSync(param, classValidationOptions);
+  const param = plainToInstance(RequestParamDTO, requestEvent.params);
+  const paramValidationErrors = validateSync(param);
   if (paramValidationErrors.length > 0) {
     return { status: 400, body: { param: paramValidationErrors } };
   }
 
   // validate request query
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
-  const query = plainToInstance(RequestQueryDTO, searchParams, classTransformOptions);
-  const queryValidationErrors = validateSync(query, classValidationOptions);
+  const query = plainToInstance(RequestQueryDTO, searchParams);
+  const queryValidationErrors = validateSync(query);
   if (queryValidationErrors.length > 0) {
     return { status: 400, body: { query: queryValidationErrors } };
   }
