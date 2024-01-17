@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IsEmail, IsNotEmpty, IsUrl, Matches, validateSync } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsUrl, Matches, validateSync } from 'class-validator';
 import { VALID_ACCESS_TOKEN } from './constants';
 import { dev } from '$app/env';
 import humps from 'humps';
@@ -113,7 +113,7 @@ export class Environment {
   @IsNotEmpty()
   public readonly PUBLIC_WEBEX_DEV_PORTAL_URL: string;
 
-  @IsUrl()
+  @IsString()
   public readonly PUBLIC_TUNNEL: string;
 
   @IsNotEmpty()
