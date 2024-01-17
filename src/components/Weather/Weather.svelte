@@ -11,7 +11,6 @@
   export let updateInterval = 3600;
   export let iconPrefix = '/api';
   export let getWeatherResponse: (...args) => Promise<WeatherResponse> = () => Promise.reject(undefined);
-
   export const tempSuffix = (units: Units) => {
     switch (units) {
       case 'imperial':
@@ -22,6 +21,7 @@
         return '&deg;K';
     }
   };
+  export let displayWeather = false;
 
   let weatherResponse = browser ? getWeatherResponse(cityId, units) : Promise.reject(undefined);
 
@@ -33,7 +33,7 @@
   });
 </script>
 
-<section class="weather-container">
+<section>
   {#await weatherResponse then value}
     <div class="level is-mobile mb-3">
       {#if dataSource}
@@ -62,6 +62,10 @@
       </div>
     </div>
   {:catch error}
-    <div />
+    {#if displayWeather}
+      <div class="is-flex is-justify-content-center">
+        <p class="is-size-4 has-text-danger">Invalid city ID, Please try again.</p>
+      </div>
+    {/if}
   {/await}
 </section>
