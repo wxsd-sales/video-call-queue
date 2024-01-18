@@ -23,7 +23,7 @@
   };
   export const displayWeather = false;
 
-  let weatherResponse = browser ? getWeatherResponse(cityId, units) : Promise.reject(undefined);
+  let weatherResponse = browser ? getWeatherResponse(cityId, units) : Promise.resolve(undefined);
 
   onMount(() => {
     const interval = updateInterval * 1000;

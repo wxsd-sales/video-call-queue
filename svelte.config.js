@@ -7,6 +7,9 @@ const config = {
   // for more information about preprocessors
   preprocess: [preprocess()],
 
+  build: {
+    sourcemap: true
+  },
   kit: {
     adapter: adapter(),
     methodOverride: { allowed: ['POST', 'PATCH', 'DELETE'] },
