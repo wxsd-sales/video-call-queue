@@ -36,8 +36,16 @@ body {
   min-height: 100%;
 }
 
-.is-fullheight {
+.is-none {
+  display: none !important;
+}
+
+.is-fullHeight {
   height: 100%;
+}
+
+.is-fullWidth {
+  width: 100%;
 }
 
 .is-translucent-black {
@@ -53,6 +61,21 @@ body {
   50% {
     opacity: 0;
   }
+}
+
+.zoom {
+  transition: 0.25s ease;
+}
+
+.is-borderless {
+  border: none !important;
+}
+
+.zoom:hover {
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+  transition: 0.25s ease;
 }
 
 //* {

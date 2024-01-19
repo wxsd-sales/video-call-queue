@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IsEmail, IsNotEmpty, IsUrl, Matches, validateSync } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsUrl, Matches, validateSync } from 'class-validator';
 import { VALID_ACCESS_TOKEN } from './constants';
 import { dev } from '$app/env';
 import humps from 'humps';
@@ -113,8 +113,8 @@ export class Environment {
   @IsNotEmpty()
   public readonly PUBLIC_WEBEX_DEV_PORTAL_URL: string;
 
-  @IsUrl()
-  public readonly PUBLIC_TUNNEL: string;
+  @IsString()
+  public readonly ORIGIN: string;
 
   @IsNotEmpty()
   public readonly PUBLIC_APPD_CONFIG_APP_KEY: string;
@@ -159,7 +159,7 @@ export class Environment {
     this.PUBLIC_NODE_SERVER_URL_SIP_DEMO = process.env.PUBLIC_NODE_SERVER_URL_SIP_DEMO as string;
     this.PUBLIC_SOAP_BOX_URL = process.env.PUBLIC_SOAP_BOX_URL as string;
     this.PUBLIC_WEBEX_DEV_PORTAL_URL = process.env.PUBLIC_WEBEX_DEV_PORTAL_URL as string;
-    this.PUBLIC_TUNNEL = process.env.PUBLIC_TUNNEL as string;
+    this.ORIGIN = process.env.ORIGIN as string;
     this.PUBLIC_APPD_CONFIG_APP_KEY = process.env.PUBLIC_APPD_CONFIG_APP_KEY as string;
     this.PUBLIC_APPD_CONFIG_EXTERNAL_URL = process.env.PUBLIC_APPD_CONFIG_EXTERNAL_URL as string;
     this.PUBLIC_APPD_CONFIG_BEACON_URL = process.env.PUBLIC_APPD_CONFIG_BEACON_URL as string;

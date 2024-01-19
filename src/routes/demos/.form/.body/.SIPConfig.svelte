@@ -1,10 +1,6 @@
 <script lang="ts">
   import { CONTROL_HUB_URL } from '$lib/constants.js';
-  import { createEventDispatcher, onMount } from 'svelte';
-  import { slide } from 'svelte/transition';
-
-  import { urlEncodedRequest } from '../../../lib/shared/urlencoded-request';
-  import customerSupport from '$lib/static/img/customer-support.svg';
+  import { createEventDispatcher } from 'svelte';
 
   export let extensionNumber: number;
   export let videoLink: string;
@@ -15,12 +11,10 @@
   let extensionNumberError: string;
   let videoLinkError: string;
   let sipTitleError: string;
-  let formIsValid: boolean;
-  let sipImageInput: HTMLInputElement;
 
   let acceptedFileTypes: string = '.jpg, .jpeg, .png, .svg, .gif, .webp, .avif, .apng';
   let maxFileSize: number = 200000;
-  let imageFile: FileList | null;
+  let displayFileSizeError = false;
 
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -31,6 +25,14 @@
     });
 
   const dispatch = createEventDispatcher();
+
+  const dispatchConfigUpdates = (formIsValid: boolean) => {
+    dispatch('queueIsValid', { formIsValid, index });
+
+    if (formIsValid)
+      dispatch('sipQs', { event: 'update', payload: { videoLink, sipTitle, extensionNumber, index, sipImage } });
+  };
+
   const handleInputs = () => {
     const extensionNumberRegex = new RegExp('^[0-9]{0,6}$');
     const nullErrorMsgTemplate = (type: string) => `Please provide a valid ${type}`;
@@ -43,90 +45,36 @@
     videoLinkError = !videoLink ? nullErrorMsgTemplate('video link') : '';
     sipTitleError = !sipTitle ? nullErrorMsgTemplate('title') : '';
 
-    formIsValid = !extensionNumberError && !videoLinkError && !sipTitleError;
-    dispatch('queueIsValid', formIsValid);
-    dispatch('sipQs', { event: 'update', payload: { videoLink, sipTitle, extensionNumber, index, sipImage } });
-  };
-
-  const pathToFilelist = async (url: string) => {
-    const response = await urlEncodedRequest(customerSupport).get();
-    const blob = await response.blob();
-    const file = new File([blob], 'customer-support.svg', { lastModified: new Date(), type: 'image/svg+xml' });
-    const container = new DataTransfer();
-    container.items.add(file);
-
-    return container.files;
-  };
-
-  const bitsToFileList = (file: { bits: string; name: string; lastModified: number; type: string }) => {
-    return file != null
-      ? urlEncodedRequest(file.bits)
-          .get()
-          .then((r) => r.blob())
-          .then((r) => new File([r], file.name, { lastModified: file.lastModified, type: file.type }))
-          .then((r) => {
-            const container = new DataTransfer();
-            container.items.add(r);
-            return container.files;
-          })
-      : Promise.resolve(null);
+    const formIsValid = !extensionNumberError && !videoLinkError && !sipTitleError;
+    dispatchConfigUpdates(formIsValid);
   };
 
   const handleSIPImageUpload = async (ev: Event) => {
-    const file = sipImageInput.files?.[0];
+    const file = ev.target?.files?.[0];
+    let validFileInput = false;
 
     if (file?.size > maxFileSize) {
-      sipImageInput.setCustomValidity('File size is too large');
-    } else if (file) {
-      sipImageInput.setCustomValidity('');
-      sipImage = { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified };
-      handleInputs();
-    } else {
+      displayFileSizeError = true;
       sipImage = null;
-    }
-
-    sipImageInput.reportValidity();
-  };
-
-  onMount(async () => {
-    if (sipImage) {
-      imageFile = await bitsToFileList(sipImage);
     } else {
-      imageFile = await pathToFilelist(sipImage);
+      validFileInput = true;
+      displayFileSizeError = false;
+      sipImage = { bits: await toBase64(file), name: file?.name, type: file?.type, lastModified: file?.lastModified };
     }
 
-    imageFile?.[0] != null ? (sipImageInput.files = imageFile) : null;
-  });
+    dispatchConfigUpdates(validFileInput);
+  };
 </script>
 
-<div transition:slide={{ duration: index != 0 ? 500 : 0 }} class="columns is-multiline">
-  <div class="column is-flex is-justify-content-space-between is-full py-0 my-4">
-    <h3 class="title mb-0 is-size-5">
-      SIP Queue Number {index + 1}
-    </h3>
-    {#if index != 0}
-      <button
-        on:click={() => {
-          dispatch('sipQs', { event: 'remove', payload: { index } });
-          imageFile = null;
-        }}
-        type="button"
-        class="button is-danger is-rounded is-outlined is-small"
-      >
-        <span class="icon">
-          <i class="mdi mdi-close" />
-        </span>
-      </button>
-    {/if}
-  </div>
-  <div class="column pt-0 is-one-quarter">
+<form name="sip">
+  <div class="mx-1 mb-4">
     <label class="label" for="extention-number"
       >Extension Number<sup class="has-text-danger" title="required">*</sup></label
     >
     <div class="control has-icons-left">
       <input
-        name="extensionNumber{index + 1}"
-        id="extensionNumber{index + 1}"
+        name="extensionNumber{index}"
+        id="extensionNumber{index}"
         class="input"
         class:is-danger={extensionNumberError}
         type="number"
@@ -152,14 +100,14 @@
       </div>
     </div>
   </div>
-  <div class="column pt-0 is-one-quarter">
+  <div class="mx-1 mb-4">
     <label class="label" for="city-id"
       >Video Commercial Source <sup class="has-text-danger" title="required">*</sup></label
     >
     <div class="control has-icons-left">
       <input
-        name="videoLink{index + 1}"
-        id="videoLink{index + 1}"
+        name="videoLink{index}"
+        id="videoLink{index}"
         class="input"
         class:is-danger={videoLinkError}
         type="url"
@@ -180,12 +128,12 @@
       {/if}
     </div>
   </div>
-  <div class="column pt-0 is-one-quarter">
+  <div class="mx-1 mb-4">
     <label class="label" for="city-id">Button Label <sup class="has-text-danger" title="required">*</sup></label>
     <div class="control has-icons-left">
       <input
-        name="sipTitle{index + 1}"
-        id="sipTitle{index + 1}"
+        name="sipTitle{index}"
+        id="sipTitle{index}"
         class="input"
         class:is-danger={sipTitleError}
         placeholder={sipTitle}
@@ -206,18 +154,16 @@
       {/if}
     </div>
   </div>
-  <div class="column pt-0 is-one-quarter">
-    <label class="label" for="sipImage{index + 1}">Image <sup class="has-text-danger" title="required">*</sup></label>
+  <div class="mx-1 mb-4">
+    <label class="label" for="sipImage{index}">Image <sup class="has-text-danger" title="required">*</sup></label>
     <div class="file has-name is-fullwidth">
       <label class="file-label">
         <input
-          id="sipImage{index + 1}"
-          name="sipImage{index + 1}"
+          id="sipImage{index}"
+          name="sipImage{index}"
           type="file"
           class="file-input"
           accept={acceptedFileTypes}
-          bind:this={sipImageInput}
-          bind:files={imageFile}
           on:input={handleSIPImageUpload}
           required
         />
@@ -226,11 +172,13 @@
             <i class="mdi mdi-image-plus" />
           </span>
         </span>
-        <span class="file-name">{imageFile?.[0]?.name || sipImage?.name || 'No File Selected'}</span>
+        <span class="file-name has-text-dark">{sipImage?.name || 'No File Selected'}</span>
       </label>
     </div>
-    <div class="help">
-      <p class="help">File must not exceed {maxFileSize / 1000}KB in size</p>
+    <div class:has-text-grey-white={!displayFileSizeError} class:has-text-danger={displayFileSizeError} class="help ">
+      <p class="is-size-7 pl-1 ">
+        {displayFileSizeError ? 'File size is too large' : `File must not exceed ${maxFileSize / 1000}KB in size`}
+      </p>
     </div>
   </div>
-</div>
+</form>

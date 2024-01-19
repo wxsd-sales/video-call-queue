@@ -162,7 +162,7 @@
 </section>
 
 {#if isNavVisible}
-  <nav class="navbar is-fixed-top has-shadow" aria-label="main navigation">
+  <nav class="navbar is-fixed-top has-shadow" aria-label="main navigation" style="z-index: 0">
     <div class="navbar-brand">
       {#if email}
         <a class="navbar-item" href="/demos">

@@ -8,7 +8,7 @@ export const GET = async (requestEvent: RequestEvent) => {
   }
 
   const responseType = 'code';
-  const redirectUri = (requestEvent.url.origin || env.PUBLIC_TUNNEL) + `/auth/webex/callback`;
+  const redirectUri = env.ORIGIN + `/auth/webex/callback`;
   const state = requestEvent.locals.session?.uuid;
 
   const clientId = env.WEBEX_AUTHORIZATION_CODE_CLIENT_ID;

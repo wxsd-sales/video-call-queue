@@ -1,11 +1,11 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { JSONObject } from '@sveltejs/kit/types/private';
 import { Expose, plainToInstance } from 'class-transformer';
-import { IsNotEmpty, IsUUID, validateSync } from 'class-validator';
+import { IsUUID, validateSync } from 'class-validator';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
-import { classTransformOptions, classValidationOptions } from '../../.utils';
 import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
+import { classTransformOptions, classValidationOptions } from '../../.utils';
 
 const generateSIPCardData = (title: string, videoLink: string, extensionNumber: number, img: Data | null) =>
   title &&
@@ -67,7 +67,8 @@ export const GET = async (requestEvent: RequestEvent) => {
           'sipTitle4',
           'videoLink4',
           'sipImage4',
-          'displayFootnote'
+          'displayFootnote',
+          'displayWeather'
         ],
         strategy: LoadStrategy.JOINED
       }

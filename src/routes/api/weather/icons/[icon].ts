@@ -45,14 +45,14 @@ export const GET = async (requestEvent: RequestEvent) => {
 
   // validate request params
   const param = plainToInstance(RequestParamDTO, requestEvent.params, classTransformOptions);
-  const paramValidationErrors = validateSync(param, classValidationOptions);
+  const paramValidationErrors = validateSync(param);
   if (paramValidationErrors.length > 0) {
-    return { status: 400, body: { param: paramValidationErrors } };
+    return { status: 400, body: { param: paramValidationErrors }, classValidationOptions };
   }
 
   // validate request query
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
-  const query = plainToInstance(RequestQueryDTO, searchParams, classTransformOptions);
+  const query = plainToInstance(RequestQueryDTO, searchParams);
   const queryValidationErrors = validateSync(query, classValidationOptions);
   if (queryValidationErrors.length > 0) {
     return { status: 400, body: { query: queryValidationErrors } };

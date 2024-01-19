@@ -1,8 +1,10 @@
-const toFile = ({ bits, name, lastModified, type }: Data) => ({
+import { DEFAULT_SIP_CONFIG } from '$lib/constants';
+
+export const createImageObj = ({ bits, name, lastModified, type }: Data) => ({
   bits: 'data:' + type + ';base64,' + bits.toString('base64'),
   name,
   lastModified,
-  type: type
+  type
 });
 
 const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: string, sipImage: Data) =>
@@ -12,7 +14,7 @@ const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: s
     extensionNumber,
     videoLink,
     sipTitle,
-    sipImage: sipImage ? toFile(sipImage) : null
+    sipImage: sipImage ? createImageObj(sipImage) : DEFAULT_SIP_CONFIG.sipImage
   };
 
 const generateSIPQueues = (response: any) => {
@@ -29,17 +31,18 @@ const generateSIPQueues = (response: any) => {
       )
     );
   }
+
   return qs.filter(Boolean);
 };
 
 export const generateDemo = (response: any) => {
   return {
     name: response.name,
-    backgroundPoster: toFile(response.backgroundPoster),
+    backgroundPoster: createImageObj(response.backgroundPoster),
     backgroundBrightness: response.backgroundBrightness,
-    brandLogo: toFile(response.brandLogo),
+    brandLogo: createImageObj(response.brandLogo),
     weatherCityId: response.weatherCityId,
-    weatherUnits: response.weatherUnits,
+    weatherUnits: response.weatherUnits || 'imperial',
     SIPQueues: generateSIPQueues(response),
     displayFootnote: Boolean(response.displayFootnote),
     displayWeather: Boolean(response.displayWeather)

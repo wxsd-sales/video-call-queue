@@ -73,7 +73,7 @@ export const GET: RequestHandler = async (requestEvent: RequestEvent) => {
 
   // validate request query
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
-  const query = plainToInstance(RequestQueryDTO, searchParams, classTransformOptions);
+  const query = plainToInstance(RequestQueryDTO, searchParams);
   const queryValidationErrors = validateSync(query, classValidationOptions);
   if (queryValidationErrors.length > 0) {
     return { status: 400, body: { query: queryValidationErrors } };

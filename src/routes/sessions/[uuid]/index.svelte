@@ -8,14 +8,13 @@
   import Weather from '$components/Weather/Weather.svelte';
   import Notification from '$components/Notification/Notification.svelte';
 
-  import Session from '$widgets/Session/Session.svelte';
+  import Session from './.Session.svelte';
   import { DEVICE_CALL_QUEUE_SETUP_GUIDE } from '$lib/constants';
 
   import type { Demo } from 'src/database/entities';
   import { NOTIFICATION_TYPES } from '$components/Notification/enums';
 
   import { browser } from '$app/env';
-  import { onMount } from 'svelte';
 
   export let demo: Demo;
   export let role: string;
@@ -31,7 +30,7 @@
 </script>
 
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
-<section id="hero" class="hero is-fullheight has-text-white is-dark">
+<section id="hero" class="hero is-fullHeight has-text-white is-dark">
   <!-- hero-head start -->
   <div id="head-widgets" class="hero-head">
     <nav class="navbar is-translucent-black">
@@ -40,7 +39,7 @@
           <div id="brand" class="column is-7 is-flex is-align-self-center">
             <Brand title={demo.brandLogo} />
           </div>
-          {#if demo.weatherCityId !== null}
+          {#if demo.displayWeather}
             <div id="weather" class="column is-5 is-align-self-center">
               <Weather cityId={demo.weatherCityId} units={demo.weatherUnits} {getWeatherResponse}>
                 <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />

@@ -17,7 +17,7 @@ export const GET = async (requestEvent: RequestEvent) => {
 
   const grantType = 'authorization_code';
   const code = requestEvent.url.searchParams.get('code');
-  const redirectUri = (requestEvent.url.origin || env.PUBLIC_TUNNEL) + requestEvent.url.pathname;
+  const redirectUri = env.ORIGIN + requestEvent.url.pathname;
   const state = requestEvent.url.searchParams.get('state');
 
   if (state !== requestEvent.locals.session?.uuid) {
@@ -73,7 +73,10 @@ export const GET = async (requestEvent: RequestEvent) => {
 
                 return {
                   status: 302,
-                  headers: { 'Location': '/demos', 'Set-Cookie': sessionCookie }
+                  headers: {
+                    'Location': `${env.ORIGIN}/demos`,
+                    'Set-Cookie': sessionCookie
+                  }
                 };
               })
             : { status: 403 }
