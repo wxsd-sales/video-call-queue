@@ -11,6 +11,8 @@ node_modules
 *.md
 *.txt
 *.avif
+.nvmrc
+Dockerfile
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
