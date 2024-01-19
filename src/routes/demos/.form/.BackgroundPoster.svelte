@@ -40,7 +40,7 @@
         bind:value={backgroundBrightness}
         on:input={() => ($formStore['backgroundBrightness'] = backgroundBrightness)}
       />
-      <output style="width: 3rem;" class="ml-4 is-size-4">{backgroundBrightness}</output>
+      <output style="width: 2.5rem;" class="ml-4 is-size-4">{backgroundBrightness}</output>
     </div>
     <Background
       imageLink={window.URL.createObjectURL(backgroundPoster[0])}

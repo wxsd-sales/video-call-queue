@@ -1,4 +1,4 @@
-FROM node:lts/iron AS build
+FROM node:lts-iron AS build
 
 WORKDIR /app
 
