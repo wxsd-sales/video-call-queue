@@ -5,6 +5,7 @@ import { IsUUID, validateSync } from 'class-validator';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import { User, Demo, Data } from '../../../database/entities';
 import config from '../../../../mikro-orm.config';
+import { classTransformOptions, classValidationOptions } from '../../.utils';
 
 const generateSIPCardData = (title: string, videoLink: string, extensionNumber: number, img: Data | null) =>
   title &&
@@ -23,8 +24,8 @@ export const GET = async (requestEvent: RequestEvent) => {
   }
 
   const searchParams = Object.fromEntries(requestEvent.url.searchParams);
-  const query = plainToInstance(RequestQueryDTO, { ...requestEvent.params, ...searchParams });
-  const queryValidationErrors = validateSync(query);
+  const query = plainToInstance(RequestQueryDTO, { ...requestEvent.params, ...searchParams }, classTransformOptions);
+  const queryValidationErrors = validateSync(query, classValidationOptions);
   if (queryValidationErrors.length > 0) {
     return { status: 302, headers: { Location: `/auth` } };
   }

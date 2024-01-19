@@ -12,7 +12,10 @@
   export let weatherUnits: WEATHER_RESPONSE_UNITS;
 </script>
 
-<div class="header px-2 has-text-white is-translucent-black">
+<div
+  style="height: 15%"
+  class="is-flex is-fullWidth is-justify-content-space-between is-align-items-center px-2 has-text-white is-translucent-black"
+>
   {#await toFileList(brandLogo) then brandLogo}
     <HeaderLogo {brandLogo} />
   {:catch}
@@ -20,13 +23,3 @@
   {/await}
   <HeaderWeather {displayWeather} {weatherCityId} {weatherUnits} />
 </div>
-
-<style>
-  .header {
-    display: flex;
-    height: 15%;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-  }
-</style>

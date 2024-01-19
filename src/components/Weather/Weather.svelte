@@ -33,7 +33,7 @@
   });
 </script>
 
-<section>
+<section class="weather-container">
   {#await weatherResponse then value}
     <div class="level is-mobile mb-3">
       {#if dataSource}

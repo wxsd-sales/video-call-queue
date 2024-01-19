@@ -4,6 +4,7 @@
   import { goto } from '$app/navigation';
   import reactiveURL from '$lib/shared/reactive-url';
   import loading from '$lib/static/gif/loading.gif';
+  import { jsonRequest } from '$lib/shared/json-request';
   import { formIsChangedStore, showErrorModalStore, showDraftModal, userIdStore, targetDemoId } from '$lib/store';
   import copy from 'copy-to-clipboard';
 
@@ -16,14 +17,17 @@
   export let brandLogo: Data;
   export let uuid: string;
   export let removeDemoCard: (demoId: string) => Array<Demo>;
+
+  const httpApiRequest = jsonRequest(`/api/users/${$userIdStore}/demos/${uuid}`);
+
   // export let switchDemoCard: () => void;
 
   let isNew = name == '+ New Demo +';
   let isSelected = isNew;
   let copyIsLoading = false;
-  let copied = false;
-  let editMode = false;
-  let touchedMode = false;
+  let isCopied = false;
+  let isEditing = false;
+  let isTouched = false;
   let showModal = false;
   let title = name;
   let demoCardRef: Element;
@@ -41,9 +45,7 @@
   };
 
   const onDelete = async () => {
-    const response = await fetch(`/api/users/${$userIdStore}/demos/${uuid}`, {
-      method: 'DELETE'
-    });
+    const response = await httpApiRequest.delete();
 
     if (response.status == 500) {
       $showErrorModalStore = true;
@@ -54,11 +56,8 @@
   };
 
   const onUpdate = async () => {
-    const response = await fetch(`/api/users/${$userIdStore}/demos/${uuid}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ name })
-    });
-    editMode = false;
+    const response = await httpApiRequest.patch('', {}, { name });
+    isEditing = false;
 
     if (response.status === 500) {
       $showErrorModalStore = true;
@@ -69,7 +68,7 @@
 
   const handleKeydown = async (e) => {
     if (e.key === 'Enter') await onUpdate();
-    else if (e.key === 'Escape') editMode = false;
+    else if (e.key === 'Escape') isEditing = false;
   };
 
   const url = browser && `${window.location.protocol}//${window.location.host}/sessions`;
@@ -100,7 +99,7 @@
             </div>
           {:else}
             <div class="mb-2">
-              {#if editMode}
+              {#if isEditing}
                 <div class="is-flex ">
                   <input
                     class="input is-small mr-2"
@@ -108,7 +107,7 @@
                     placeholder={name}
                     bind:value={name}
                     on:click={(e) => e.stopPropagation()}
-                    on:input={() => (touchedMode = true)}
+                    on:input={() => (isTouched = true)}
                     on:keydown={handleKeydown}
                   />
                   <button on:click={onUpdate} class="button is-small mr-1">
@@ -119,7 +118,7 @@
                   <button
                     class="button is-small"
                     on:click={() => {
-                      editMode = false;
+                      isEditing = false;
                     }}
                   >
                     <span class="icon is-small">
@@ -130,7 +129,7 @@
               {:else}
                 <div class="is-flex is-justify-content-space-between">
                   <p class="mb-0 subtitle is-size-5"><strong>{title}</strong></p>
-                  <span class="icon has-text-grey" on:click={() => (editMode = true)}>
+                  <span class="icon has-text-grey" on:click={() => (isEditing = true)}>
                     <i class="mdi  mdi-pencil" />
                   </span>
                 </div>
@@ -154,15 +153,15 @@
             <button
               class="button level-item is-white mr-1"
               class:is-light={isSelected || isNew}
-              class:is-loading={copyIsLoading && !copied}
+              class:is-loading={copyIsLoading && !isCopied}
               disabled={isNew}
               on:click={() => {
                 copyIsLoading = true;
                 setTimeout(() => {
-                  copied = true;
+                  isCopied = true;
 
                   setTimeout(() => {
-                    copied = false;
+                    isCopied = false;
                     copyIsLoading = false;
                     copy(`${url}/${uuid}`);
                   }, 500);
@@ -170,7 +169,11 @@
               }}
             >
               <span class="icon zoom is-medium has-text-info "
-                ><i class="mdi mdi-24px " class:mdi-content-copy={!copyIsLoading} class:mdi-check-bold={copied} /></span
+                ><i
+                  class="mdi mdi-24px "
+                  class:mdi-content-copy={!copyIsLoading}
+                  class:mdi-check-bold={isCopied}
+                /></span
               >
             </button>
             <button

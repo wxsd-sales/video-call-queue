@@ -103,7 +103,7 @@
 
     <div class="demos">
       {#if !demos.length}
-        <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
+        <p class="is-fullHeight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
       {/if}
       {#each demos as { name, brandLogo, uuid } (uuid)}
         <DemoCard {name} {brandLogo} {uuid} {removeDemoCard} />

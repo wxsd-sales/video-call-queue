@@ -7,10 +7,29 @@
 
   export let SIPQueues: Array<any>;
 
+  const onQueueUpdate = async (newSIPQueues) => {
+    for (let i = 0; i < SIPQueues.length; i++) {
+      $formStore[`extensionNumber${i + 1}`] = null;
+      $formStore[`videoLink${i + 1}`] = null;
+      $formStore[`sipTitle${i + 1}`] = null;
+      $formStore[`sipImage${i + 1}`] = null;
+    }
+
+    SIPQueues = newSIPQueues;
+    for (let index = 0; index < SIPQueues.length; index++) {
+      $formStore[`extensionNumber${index + 1}`] = SIPQueues[index].extensionNumber;
+      $formStore[`videoLink${index + 1}`] = SIPQueues[index].videoLink;
+      $formStore[`sipTitle${index + 1}`] = SIPQueues[index].sipTitle;
+      $formStore[`sipImage${index + 1}`] =
+        SIPQueues[index].sipImage instanceof File
+          ? SIPQueues[index].sipImage
+          : (await toFileList(SIPQueues[index].sipImage))[0];
+    }
+  };
   let showModal = false;
 </script>
 
-<div class="columns formBody">
+<div style="z-index: 2" class="columns is-fullWidth is-flex is-align-items-center is-justify-content-space-evenly">
   {#each SIPQueues as queue, index}
     <PreviewCard
       {queue}
@@ -31,33 +50,7 @@
         payload: { newSIPQueues }
       }
     }) => {
-      for (let i = 0; i < SIPQueues.length; i++) {
-        $formStore[`extensionNumber${i + 1}`] = null;
-        $formStore[`videoLink${i + 1}`] = null;
-        $formStore[`sipTitle${i + 1}`] = null;
-        $formStore[`sipImage${i + 1}`] = null;
-      }
-
-      SIPQueues = newSIPQueues;
-      for (let index = 0; index < SIPQueues.length; index++) {
-        $formStore[`extensionNumber${index + 1}`] = SIPQueues[index].extensionNumber;
-        $formStore[`videoLink${index + 1}`] = SIPQueues[index].videoLink;
-        $formStore[`sipTitle${index + 1}`] = SIPQueues[index].sipTitle;
-        $formStore[`sipImage${index + 1}`] =
-          SIPQueues[index].sipImage instanceof File
-            ? SIPQueues[index].sipImage
-            : (await toFileList(SIPQueues[index].sipImage))[0];
-      }
+      onQueueUpdate(newSIPQueues);
     }}
   />
 {/key}
-
-<style>
-  .formBody {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
-    z-index: 2;
-  }
-</style>

@@ -30,7 +30,7 @@
 <div class="headerLogo">
   {#if brandLogo?.[0]}
     <div
-      class="logoButtons is-fullheight"
+      class="logoButtons is-fullHeight"
       on:mouseenter={() => (displayDeleteButton = true)}
       on:mouseleave={() => (displayDeleteButton = false)}
     >

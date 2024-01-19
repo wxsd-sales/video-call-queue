@@ -1,6 +1,6 @@
 import { DEFAULT_SIP_CONFIG } from '$lib/constants';
 
-export const toBase64 = ({ bits, name, lastModified, type }: Data) => ({
+export const createImageObj = ({ bits, name, lastModified, type }: Data) => ({
   bits: 'data:' + type + ';base64,' + bits.toString('base64'),
   name,
   lastModified,
@@ -14,7 +14,7 @@ const createSIPObject = (sipTitle: string, extensionNumber: number, videoLink: s
     extensionNumber,
     videoLink,
     sipTitle,
-    sipImage: sipImage ? toBase64(sipImage) : DEFAULT_SIP_CONFIG.sipImage
+    sipImage: sipImage ? createImageObj(sipImage) : DEFAULT_SIP_CONFIG.sipImage
   };
 
 const generateSIPQueues = (response: any) => {
@@ -38,9 +38,9 @@ const generateSIPQueues = (response: any) => {
 export const generateDemo = (response: any) => {
   return {
     name: response.name,
-    backgroundPoster: toBase64(response.backgroundPoster),
+    backgroundPoster: createImageObj(response.backgroundPoster),
     backgroundBrightness: response.backgroundBrightness,
-    brandLogo: toBase64(response.brandLogo),
+    brandLogo: createImageObj(response.brandLogo),
     weatherCityId: response.weatherCityId,
     weatherUnits: response.weatherUnits || 'imperial',
     SIPQueues: generateSIPQueues(response),

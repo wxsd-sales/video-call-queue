@@ -31,15 +31,16 @@
 
 <div class="content">
   {#if backgroundPoster?.[0]}
-    <div class="p-2 m-2 is-translucent-black slider is-hidden-mobile">
+    <div class="p-2 m-2 is-translucent-black sliderWrapper is-hidden-mobile">
       <input
+        class="slider is-fullwidth is-large"
         type="range"
         min="0"
         max="100"
         bind:value={backgroundBrightness}
         on:input={() => ($formStore['backgroundBrightness'] = backgroundBrightness)}
       />
-      <p style="width: 3rem" class="ml-4 has-text-white is-size-3">{backgroundBrightness}</p>
+      <output style="width: 3rem;" class="ml-4 is-size-4">{backgroundBrightness}</output>
     </div>
     <Background
       imageLink={window.URL.createObjectURL(backgroundPoster[0])}
@@ -155,71 +156,11 @@
     top: 0;
   }
 
-  .slider {
+  .sliderWrapper {
     z-index: 2;
     display: flex;
     position: absolute;
     bottom: 0;
     border-radius: 0.5rem;
-  }
-
-  /*********** Baseline, reset styles ***********/
-  input[type='range'] {
-    -webkit-appearance: none;
-    appearance: none;
-    background: transparent;
-    cursor: pointer;
-    width: 10rem;
-  }
-
-  /* Removes default focus */
-  input[type='range']:focus {
-    outline: none;
-  }
-
-  /******** Chrome, Safari, Opera and Edge Chromium styles ********/
-  /* slider track */
-  input[type='range']::-webkit-slider-runnable-track {
-    background-color: #e6e6e6;
-    border-radius: 0.5rem;
-    height: 0.5rem;
-  }
-
-  /* slider thumb */
-  input[type='range']::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    margin-top: -8px; /* Centers thumb on the track */
-    background-color: #828282;
-    border-radius: 0.5rem;
-    height: 1.5rem;
-    width: 0.5rem;
-  }
-
-  input[type='range']:focus::-webkit-slider-thumb {
-    outline: 3px solid #828282;
-    outline-offset: 0.125rem;
-  }
-
-  /*********** Firefox styles ***********/
-  /* slider track */
-  input[type='range']::-moz-range-track {
-    background-color: #e6e6e6;
-    border-radius: 0.5rem;
-    height: 0.5rem;
-  }
-
-  /* slider thumb */
-  input[type='range']::-moz-range-thumb {
-    background-color: #828282;
-    border: none; /*Removes extra border that FF applies*/
-    border-radius: 0.5rem;
-    height: 1.5rem;
-    width: 0.5rem;
-  }
-
-  input[type='range']:focus::-moz-range-thumb {
-    outline: 3px solid #828282;
-    outline-offset: 0.125rem;
   }
 </style>
