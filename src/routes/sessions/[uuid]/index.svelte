@@ -30,7 +30,7 @@
 </script>
 
 <Background imageLink={demo.backgroundPoster} filter="brightness({demo.backgroundBrightness}%)" />
-<section id="hero" class="hero is-fullHeight has-text-white is-dark">
+<section id="hero" class="hero is-fullheight has-text-white is-dark">
   <!-- hero-head start -->
   <div id="head-widgets" class="hero-head">
     <nav class="navbar is-translucent-black">
