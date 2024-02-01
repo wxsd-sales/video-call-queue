@@ -6,7 +6,7 @@
   export let backgroundBrightness: number = 55;
   export let backgroundPoster: FileList | null = null;
 
-  const acceptedFileTypes: string = '.png, .svg, .gif, .webp, .avif, .apng';
+  const acceptedFileTypes: string = '.png, .svg, .gif, .webp, .avif, .apng, .jpeg, .jpg';
   const maxFileSize: number = 700000;
 
   let hideDeleteButton = true;

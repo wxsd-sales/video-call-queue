@@ -53,20 +53,28 @@ const config = {
 **********************************************************/
 
 // Subscribe to Events & Status changes
+xapi.Status.Call['*'].ghost.on(hideCommercial);
 xapi.Status.SystemUnit.State.NumberOfActiveCalls.on(processCallCount);
-xapi.Status.Call.RemoteNumber.on(processRemoteNumber);
 xapi.Status.UserInterface.WebView.on(processWebViews);
+xapi.Status.Call.RemoteNumber.on(processRemoteNumber);
 
-
-// Initially check the number of calls to set the UI config
-xapi.Status.SystemUnit.State.NumberOfActiveCalls.get()
-.then(r => processCallCount(r))
+function processRemoteNumber(event){
+  console.log(`Remote Number[${ event }]`)
+  // Check if a monitoring number is present
+  const match = config.queues.find(queue => event.startsWith(queue.number))
+  // Ignore calls with not matched number
+  if(!match) {
+    console.log('No number matched');
+    hideCommercial();
+    return;
+  }
+  showCommercial(match)
+}
 
 async function processWebViews(event) {
   if (!event.hasOwnProperty('URL')) return;
   const url = event.URL;
   const id = event.id;
-
   const sipURI = url.split('#')[Number('1')]
 
   if(sipURI) xapi.Command.Dial({Number: sipURI})
@@ -80,19 +88,6 @@ async function processCallCount(event) {
   } else {
     setUIVisibility(!config.hideInCallUI)
   }
-}
-
-function processRemoteNumber(event){
-  console.log(`Remote Number[${ event }]`)
-  // Check if a monitoring number is present
-  const match = config.queues.find(queue => event.startsWith(queue.number))
-  // Ignore calls with not matched number
-  if(!match) {
-    console.log('No number matched');
-    hideCommercial();
-    return;
-  }
-  showCommercial(match)
 }
 
 function showCommercial({title, url, mode, target }) {
