@@ -31,16 +31,21 @@ const populateTree = (users: Array<User>, url: string) => {
 };
 
 export const GET = async (requestEvent: RequestEvent) => {
-  const orm = await MikroORM.init({ ...config, ...{ entities: [User, Demo] } });
-  const em = orm.em.fork();
+  try {
+    const orm = await MikroORM.init({ ...config, ...{ entities: [User, Demo] } });
+    const em = orm.em.fork();
 
-  const users = await em.find(User, {}, { populate: ['demos'] });
-  const demos = await em.find(Demo, {});
-  const userDemosData = users.map((user) => ({ name: user.email, value: user.demos.length }));
+    const users = await em.find(User, {}, { populate: ['demos'] });
+    const demos = await em.find(Demo, {});
+    const userDemosData = users.map((user) => ({ name: user.email, value: user.demos.length }));
 
-  const treeData = populateTree(users, requestEvent.url.origin);
-  return {
-    status: 200,
-    body: { numberOfAll: [...groupByDate(demos, 'Demos'), ...groupByDate(users, 'Users')], userDemosData, treeData }
-  };
+    const treeData = populateTree(users, requestEvent.url.origin);
+    return {
+      status: 200,
+      body: { numberOfAll: [...groupByDate(demos, 'Demos'), ...groupByDate(users, 'Users')], userDemosData, treeData }
+    };
+  } catch (e) {
+    console.error(e);
+    return { status: 500 };
+  }
 };

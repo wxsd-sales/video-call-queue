@@ -45,33 +45,41 @@ export const GET = async (requestEvent: RequestEvent) => {
   const db = requestEvent.locals.db;
   const session = requestEvent.locals.session;
 
-  return demoId != 'new'
-    ? await db
-        ?.findOneOrFail(
-          Demo,
-          { uuid: demoId, user: { uuid: session?.user?.uuid } },
-          {
-            fields,
-            strategy: LoadStrategy.JOINED
-          }
-        )
-        .then((r) => {
-          return {
-            status: 200,
-            body: { ...generateDemo(r) }
-          };
-        })
-        .catch({
+  try {
+    return demoId != 'new'
+      ? await db
+          ?.findOneOrFail(
+            Demo,
+            { uuid: demoId, user: { uuid: session?.user?.uuid } },
+            {
+              fields,
+              strategy: LoadStrategy.JOINED
+            }
+          )
+          .then((r) => {
+            return {
+              status: 200,
+              body: { ...generateDemo(r) }
+            };
+          })
+          .catch({
+            status: 500,
+            body: { backgroundBrightness: 55, units: 'imperial', cityId: 4887398, SIPQueues: [DEFAULT_SIP_CONFIG] }
+          })
+      : {
           status: 200,
-          body: { backgroundBrightness: 55, units: 'imperial', cityId: 4887398, SIPQueues: [DEFAULT_SIP_CONFIG] }
-        })
-    : {
-        status: 200,
-        body: {
-          backgroundBrightness: 55,
-          units: 'imperial',
-          cityId: 4887398,
-          SIPQueues: [DEFAULT_SIP_CONFIG]
-        }
-      };
+          body: {
+            backgroundBrightness: 55,
+            units: 'imperial',
+            cityId: 4887398,
+            SIPQueues: [DEFAULT_SIP_CONFIG]
+          }
+        };
+  } catch (e) {
+    console.error(e);
+    return {
+      status: 500,
+      body: { backgroundBrightness: 55, units: 'imperial', cityId: 4887398, SIPQueues: [DEFAULT_SIP_CONFIG] }
+    };
+  }
 };

@@ -49,8 +49,8 @@ export const GET = async (requestEvent: RequestEvent) => {
         .then((s: JSONObject) => addExpiresAts(s, Date.parse(r.headers.get('date') ?? new Date().toUTCString())))
     ) as Promise<TokenResponse>;
 
-  return await tokenResponse
-    .then((r: TokenResponse) =>
+  try {
+    return await tokenResponse.then((r: TokenResponse) =>
       webexHttpPeopleResource(r.accessToken)
         .getMyOwnDetails()
         .then((s: Response) => s.json() as Promise<PersonResponse>)
@@ -81,9 +81,9 @@ export const GET = async (requestEvent: RequestEvent) => {
               })
             : { status: 403 }
         )
-    )
-    .catch((e) => {
-      console.log(e);
-      return { status: 403 };
-    });
+    );
+  } catch (e) {
+    console.log(e);
+    return { status: 403 };
+  }
 };

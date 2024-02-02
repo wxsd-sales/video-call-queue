@@ -45,24 +45,32 @@
   };
 
   const onDelete = async () => {
-    const response = await httpApiRequest.delete();
+    try {
+      const response = await httpApiRequest.delete();
 
-    if (response.status == 500) {
-      $showErrorModalStore = true;
-    } else {
-      removeDemoCard(uuid);
-      goto('/demos');
+      if (response.status == 500) {
+        $showErrorModalStore = true;
+      } else {
+        removeDemoCard(uuid);
+        goto('/demos');
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const onUpdate = async () => {
-    const response = await httpApiRequest.patch('', {}, { name });
-    isEditing = false;
+    try {
+      const response = await httpApiRequest.patch('', {}, { name });
+      isEditing = false;
 
-    if (response.status === 500) {
-      $showErrorModalStore = true;
-    } else {
-      title = name;
+      if (response.status === 500) {
+        $showErrorModalStore = true;
+      } else {
+        title = name;
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 

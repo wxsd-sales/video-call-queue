@@ -37,49 +37,54 @@
   let width: number, height: number, parentWidth: number, offsetX: number, saved: boolean, saveIsLoading: boolean;
 
   const onSubmit = async (e) => {
-    const formData = new FormData();
-    const isNew = $page.params.uuid === 'new';
-    const sipConfigIsNotEmpty = !!$formStore.extensionNumber1;
+    try {
+      const formData = new FormData();
+      const isNew = $page.params.uuid === 'new';
+      const sipConfigIsNotEmpty = !!$formStore.extensionNumber1;
 
-    if (isNew) {
-      if (!sipConfigIsNotEmpty) {
-        $formStore = {
-          ...$formStore,
-          extensionNumber1: DEFAULT_SIP_CONFIG.extensionNumber,
-          videoLink1: DEFAULT_SIP_CONFIG.videoLink,
-          sipTitle1: DEFAULT_SIP_CONFIG.sipTitle,
-          sipImage1: (await toFileList(DEFAULT_SIP_CONFIG.sipImage))[0]
-        };
+      if (isNew) {
+        if (!sipConfigIsNotEmpty) {
+          $formStore = {
+            ...$formStore,
+            extensionNumber1: DEFAULT_SIP_CONFIG.extensionNumber,
+            videoLink1: DEFAULT_SIP_CONFIG.videoLink,
+            sipTitle1: DEFAULT_SIP_CONFIG.sipTitle,
+            sipImage1: (await toFileList(DEFAULT_SIP_CONFIG.sipImage))[0]
+          };
+        }
+        $formStore.name = 'New Demo';
+        $formStore.backgroundBrightness = '55';
       }
-      $formStore.name = 'New Demo';
-      $formStore.backgroundBrightness = '55';
-    }
 
-    Object.keys($formStore).forEach((key) => {
-      const value = $formStore[key] instanceof File ? $formStore[key] : JSON.stringify($formStore[key]);
-      formData.append(key, value);
-    });
+      Object.keys($formStore).forEach((key) => {
+        const value = $formStore[key] instanceof File ? $formStore[key] : JSON.stringify($formStore[key]);
+        formData.append(key, value);
+      });
 
-    const response = await fetch(`/api/users/${$userIdStore}/demos/${$page.params.uuid}`, {
-      method: isNew ? 'POST' : 'PUT',
-      body: formData
-    });
+      const response = await fetch(`/api/users/${$userIdStore}/demos/${$page.params.uuid}`, {
+        method: isNew ? 'POST' : 'PUT',
+        body: formData
+      });
 
-    if (response.status === 500) {
+      if (response.status === 500) {
+        $showErrorModalStore = true;
+        goto('/demos');
+      } else {
+        $selectedDemoCardStore = await response.json();
+        $showDraftModal = false;
+        saveIsLoading = false;
+        saved = true;
+
+        setTimeout(() => {
+          saved = false;
+          $formIsChangedStore = false;
+        }, 1000);
+
+        goto($page.params.uuid === 'new' ? '/demos' : `/demos/${$selectedDemoCardStore.uuid}`);
+      }
+    } catch (e) {
       $showErrorModalStore = true;
-      goto('/demos');
-    } else {
-      $selectedDemoCardStore = await response.json();
-      $showDraftModal = false;
-      saveIsLoading = false;
-      saved = true;
-
-      setTimeout(() => {
-        saved = false;
-        $formIsChangedStore = false;
-      }, 1000);
-
-      goto($page.params.uuid === 'new' ? '/demos' : `/demos/${$selectedDemoCardStore.uuid}`);
+      console.error(e);
     }
   };
 

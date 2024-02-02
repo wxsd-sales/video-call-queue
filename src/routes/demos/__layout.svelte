@@ -2,14 +2,24 @@
   import type { Load } from '@sveltejs/kit';
 
   export const load: Load = async ({ session, fetch }) => {
-    let { demos } = await (await fetch(`/api/users/${session.userId}/demos`)).json();
+    try {
+      let { demos } = await (await fetch(`/api/users/${session.userId}/demos`)).json();
 
-    return {
-      props: {
-        userId: session.userId,
-        demos: demos.reverse()
-      }
-    };
+      return {
+        props: {
+          userId: session.userId,
+          demos: demos.reverse()
+        }
+      };
+    } catch (e) {
+      console.error(e);
+      return {
+        props: {
+          userId: session.userId,
+          demos: []
+        }
+      };
+    }
   };
 </script>
 

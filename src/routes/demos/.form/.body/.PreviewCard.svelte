@@ -16,6 +16,7 @@
   class:zoom={displayEditButton}
   on:click={() => dispatch('showModal')}
   class="column is-2-tablet is-2-desktop is-2-mobile preview is-clickable is-translucent-black is-borderless pt-4 pb-2 px-2"
+  type="button"
 >
   <div class="is-justify-content-center">
     <figure class="image is-2by1 mb-2">
