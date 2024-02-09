@@ -1,10 +1,11 @@
 <script lang="ts">
+  import tooltip from '$lib/actions/tooltip';
   import { formStore } from '$lib/store';
   export let displayFootnote: boolean;
 </script>
 
 <div class="is-flex mr-2 mb-1 formFooter">
-  <div class="is-flex is-clickable footnote is-align-items-center mr-1">
+  <div class="is-flex is-clickable footnote is-align-items-center mt-0 mr-1" use:tooltip={'Update footnote visibility'}>
     <span class="icon is-small">
       <i class="mdi mdi-24px mdi-eye-{!displayFootnote ? '' : 'off-'}outline" />
       <input

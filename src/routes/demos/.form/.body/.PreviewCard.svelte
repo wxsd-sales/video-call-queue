@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Card from '$components/Card/Card.svelte';
+  import tooltip from '$lib/actions/tooltip';
   import { createEventDispatcher } from 'svelte';
 
   const dispatch = createEventDispatcher();
@@ -15,10 +15,15 @@
   on:mouseleave={() => (displayEditButton = false)}
   class:zoom={displayEditButton}
   on:click={() => dispatch('showModal')}
-  class="column is-2-tablet is-2-desktop is-2-mobile preview is-clickable is-translucent-black is-borderless pt-4 pb-2 px-2"
+  class="column is-2-tablet is-2-desktop is-2-mobile preview is-clickable is-translucent-black is-borderless p-2"
   type="button"
 >
-  <div class="is-justify-content-center">
+  <div class="edit mr-1" class:is-hidden={!displayEditButton} use:tooltip={'Edit call button'}>
+    <span class="icon has-text-light">
+      <i class="mdi mdi-18px mdi-pencil" />
+    </span>
+  </div>
+  <div class="is-justify-content-center mt-1">
     <figure class="image is-2by1 mb-2">
       <img src={queue.sipImage.bits} alt="support-figure" class="is-fullwidth" />
     </figure>
@@ -29,6 +34,10 @@
 </button>
 
 <style>
+  .edit {
+    position: absolute;
+    right: 0;
+  }
   .preview button {
     white-space: nowrap;
     display: block;

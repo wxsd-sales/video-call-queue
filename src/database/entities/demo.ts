@@ -51,8 +51,8 @@ export class Demo extends BaseEntity {
   @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
   sipImage1!: Data | null;
 
-  @Property({ type: types.integer, nullable: true })
-  extensionNumber1: number;
+  @Property({ type: types.string, nullable: true })
+  extensionNumber1: string;
 
   @Property({ type: types.string, nullable: true })
   videoLink1: string;
@@ -63,8 +63,8 @@ export class Demo extends BaseEntity {
   @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
   sipImage2!: Data | null;
 
-  @Property({ type: types.integer, nullable: true })
-  extensionNumber2: number;
+  @Property({ type: types.string, nullable: true })
+  extensionNumber2: string;
 
   @Property({ type: types.string, nullable: true })
   videoLink2: string;
@@ -75,8 +75,8 @@ export class Demo extends BaseEntity {
   @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
   sipImage3!: Data | null;
 
-  @Property({ type: types.integer, nullable: true })
-  extensionNumber3: number;
+  @Property({ type: types.string, nullable: true })
+  extensionNumber3: string;
 
   @Property({ type: types.string, nullable: true })
   videoLink3: string;
@@ -87,8 +87,8 @@ export class Demo extends BaseEntity {
   @ManyToOne({ entity: () => Data, onDelete: 'cascade', nullable: true })
   sipImage4!: Data | null;
 
-  @Property({ type: types.integer, nullable: true })
-  extensionNumber4: number;
+  @Property({ type: types.string, nullable: true })
+  extensionNumber4: string;
 
   @Property({ type: types.string, nullable: true })
   videoLink4: string;
@@ -115,19 +115,19 @@ export class Demo extends BaseEntity {
     isSIP: boolean;
     sipTitle1: string;
     sipImage1: Data;
-    extensionNumber1: number;
+    extensionNumber1: string;
     videoLink1: string;
     sipTitle2: string;
     sipImage2: Data;
-    extensionNumber2: number;
+    extensionNumber2: string;
     videoLink2: string;
     sipTitle3: string;
     sipImage3: Data;
-    extensionNumber3: number;
+    extensionNumber3: string;
     videoLink3: string;
     sipTitle4: string;
     sipImage4: Data;
-    extensionNumber4: number;
+    extensionNumber4: string;
     videoLink4: string;
     displayFootnote: boolean;
     displayWeather: boolean;

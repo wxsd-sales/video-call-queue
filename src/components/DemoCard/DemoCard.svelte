@@ -5,22 +5,32 @@
   import reactiveURL from '$lib/shared/reactive-url';
   import loading from '$lib/static/gif/loading.gif';
   import { jsonRequest } from '$lib/shared/json-request';
-  import { formIsChangedStore, showErrorModalStore, showDraftModal, userIdStore, targetDemoId } from '$lib/store';
+  import {
+    formIsChangedStore,
+    showErrorModalStore,
+    showDraftModal,
+    userIdStore,
+    targetDemoId,
+    formStore,
+    demoIsLoading
+  } from '$lib/store';
   import copy from 'copy-to-clipboard';
 
   import type { Data } from '../../database/entities/data';
   import type { Demo } from '../../database/entities/demo';
   import Modal from '$components/Modal/Modal.svelte';
+  import tooltip from '$lib/actions/tooltip';
+  import CodeSnippet from '$components/CodeSnippet/CodeSnippet.svelte';
+  import { generateMacro } from '$lib/webex/macro/WxCQ';
   import { onMount } from 'svelte';
 
   export let name: string;
   export let brandLogo: Data;
   export let uuid: string;
+  export let SIPQueues: Array<any>;
   export let removeDemoCard: (demoId: string) => Array<Demo>;
 
   const httpApiRequest = jsonRequest(`/api/users/${$userIdStore}/demos/${uuid}`);
-
-  // export let switchDemoCard: () => void;
 
   let isNew = name == '+ New Demo +';
   let isSelected = isNew;
@@ -29,17 +39,23 @@
   let isEditing = false;
   let isTouched = false;
   let showModal = false;
+  let showMacroModal = false;
+  let viewIsLoading = false;
+  let downloadIsLoading = false;
   let title = name;
+  let codeSnippet = '';
   let demoCardRef: Element;
 
-  const switchDemoCard = (e) => {
+  const switchDemoCard = async (e) => {
     // The utility buttons <I> should not execute the following logic
     if (e.target.tagName != 'I' && !isSelected) {
       $targetDemoId = uuid;
       if ($formIsChangedStore) {
         $showDraftModal = true;
       } else {
-        goto(`/demos/${uuid}`);
+        $demoIsLoading = true;
+        await goto(`/demos/${uuid}`);
+        $demoIsLoading = false;
       }
     }
   };
@@ -77,6 +93,28 @@
   const handleKeydown = async (e) => {
     if (e.key === 'Enter') await onUpdate();
     else if (e.key === 'Escape') isEditing = false;
+  };
+
+  const download = (filename: string, text: string) => {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  };
+
+  const clickToDownload = (code) => {
+    const filename = 'VCQMacro.js';
+    downloadIsLoading = true;
+    setTimeout(async () => {
+      downloadIsLoading = false;
+      download(filename, code);
+    }, 1000);
   };
 
   const url = browser && `${window.location.protocol}//${window.location.host}/sessions`;
@@ -137,7 +175,7 @@
               {:else}
                 <div class="is-flex is-justify-content-space-between">
                   <p class="mb-0 subtitle is-size-5"><strong>{title}</strong></p>
-                  <span class="icon has-text-grey" on:click={() => (isEditing = true)}>
+                  <span class="icon has-text-grey" on:click={() => (isEditing = true)} use:tooltip={'Rename Demo'}>
                     <i class="mdi  mdi-pencil" />
                   </span>
                 </div>
@@ -149,49 +187,129 @@
         <nav class="level is-mobile">
           <div class="level-left" />
           <div class="level-right">
-            <a
-              class="button is-white mr-1"
-              href={`${url}/${uuid}`}
-              target="_blank"
-              class:is-light={isSelected || isNew}
-              class:is-disabled={isNew}
-            >
-              <span class="icon zoom is-medium has-text-success"><i class="mdi mdi-24px mdi-open-in-new" /></span>
-            </a>
-            <button
-              class="button level-item is-white mr-1"
-              class:is-light={isSelected || isNew}
-              class:is-loading={copyIsLoading && !isCopied}
-              disabled={isNew}
-              on:click={() => {
-                copyIsLoading = true;
-                setTimeout(() => {
-                  isCopied = true;
+            <div use:tooltip={'Download macro'}>
+              <p class="control">
+                <button
+                  class:is-loading={downloadIsLoading}
+                  class:is-light={isSelected || isNew}
+                  class:is-disabled={isNew}
+                  type="button"
+                  class="button level-item is-white mr-1"
+                  on:click={() => {
+                    downloadIsLoading = true;
+                    const sipConfigIsNotEmpty = !!$formStore.extensionNumber1;
+                    let queues = SIPQueues;
 
-                  setTimeout(() => {
-                    isCopied = false;
-                    copyIsLoading = false;
-                    copy(`${url}/${uuid}`);
-                  }, 500);
-                }, 1000);
-              }}
-            >
-              <span class="icon zoom is-medium has-text-info "
-                ><i
-                  class="mdi mdi-24px "
-                  class:mdi-content-copy={!copyIsLoading}
-                  class:mdi-check-bold={isCopied}
-                /></span
+                    if (sipConfigIsNotEmpty) {
+                      queues = [];
+                      for (let i = 1; i <= 4; i++) {
+                        if ($formStore[`extensionNumber${i}`]) {
+                          queues.push({
+                            extensionNumber: $formStore[`extensionNumber${i}`],
+                            videoLink: $formStore[`videoLink${i}`]
+                          });
+                        }
+                      }
+                    }
+                    let code = generateMacro(queues);
+                    clickToDownload(code);
+                    setTimeout(() => {
+                      downloadIsLoading = false;
+                    }, 1000);
+                  }}
+                >
+                  <span class="icon zoom is-medium has-text-link">
+                    <i class="mdi mdi-24px " class:mdi-download={!downloadIsLoading} />
+                  </span>
+                </button>
+              </p>
+            </div>
+            <div use:tooltip={'View macro'}>
+              <p class="control">
+                <button
+                  class:is-loading={viewIsLoading}
+                  class:is-light={isSelected || isNew}
+                  class:is-disabled={isNew}
+                  type="button"
+                  class="button level-item is-white mr-1"
+                  on:click={() => {
+                    viewIsLoading = true;
+                    const sipConfigIsNotEmpty = !!$formStore.extensionNumber1;
+                    let queues = SIPQueues;
+
+                    if (sipConfigIsNotEmpty) {
+                      queues = [];
+                      for (let i = 1; i <= 4; i++) {
+                        if ($formStore[`extensionNumber${i}`]) {
+                          queues.push({
+                            extensionNumber: $formStore[`extensionNumber${i}`],
+                            videoLink: $formStore[`videoLink${i}`]
+                          });
+                        }
+                      }
+                    }
+                    codeSnippet = generateMacro(queues);
+                    setTimeout(() => {
+                      viewIsLoading = false;
+                      showMacroModal = true;
+                    }, 1000);
+                  }}
+                >
+                  <span class="icon zoom is-medium has-text-warning">
+                    <i class="mdi mdi-24px " class:mdi-file-eye={!viewIsLoading} />
+                  </span>
+                </button>
+              </p>
+            </div>
+            <div use:tooltip={'Open demo in a new tab'}>
+              <a
+                class="button is-white mr-1"
+                href={`${url}/${uuid}`}
+                target="_blank"
+                class:is-light={isSelected || isNew}
+                class:is-disabled={isNew}
               >
-            </button>
-            <button
-              class="button is-white"
-              disabled={isNew}
-              class:is-light={isSelected || isNew}
-              on:click={() => (showModal = true)}
-            >
-              <span class="icon zoom is-small has-text-danger"><i class="mdi mdi-24px mdi-delete" /></span>
-            </button>
+                <span class="icon zoom is-medium has-text-success"><i class="mdi mdi-24px mdi-open-in-new" /></span>
+              </a>
+            </div>
+            <div use:tooltip={'Copy demo link'}>
+              <button
+                class="button level-item is-white mr-1"
+                class:is-light={isSelected || isNew}
+                class:is-loading={copyIsLoading && !isCopied}
+                disabled={isNew}
+                on:click={() => {
+                  copyIsLoading = true;
+                  setTimeout(() => {
+                    isCopied = true;
+
+                    setTimeout(() => {
+                      isCopied = false;
+                      copyIsLoading = false;
+                      copy(`${url}/${uuid}`);
+                    }, 500);
+                  }, 1000);
+                }}
+              >
+                <span class="icon zoom is-medium has-text-info "
+                  ><i
+                    class="mdi mdi-24px "
+                    class:mdi-content-copy={!copyIsLoading}
+                    class:mdi-check-bold={isCopied}
+                  /></span
+                >
+              </button>
+            </div>
+            <div use:tooltip={'Delete demo'}>
+              <button
+                class="button is-white"
+                disabled={isNew}
+                class:is-light={isSelected || isNew}
+                on:click={() => (showModal = true)}
+              >
+                <span class="icon zoom is-small has-text-danger"><i class="mdi mdi-24px mdi-delete" /></span>
+              </button>
+            </div>
           </div>
         </nav>
       </div>
@@ -241,7 +359,19 @@
   </div>
 </Modal>
 
+<Modal bind:showModal={showMacroModal}>
+  <div class="modal-content snippet is-translucent-black">
+    <CodeSnippet code={codeSnippet} language="javascript" filename="VCQMacro.js" />
+  </div>
+</Modal>
+
 <style>
+  .snippet {
+    height: 50rem;
+    padding: 1.5rem;
+    width: 100%;
+    border-radius: 1rem;
+  }
   .is-disabled {
     opacity: 0.5;
     cursor: not-allowed;

@@ -162,7 +162,7 @@
 </section>
 
 {#if isNavVisible}
-  <nav class="navbar is-fixed-top has-shadow" aria-label="main navigation" style="z-index: 0">
+  <nav class="navbar is-fixed-top has-shadow" aria-label="main navigation">
     <div class="navbar-brand">
       {#if email}
         <a class="navbar-item" href="/demos">
@@ -241,7 +241,7 @@
   </nav>
 {/if}
 
-<main id="app" class="is-invisible" class:mt-6={isNavVisible}>
+<main id="app" class="is-invisible" class:mt-5={isNavVisible}>
   <slot />
 </main>
 

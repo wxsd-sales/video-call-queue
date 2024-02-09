@@ -37,6 +37,7 @@ const generateSIPQueues = (response: any) => {
 
 export const generateDemo = (response: any) => {
   return {
+    uuid: response.uuid,
     name: response.name,
     backgroundPoster: createImageObj(response.backgroundPoster),
     backgroundBrightness: response.backgroundBrightness,

@@ -9,3 +9,4 @@ export const userIdStore = storage<string>(StateKey.USER_ID);
 export const showErrorModalStore = storage<boolean>(StateKey.SHOW_ERROR_MODAL);
 export const formStore = storage<any>(StateKey.FORM);
 export const targetDemoId = storage<string>(StateKey.TARGET_DEMO_ID);
+export const demoIsLoading = storage<boolean>(StateKey.DEMO_IS_LOADING);

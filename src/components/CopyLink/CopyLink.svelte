@@ -26,19 +26,10 @@
   };
 </script>
 
-<div class="columns is-multiline">
-  <div class="column is-full">
-    <label class="label is-small" class:has-text-grey={disabled} for="copy-link-input">{label}</label>
+<div class="columns is-justify-content-center">
+  <div class="has-text-weight-medium is-size-6 is-flex is-align-items-center">Demo URL</div>
+  <div class="column is-8">
     <div class="field has-addons mb-0">
-      <div class="control">
-        <a href={url} target="_blank">
-          <button {disabled} class="button is-info is-small">
-            <span class="icon">
-              <i class="mdi mdi-open-in-new" />
-            </span>
-          </button>
-        </a>
-      </div>
       <div class="control is-expanded">
         <input
           {disabled}
@@ -52,7 +43,7 @@
       <div class="control">
         <button
           {disabled}
-          class="button customButton is-success is-small"
+          class="button customButton is-small is-success"
           class:is-loading={isCopyLoading}
           on:click={() => copyUrl()}
         >
