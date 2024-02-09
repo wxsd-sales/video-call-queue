@@ -4,8 +4,11 @@ export const WEBEX_SDK_CONFIG = {
   logger: { level: 'silent' },
   meetings: { reconnection: { enabled: true } }
 };
+export const VALID_SIP =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 export const VALID_DOMAINS = ['http://call-queue.wbx.ninja', 'https://call-queue.wbx.ninja', 'http://localhost:5173'];
-export const CONTROL_HUB_URL = 'https://admin.webex.com';
+export const VCQ_QUEUE_BLOG = 'https://blog.webex.com/cloud-calling/group-call-management';
 export const DEVICE_CALL_QUEUE_VIDCAST = 'https://app.vidcast.io/share/05285d39-75a7-429e-81d0-61911a931973';
 export const DEVICE_CALL_QUEUE_SETUP_GUIDE =
   'https://cisco.sharepoint.com/:b:/s/WXSD-WebexSolutionsDevelopment/EQJu96KU411LpGw16KdT4ewBwZsAOl7NEH_Tnprt6UX4tA';

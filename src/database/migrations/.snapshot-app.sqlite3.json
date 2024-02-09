@@ -436,12 +436,12 @@
         },
         "extension_number1": {
           "name": "extension_number1",
-          "type": "integer",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "text"
         },
         "video_link1": {
           "name": "video_link1",
@@ -473,12 +473,12 @@
         },
         "extension_number2": {
           "name": "extension_number2",
-          "type": "integer",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "text"
         },
         "video_link2": {
           "name": "video_link2",
@@ -510,12 +510,12 @@
         },
         "extension_number3": {
           "name": "extension_number3",
-          "type": "integer",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "text"
         },
         "video_link3": {
           "name": "video_link3",
@@ -547,12 +547,12 @@
         },
         "extension_number4": {
           "name": "extension_number4",
-          "type": "integer",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "text"
         },
         "video_link4": {
           "name": "video_link4",

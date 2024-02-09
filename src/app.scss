@@ -34,6 +34,7 @@
 html,
 body {
   min-height: 100%;
+  z-index: 0;
 }
 
 .is-none {
@@ -64,6 +65,7 @@ body {
 }
 
 .zoom {
+  position: relative;
   transition: 0.25s ease;
 }
 
@@ -76,6 +78,24 @@ body {
   -ms-transform: scale(1.1);
   transform: scale(1.1);
   transition: 0.25s ease;
+}
+
+:global(.tooltip) {
+  white-space: nowrap;
+  position: relative;
+  padding-top: 0.35rem;
+}
+
+:global(#tooltip) {
+  position: absolute;
+  bottom: 100%;
+  right: 1rem;
+  padding: 0.2rem 0.35rem;
+  background: hsl(0, 0%, 29%);
+  color: hsl(0, 0%, 98%);
+  font-size: 0.75em;
+  border-radius: 0.25rem;
+  filter: drop-shadow(0 1px 2px hsla(0, 0%, 0%, 0.2));
 }
 
 //* {

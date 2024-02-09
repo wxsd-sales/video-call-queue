@@ -1,16 +1,16 @@
 <script lang="ts">
   export let showModal = false;
+  export let handleClickOutside = () => false;
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (showModal && e.key === 'Escape') showModal = false;
+  const clickOutside = () => {
+    const active = handleClickOutside();
+    if (!active) showModal = false;
   };
 </script>
 
 <div class="modal" class:is-active={showModal}>
-  <div class="modal-background" on:click={() => (showModal = false)} />
+  <div class="modal-background" on:click={clickOutside} />
   <section>
     <slot />
   </section>
 </div>
-
-<svelte:window on:keydown={onKeyDown} />

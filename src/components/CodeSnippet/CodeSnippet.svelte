@@ -2,6 +2,7 @@
   import Prism from 'prismjs';
   import 'prism-themes/themes/prism-coy-without-shadows.css';
   import copy from 'copy-to-clipboard';
+  import tooltip from '$lib/actions/tooltip';
 
   export let language: string;
   export let code: string;
@@ -56,27 +57,38 @@
 </script>
 
 <pre class="is-flex is-flex-direction-column " style="height: 100%; border-radius: 1rem;">
-   <div class="is-flex is-justify-content-flex-end m-0">
-      <button
-      type="button"
-      class={`button is-inverted ${isDownloaded && 'is-success'}`}
-      style="border: none; box-shadow:none; background:transparent;"
-      class:is-loading={downloadIsLoading}
-      on:click={() => clickToDownload()}>
-        <span class="icon ">
-          <i class={`mdi  mdi-24px mdi-${isDownloaded ? 'check' : 'download'}`} />
-        </span>
-      </button>
-      <button
-      type="button"
-      class={`button is-inverted ${isCopied && 'is-success'}`}
-      style="border: none; box-shadow:none; background:transparent;"
-      class:is-loading={copyIsLoading}
-      on:click={() => clickToCopy()}>
-        <span class="icon">
-          <i class={`mdi mdi-24px mdi-${isCopied ? 'check' : 'content-copy'}`} />
-        </span>
-      </button>
+   <div class="is-flex is-justify-content-space-between m-0 pb-2" style="border-bottom:0.05rem hsl(0, 0%, 48%) solid">
+    <div class="is-flex is-flex-direction-column">
+      <span class="is-flex has-text-dark is-align-items-center is-size-4">Auto-Generated Macro</span>
+      <span class="is-flex mt-2 is-size-7">This auto-generated macro must be deployed on the device</span>
+    </div>
+
+    <div class="is-flex is-flex-direction-columns">
+      <div use:tooltip={'Download macro'}>
+        <button
+          type="button"
+          class={`button is-inverted ${isDownloaded && 'is-success'}`}
+          style="border: none; box-shadow:none; background:transparent;"
+          class:is-loading={downloadIsLoading}
+          on:click={() => clickToDownload()}>
+            <span class="icon ">
+              <i class={`mdi mdi-24px mdi-${isDownloaded ? 'check' : 'download'}`} />
+            </span>
+          </button>
+      </div> 
+      <div use:tooltip={'Copy macro'}>
+        <button
+          type="button"
+          class={`button is-inverted ${isCopied && 'is-success'}`}
+          style="border: none; box-shadow:none; background:transparent;"
+          class:is-loading={copyIsLoading}
+          on:click={() => clickToCopy()}>
+          <span class="icon">
+            <i class={`mdi mdi-24px mdi-${isCopied ? 'check' : 'content-copy'}`} />
+          </span>
+        </button>
+      </div> 
+    </div>
     </div>
   <div class="code">
     {@html Prism.highlight(code, Prism.languages[language])}

@@ -4,7 +4,6 @@
   export const load: Load = async ({ session, fetch }) => {
     try {
       let { demos } = await (await fetch(`/api/users/${session.userId}/demos`)).json();
-
       return {
         props: {
           userId: session.userId,
@@ -115,8 +114,8 @@
       {#if !demos.length}
         <p class="is-fullheight is-flex is-justify-content-center is-align-items-center has-text-grey">No Demos</p>
       {/if}
-      {#each demos as { name, brandLogo, uuid } (uuid)}
-        <DemoCard {name} {brandLogo} {uuid} {removeDemoCard} />
+      {#each demos as { name, SIPQueues, brandLogo, uuid } (uuid)}
+        <DemoCard {uuid} {name} {brandLogo} {removeDemoCard} {SIPQueues} />
       {/each}
     </div>
   </div>

@@ -3,8 +3,7 @@
   import Modal from '$components/Modal/Modal.svelte';
   import { createEventDispatcher } from 'svelte';
   import { DEFAULT_SIP_CONFIG } from '$lib/constants';
-  import { formIsChangedStore, formStore } from '$lib/store';
-  import { generateMacro } from '$lib/webex/macro/WxCQ';
+  import { formIsChangedStore } from '$lib/store';
 
   const dispatch = createEventDispatcher();
 
@@ -12,47 +11,34 @@
   export let showModal = false;
   export let SIPQueues;
 
-  let code = generateMacro(SIPQueues);
+  const handleClickOutside = () => {
+    if (configIsTouched) {
+      active = true;
+      showDraftModal = true;
+    }
+
+    return active;
+  };
+
+  const saveChanges = () => {
+    dispatch('queuesUpdate', { payload: { newSIPQueues } });
+    showModal = false;
+  };
+
   let isConfigValid = true;
   let invalidConfigIndex = -1;
-  let oldSIPQueues = [...SIPQueues];
-  let downloadIsLoading = false;
-  let isDownloaded = false;
-
-  const download = (filename: string, text: string) => {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-  };
-
-  const clickToDownload = () => {
-    const filename = 'VCQMacro.js';
-    downloadIsLoading = true;
-    setTimeout(async () => {
-      downloadIsLoading = false;
-      download(filename, code);
-      isDownloaded = true;
-
-      setTimeout(() => {
-        isDownloaded = false;
-      }, 2000);
-    }, 1000);
-  };
+  let showDraftModal = false;
+  let active = false;
+  let configIsTouched = false;
+  let newSIPQueues = [...SIPQueues];
 </script>
 
-<Modal bind:showModal>
+<Modal bind:showModal {handleClickOutside}>
   <div class="modal-content is-translucent-black">
     <article class="message has-text-grey is-white">
       <div class="tabs is-boxed message-body m-0 p-0">
         <ul class="m-0">
-          {#each SIPQueues as _, i}
+          {#each newSIPQueues as _, i}
             <li class:is-active={selectedIndex === i}>
               <!-- svelte-ignore a11y-missing-attribute -->
               <a
@@ -66,7 +52,7 @@
                     : invalidConfigIndex === -1
                     ? 'has-text-link'
                     : 'has-text-grey-light'}"
-                  >SIP Config
+                  >Call Button
                 </span>
                 <span class="icon is-small"
                   ><i
@@ -83,8 +69,9 @@
                   class="icon is-small mb-5"
                   on:click={() => {
                     $formIsChangedStore = true;
+                    configIsTouched = true;
                     if (selectedIndex == i && invalidConfigIndex == -1) {
-                      SIPQueues = [...SIPQueues.slice(0, i), ...SIPQueues.slice(i + 1)];
+                      newSIPQueues = [...newSIPQueues.slice(0, i), ...newSIPQueues.slice(i + 1)];
                       selectedIndex = selectedIndex - 1;
                     }
                   }}
@@ -103,15 +90,18 @@
           {/each}
           <span
             class="icon is-medium mx-2 is-clickable"
-            class:is-unclickable={SIPQueues.length == 4 || invalidConfigIndex != -1}
+            class:is-unclickable={newSIPQueues.length == 4 || invalidConfigIndex != -1}
             on:click={async () => {
               $formIsChangedStore = true;
-              SIPQueues =
-                SIPQueues.length != 4 && invalidConfigIndex == -1 ? [...SIPQueues, DEFAULT_SIP_CONFIG] : SIPQueues;
-              selectedIndex = SIPQueues.length - 1;
+              configIsTouched = true;
+              SIPQueues = newSIPQueues =
+                newSIPQueues.length != 4 && invalidConfigIndex == -1
+                  ? [...newSIPQueues, DEFAULT_SIP_CONFIG]
+                  : newSIPQueues;
+              selectedIndex = newSIPQueues.length - 1;
             }}
             ><i
-              class="mdi {SIPQueues.length !== 4 && invalidConfigIndex == -1
+              class="mdi {newSIPQueues.length !== 4 && invalidConfigIndex == -1
                 ? 'has-text-success'
                 : 'has-text-grey'} mdi-plus-thick "
               aria-hidden="true"
@@ -129,10 +119,11 @@
           on:queueIsValid={({ detail: { formIsValid, index } }) => {
             isConfigValid = formIsValid;
             invalidConfigIndex = isConfigValid ? -1 : index;
+            configIsTouched = true;
           }}
           on:sipQs={({ detail: { payload } }) => {
             const { index, videoLink, sipTitle, extensionNumber, sipImage } = payload;
-            SIPQueues[index] = {
+            newSIPQueues[index] = {
               videoLink,
               sipTitle,
               extensionNumber,
@@ -140,17 +131,14 @@
             };
           }}
         />
+
         <div class="level level-right mt-2 mx-4">
           <div class="field is-grouped">
             <p class="control">
               <button
-                on:click={async () => {
-                  const newSIPQueues = [...SIPQueues];
-                  dispatch('queuesUpdate', { payload: { newSIPQueues } });
-                  showModal = false;
-                }}
+                on:click={saveChanges}
                 disabled={!isConfigValid}
-                class="button is-success is-small is-outlined"
+                class="button is-success is-small "
                 type="button"
               >
                 <span class="icon">
@@ -162,33 +150,10 @@
 
             <p class="control">
               <button
-                disabled={!isConfigValid}
-                class:is-loading={downloadIsLoading}
                 type="button"
-                class="button is-small is-primary is-outlined "
-                on:click={() => {
-                  downloadIsLoading = true;
-                  code = generateMacro(SIPQueues);
-                  clickToDownload();
-                  setTimeout(() => {
-                    downloadIsLoading = false;
-                    showModal = true;
-                  }, 1000);
-                }}
-              >
-                <span class="icon">
-                  <i class="mdi mdi-download" />
-                </span>
-                <span> Download Macro </span>
-              </button>
-            </p>
-            <p class="control">
-              <button
-                type="button"
-                class="button is-danger is-small is-outlined"
+                class="button is-danger is-small "
                 on:click={() => {
                   showModal = false;
-                  SIPQueues = [...oldSIPQueues];
                 }}
               >
                 <span class="icon">
@@ -198,6 +163,62 @@
               </button>
             </p>
           </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</Modal>
+
+<Modal bind:showModal={showDraftModal}>
+  <div class="modal-content is-translucent-black">
+    <article class="message is-danger pb-4">
+      <div class="message-header">
+        <p>{isConfigValid ? "Oops! You're Exiting Edit Mode" : 'Oops! Invalid Inputs'}</p>
+        <button
+          type="button"
+          class="delete"
+          aria-label="delete"
+          on:click={() => {
+            showDraftModal = false;
+          }}
+        />
+      </div>
+      <div class="message-body">
+        {isConfigValid
+          ? "Your edits won't be saved! Are you sure you want to exit?"
+          : 'Make sure to fill in appropriate inputs and save.'}
+      </div>
+      <div class="level level-right mt-2 mx-4">
+        <div class="field is-grouped">
+          {#if isConfigValid}
+            <p class="control">
+              <button
+                disabled={!isConfigValid}
+                class="button is-success"
+                on:click={() => {
+                  saveChanges();
+                  showDraftModal = false;
+                  showModal = false;
+                }}
+              >
+                Save changes
+              </button>
+            </p>
+          {/if}
+          <p class="control">
+            <button
+              type="button"
+              class="button is-danger "
+              on:click={() => {
+                showDraftModal = false;
+                if (isConfigValid) {
+                  showModal = false;
+                }
+              }}
+            >
+              {isConfigValid ? 'Discard Changes' : 'Close'}
+            </button>
+          </p>
         </div>
       </div>
     </article>

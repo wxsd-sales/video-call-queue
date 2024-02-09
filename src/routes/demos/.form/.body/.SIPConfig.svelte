@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CONTROL_HUB_URL } from '$lib/constants.js';
+  import { VALID_SIP, VCQ_QUEUE_BLOG } from '$lib/constants.js';
   import { createEventDispatcher } from 'svelte';
 
   export let extensionNumber: number;
@@ -34,14 +34,23 @@
   };
 
   const handleInputs = () => {
-    const extensionNumberRegex = new RegExp('^[0-9]{0,6}$');
+    const extensionNumberRegexNumber = new RegExp('^[0-9]{0,6}$');
+    const extensionNumberRegexSIP = new RegExp(VALID_SIP);
+
     const nullErrorMsgTemplate = (type: string) => `Please provide a valid ${type}`;
 
-    extensionNumberError = !extensionNumber
-      ? nullErrorMsgTemplate('extension number')
-      : !extensionNumberRegex.test(String(extensionNumber))
-      ? 'The input may consist of up to six numerical digits'
-      : '';
+    if (extensionNumber) {
+      if (
+        !extensionNumberRegexNumber.test(String(extensionNumber)) &&
+        !extensionNumberRegexSIP.test(String(extensionNumber))
+      ) {
+        extensionNumberError = 'Please provide a valid destination';
+      } else {
+        extensionNumberError = '';
+      }
+    } else {
+      extensionNumberError = nullErrorMsgTemplate('extension number');
+    }
     videoLinkError = !videoLink ? nullErrorMsgTemplate('video link') : '';
     sipTitleError = !sipTitle ? nullErrorMsgTemplate('title') : '';
 
@@ -69,7 +78,7 @@
 <form name="sip">
   <div class="mx-1 mb-4">
     <label class="label" for="extention-number"
-      >Extension Number<sup class="has-text-danger" title="required">*</sup></label
+      >Queue, Extension or SIP Address<sup class="has-text-danger" title="required">*</sup></label
     >
     <div class="control has-icons-left">
       <input
@@ -77,7 +86,6 @@
         id="extensionNumber{index}"
         class="input"
         class:is-danger={extensionNumberError}
-        type="number"
         placeholder={String(extensionNumber)}
         bind:value={extensionNumber}
         required
@@ -93,8 +101,8 @@
           <p class="has-text-danger">{extensionNumberError}</p>
         {:else}
           <p>
-            Configurable number in
-            <a href={CONTROL_HUB_URL} target="_blank">CH</a>
+            Video commercials will only play if a Webex Voice Queue is used.
+            <a href={VCQ_QUEUE_BLOG} target="_blank">More info</a>
           </p>
         {/if}
       </div>

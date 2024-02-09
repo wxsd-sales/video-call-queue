@@ -2,6 +2,7 @@
   import Background from '$components/Background/Background.svelte';
   import EmptyImage from '$lib/static/img/empty-image.avif';
   import { formStore, formIsChangedStore } from '$lib/store';
+  import tooltip from '$lib/actions/tooltip';
 
   export let backgroundBrightness: number = 55;
   export let backgroundPoster: FileList | null = null;
@@ -31,7 +32,10 @@
 
 <div class="content">
   {#if backgroundPoster?.[0]}
-    <div class="p-2 m-2 is-translucent-black sliderWrapper is-hidden-mobile">
+    <div
+      class="p-2 m-2 is-translucent-black sliderWrapper is-hidden-mobile"
+      use:tooltip={'Adjust background brightness'}
+    >
       <input
         class="slider is-fullwidth is-large"
         type="range"
@@ -51,6 +55,7 @@
       class="deleteButtonWrapper"
       on:mouseenter={() => (hideDeleteButton = false)}
       on:mouseleave={() => (hideDeleteButton = true)}
+      use:tooltip={'Replace background'}
     >
       <button
         on:click={() => {
@@ -58,11 +63,11 @@
           $formIsChangedStore = true;
         }}
         class:is-hidden={hideDeleteButton}
-        class="button deleteButton is-danger mr-2 mt-2"
+        class="button deleteButton is-light mr-2 mt-2"
         type="button"
       >
         <span class="icon is-small">
-          <i class="mdi mdi-36px  mdi-close" />
+          <i class="mdi mdi-36px  mdi-pencil" />
         </span>
       </button>
     </div>

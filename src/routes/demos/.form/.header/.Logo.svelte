@@ -1,5 +1,6 @@
 <script lang="ts">
   import Brand from '$components/Brand/Brand.svelte';
+  import tooltip from '$lib/actions/tooltip';
   import { formStore, formIsChangedStore } from '$lib/store';
 
   export let brandLogo: FileList | null = '';
@@ -33,10 +34,11 @@
       class="logoButtons is-fullheight"
       on:mouseenter={() => (displayDeleteButton = true)}
       on:mouseleave={() => (displayDeleteButton = false)}
+      use:tooltip={'Replace logo'}
     >
       <Brand title={window.URL.createObjectURL(brandLogo[0])} />
       <button
-        class="button is-small is-danger deleteIcon"
+        class="button is-small is-light deleteIcon"
         class:is-hidden={!displayDeleteButton}
         on:click={() => {
           brandLogo = null;
@@ -44,7 +46,7 @@
         }}
       >
         <span class="icon is-small">
-          <i class="mdi mdi-24px mdi-close" />
+          <i class="mdi mdi-24px mdi-pencil" />
         </span>
       </button>
     </div>

@@ -6,6 +6,7 @@
   import Clock from '$components/Clock/Clock.svelte';
   import Modal from '$components/Modal/Modal.svelte';
   import { formStore, formIsChangedStore } from '$lib/store';
+  import tooltip from '$lib/actions/tooltip';
 
   export let displayWeather = false;
   export let weatherCityId = 4887398;
@@ -26,19 +27,21 @@
   on:mouseleave={() => (disableDeleteButton = false)}
 >
   {#if displayWeather}
-    <button
-      on:click={() => {
-        $formIsChangedStore = true;
-        displayWeather = false;
-        $formStore['displayWeather'] = false;
-      }}
-      class:is-hidden={!disableDeleteButton}
-      class="button is-danger is-small deleteIcon"
-    >
-      <span class="icon ">
-        <i class="mdi mdi-24px mdi-close " />
-      </span>
-    </button>
+    <div use:tooltip={'Update location'}>
+      <button
+        on:click={() => {
+          $formIsChangedStore = true;
+          displayWeather = false;
+          $formStore['displayWeather'] = false;
+        }}
+        class:is-hidden={!disableDeleteButton}
+        class="button is-light is-small deleteIcon"
+      >
+        <span class="icon ">
+          <i class="mdi mdi-24px mdi-pencil " />
+        </span>
+      </button>
+    </div>
     <div class="weatherInfo">
       <Weather cityId={weatherCityId} units={weatherUnits} {getWeatherResponse} {displayWeather}>
         <Clock timeFormatOptions={{ hour: '2-digit', minute: '2-digit', hour12: false }} />
