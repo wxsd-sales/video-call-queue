@@ -11,6 +11,7 @@ node_modules
 *.md
 *.txt
 *.avif
+*.gif
 .nvmrc
 Dockerfile
 
