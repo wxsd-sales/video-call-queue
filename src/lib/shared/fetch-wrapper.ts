@@ -39,7 +39,7 @@ export abstract class FetchWrapper<T> {
    * @returns {Promise<Response>}
    */
   protected handleResponse(response: Response) {
-    return response.ok ? Promise.resolve(response) : Promise.resolve({});
+    return response.ok ? Promise.resolve(response) : Promise.reject(response);
   }
 
   /**

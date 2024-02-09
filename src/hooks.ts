@@ -106,29 +106,6 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
 };
 
-export const handleError: HandleError = async ({ error, event }) => {
-  const date = new Date();
-  const ipAddress = prerendering ? 'unknown' : event.clientAddress;
-  const message = [
-    [date.toISOString(), 'ERROR', ipAddress, event.request.method, event.url.href, error.name, error.message].join(' '),
-    error.stack || '\b',
-    error.frame || '\b',
-    error.cause || '\b'
-  ].join('\n');
-
-  if (import.meta.env.PROD) {
-    webexHttpMessagesResource(env.WEBEX_NOTIFICATION_CHANNEL_TOKEN)
-      .createMessage({
-        roomId: env.WEBEX_NOTIFICATION_CHANNEL_ID,
-        markdown: ['```text', message, '```'].join('\n')
-      })
-      .catch()
-      .finally();
-  }
-
-  console.error('\x1b[31m' + message + '\x1b[0m');
-};
-
 export const getSession: GetSession = async (event) => {
   const email = event.locals.session?.user?.email;
   const userId = event.locals.session?.user?.uuid;
