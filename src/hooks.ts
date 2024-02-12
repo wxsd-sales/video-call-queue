@@ -76,7 +76,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     const fileType = new RegExp(/^.*\.(webm|mp4|jpg|jpeg|png|gif|ico|svg|eot|otf|ttf|woff|woff2)$/i);
     const isStatic = event.url.pathname.match(fileType);
-    const isSkipReporting = !!response.headers.get('Skip-Reporting');
     const message = [
       d1.toISOString(),
       'INFO',
@@ -86,16 +85,6 @@ export const handle: Handle = async ({ event, resolve }) => {
       isStatic ? '' : response.status, // static assets not handled by svelte-kit
       isStatic ? '' : Date.now() - d1.getTime() + ' ms' // static assets not handled by svelte-kit
     ].join(' ');
-
-    if (import.meta.env.PROD && !isStatic && !isSkipReporting && response.status >= 400) {
-      webexHttpMessagesResource(env.WEBEX_NOTIFICATION_CHANNEL_TOKEN)
-        .createMessage({
-          roomId: env.WEBEX_NOTIFICATION_CHANNEL_ID,
-          markdown: ['```text', message, '```'].join('\n')
-        })
-        .catch()
-        .finally();
-    }
 
     console.info('\x1b[34m' + message + '\x1b[0m');
 

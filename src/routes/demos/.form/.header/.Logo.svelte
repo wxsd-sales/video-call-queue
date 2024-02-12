@@ -5,7 +5,7 @@
 
   export let brandLogo: FileList | null = '';
 
-  let acceptedFileTypes: string = '.png, .svg, .gif, .webp, .avif, .apng';
+  let acceptedFileTypes: string = '.png, .svg, .gif, .webp, .avif, .apng, .jpg, .jpeg';
   let maxFileSize: number = 200000;
 
   let displayDeleteButton = false;
