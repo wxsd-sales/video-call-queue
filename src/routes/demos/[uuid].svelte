@@ -43,11 +43,17 @@
     saved: boolean,
     saveIsLoading: boolean,
     generateIsLoading: boolean,
-    showMacroModal: boolean;
+    showMacroModal: boolean,
+    formRef: HTMLFormElement;
 
   let codeSnippet = generateMacro(SIPQueues);
 
   const onSubmit = async (e) => {
+    if (!formRef.checkValidity()) {
+      formRef.reportValidity();
+      return;
+    }
+
     try {
       const formData = new FormData();
       const isNew = $page.params.uuid === 'new';
@@ -130,6 +136,7 @@
       on:input={() => ($formIsChangedStore = true)}
       class="column is-flex is-relative is-justify-content-center has-text-white"
       on:keydown={handleKeydown}
+      bind:this={formRef}
     >
       <div bind:clientHeight={height} bind:clientWidth={width}>
         <img style="width: 100vh" alt="desk-pro" src={DeskPro} />
