@@ -7,13 +7,14 @@ export const GET = async (requestEvent: RequestEvent) => {
     return { status: 302, headers: { Location: '/demos' } };
   }
 
+  const prompt = 'select_account';
   const responseType = 'code';
   const redirectUri = env.ORIGIN + `/auth/webex/callback`;
   const state = requestEvent.locals.session?.uuid;
 
   const clientId = env.WEBEX_AUTHORIZATION_CODE_CLIENT_ID;
   const scope = env.WEBEX_AUTHORIZATION_CODE_CLIENT_SCOPE;
-  const params = humps.decamelizeKeys({ clientId, redirectUri, responseType, scope, state });
+  const params = humps.decamelizeKeys({ clientId, prompt, redirectUri, responseType, scope, state });
 
   return {
     status: 302,
