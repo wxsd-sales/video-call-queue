@@ -13,7 +13,7 @@
       window.location.hash = String(extensionNumber);
     }, 500 );
     setTimeout(()=>{
-      window.location.hash = String(extensionNumber);
+      window.location.hash = '';
     }, 1500 );
   };
 
