@@ -8,8 +8,13 @@
   let buttonIsLoading = false;
 
   const dial = () => {
-    window.location.hash = String(extensionNumber);
     window.location.hash = '';
+    setTimeout(()=>{
+      window.location.hash = String(extensionNumber);
+    }, 500 );
+    setTimeout(()=>{
+      window.location.hash = String(extensionNumber);
+    }, 1500 );
   };
 
   /** Submits a request and append it to the queue */
