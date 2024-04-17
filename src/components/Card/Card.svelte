@@ -5,16 +5,19 @@
   export let index: number;
   export let isDevice: boolean;
 
+  const loadingTimer = 2000;
+
   let buttonIsLoading = false;
+  
 
   const dial = () => {
-    window.location.hash = '';
+    history.replaceState(null, "", " ");
     setTimeout(()=>{
       window.location.hash = String(extensionNumber);
     }, 500 );
     setTimeout(()=>{
-      window.location.hash = '';
-    }, 1500 );
+      history.replaceState(null, "", " ");
+    }, loadingTimer );
   };
 
   /** Submits a request and append it to the queue */
@@ -24,12 +27,12 @@
     setTimeout(() => {
       buttonIsLoading = false;
       dial();
-    }, 1000);
+    }, loadingTimer);
   };
 </script>
 
-<div class="tile is-justify-content-center m-2 ">
-  <div id={index} class="card is-translucent-black p-3 ">
+<div class="tile is-justify-content-center m-2">
+  <div id={index.toString()} class="card is-translucent-black p-3 ">
     <div class="card-image">
       <figure class="image is-3by2">
         <img src={img} alt="support-figure" class="is-fullwidth" />
@@ -38,7 +41,8 @@
     <div class="card-content">
       <div class="content">
         <button
-          class="button  is-size-5 is-primary is-centered is-fullwidth {buttonIsLoading && 'is-loading'}"
+          class="button  is-size-5 is-primary is-centered is-fullwidth"
+          class:is-loading={buttonIsLoading}
           disabled={!isDevice}
           on:click={submitRequest}
           >{title}
