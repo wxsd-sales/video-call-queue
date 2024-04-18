@@ -66,9 +66,9 @@ main()
 
 async function checkCallingRegistered(){
   try{
-    let displayName = await xapi.Config.SIP.DisplayName.get();
-    console.log(displayName);
-    if(displayName.trim().startsWith("+") && displayName.trim().indexOf("internal:") >= 0){
+    let status = await xapi.Status.SIP.Registration[1].Status.get();
+    console.log('SIP Registration Status:', status);
+    if(status === 'Registered'){
       console.log('device is calling registered');
     } else {
       showCallingAlert();
