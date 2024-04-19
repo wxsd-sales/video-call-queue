@@ -59,35 +59,37 @@ xapi.Status.Call.RemoteNumber.on(processRemoteNumber);
 xapi.Status.Call.CallbackNumber.on(processCallbackNumber);
 
 async function main(){
-  await checkCallingRegistered();
+  let registered = await checkCallingRegistered();
+  if (!registered) showCallingAlert()
 }
 
 main()
 
 async function checkCallingRegistered(){
-  try{
-    let status = await xapi.Status.SIP.Registration[1].Status.get();
+  try {
+    let status = await xapi.Status.SIP.Registration[1].Status.get()
     console.log('SIP Registration Status:', status);
-    if(status === 'Registered'){
-      console.log('device is calling registered');
-    } else {
-      showCallingAlert();
-    }
-  }catch(e){
-    console.error(e);
-    showCallingAlert();
+    return (status === 'Registered')
+  } catch (error) {
+    console.warn('Error getting SIP Registration Status:', error.message)
+    return false
   }
 }
 
 function showCallingAlert(){
-  alert("Error", "Device not registered for Calling, or firmware out of date.");
+  alert("Warning", "This device is not registered to Webex Calling services. Click to call from Kiosk mode is not available");
 }
 
 function alert(title, message, duration){
-  if(title.toLowerCase() === "error"){
-    console.error(title +': '+ message);
-  } else {
-    console.log(title +': '+ message);
+  switch (title.toLowerCase()) {
+    case 'error':
+      console.error(title + ': ' + message);
+      break;
+    case 'warning':
+      console.warn(title + ': ' + message);
+      break;
+    default:
+      console.log(title + ': ' + message);
   }
 
   xapi.Command.UserInterface.Message.Alert.Display
@@ -126,8 +128,12 @@ async function processWebViews(event) {
   const sipURI = url.split('#')[Number('1')]
 
   if(sipURI) {
-    await checkCallingRegistered();
-    xapi.Command.Dial({Number: sipURI})
+    let registered = await checkCallingRegistered();
+    if (!registered) {
+      showCallingAlert()
+      return
+    }
+    xapi.Command.Dial({ Number: sipURI })
   }
 }
 
