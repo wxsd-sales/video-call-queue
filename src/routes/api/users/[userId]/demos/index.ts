@@ -58,10 +58,10 @@ export const GET: RequestHandler = async (requestEvent: RequestEvent) => {
   if (queryValidationErrors.length > 0) {
     return { status: 400, body: { query: queryValidationErrors } };
   }
-  const db = await MikroORM.init({
-    ...config,
-    ...{ entities: [entity.Session, entity.User, entity.Data, entity.Demo] }
-  }).then((r) => r.em.fork());
+  // const db = await MikroORM.init({
+  //   ...config,
+  //   ...{ entities: [entity.Session, entity.User, entity.Data, entity.Demo] }
+  // }).then((r) => r.em.fork());
 
   try {
     const db = await MikroORM.init({

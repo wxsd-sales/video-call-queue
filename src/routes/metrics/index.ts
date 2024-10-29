@@ -1,6 +1,5 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import { Entity, LoadStrateg, MikroORM } from '@mikro-orm/core';
-import { EntityRepository } from '@mikro-orm/better-sqlite';
+import { MikroORM } from '@mikro-orm/core';
 import { Demo, User } from '../../database/entities';
 import config from '../../../mikro-orm.config';
 

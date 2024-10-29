@@ -14,22 +14,22 @@
   import { onMount } from 'svelte';
   import { base } from '$app/paths';
   import { page } from '$app/stores';
-  import {
-    PUBLIC_APPD_CONFIG_APP_KEY,
-    PUBLIC_APPD_CONFIG_EXTERNAL_URL,
-    PUBLIC_APPD_CONFIG_BEACON_URL
-  } from '$env/static/public';
+  // import {
+  //   PUBLIC_APPD_CONFIG_APP_KEY,
+  //   PUBLIC_APPD_CONFIG_EXTERNAL_URL,
+  //   PUBLIC_APPD_CONFIG_BEACON_URL
+  // } from '$env/static/public';
 
-  let APPD_CONFIG = {
-    appKey: PUBLIC_APPD_CONFIG_APP_KEY,
-    adrumExtUrlHttp: PUBLIC_APPD_CONFIG_EXTERNAL_URL,
-    adrumExtUrlHttps: PUBLIC_APPD_CONFIG_EXTERNAL_URL.replace('http', 'https'),
-    beaconUrlHttp: PUBLIC_APPD_CONFIG_BEACON_URL,
-    beaconUrlHttps: PUBLIC_APPD_CONFIG_BEACON_URL.replace('http', 'https'),
-    resTiming: { bufSize: 200, clearResTimingOnBeaconSend: true },
-    useHTTPSAlways: false,
-    maxUrlLength: 512
-  };
+  // let APPD_CONFIG = {
+  //   appKey: PUBLIC_APPD_CONFIG_APP_KEY,
+  //   adrumExtUrlHttp: PUBLIC_APPD_CONFIG_EXTERNAL_URL,
+  //   adrumExtUrlHttps: PUBLIC_APPD_CONFIG_EXTERNAL_URL.replace('http', 'https'),
+  //   beaconUrlHttp: PUBLIC_APPD_CONFIG_BEACON_URL,
+  //   beaconUrlHttps: PUBLIC_APPD_CONFIG_BEACON_URL.replace('http', 'https'),
+  //   resTiming: { bufSize: 200, clearResTimingOnBeaconSend: true },
+  //   useHTTPSAlways: false,
+  //   maxUrlLength: 512
+  // };
 
   export let email = undefined;
   export let isError = false;
@@ -86,7 +86,7 @@
 
 <svelte:head>
   <title>Webex Video Call Queue</title>
-  <meta name="appd-config" content={JSON.stringify(APPD_CONFIG)} />
+  <!-- <meta name="appd-config" content={JSON.stringify(APPD_CONFIG)} />
   <script>
     window['adrum-start-time'] = new Date().getTime();
     var {
@@ -124,7 +124,7 @@
       config.maxUrlLength = maxUrlLength;
     })(window['adrum-config'] || (window['adrum-config'] = {}));
   </script>
-  <script src="//cdn.appdynamics.com/adrum/adrum-23.3.0.4265.js"></script>
+  <script src="//cdn.appdynamics.com/adrum/adrum-23.3.0.4265.js"></script> -->
 </svelte:head>
 
 <noscript id="javascript-warning" class="hero is-danger is-bold">

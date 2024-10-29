@@ -25,7 +25,6 @@
     targetDemoId,
     demoIsLoading
   } from '$lib/store';
-  import { onMount } from 'svelte';
   import loadingGif from '$lib/static/gif/webex-loading.gif';
 
   export let backgroundPoster: Data;

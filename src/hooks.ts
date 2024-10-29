@@ -1,9 +1,7 @@
-import type { GetSession, Handle, HandleError } from '@sveltejs/kit';
-import { webexHttpMessagesResource } from '$lib/webex/http-wrapper';
+import type { GetSession, Handle } from '@sveltejs/kit';
 import { prerendering } from '$app/env';
 import { LoadStrategy, MikroORM } from '@mikro-orm/core';
 import config from '../mikro-orm.config';
-import env from '$lib/environment';
 import * as entity from './database/entities';
 import * as cookie from 'cookie';
 

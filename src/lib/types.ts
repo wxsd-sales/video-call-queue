@@ -12,16 +12,16 @@ export interface TokenResponse {
   refreshTokenExpiresAt: string;
 }
 
-export interface AuthorizeResponse {
-  deviceCode: string;
-  expiresIn: number;
-  expiresAt: string;
-  userCode: string;
-  verificationUri: string;
-  verificationUriComplete: string;
-  interval: number;
-  qrImage: string;
-}
+// export interface AuthorizeResponse {
+//   deviceCode: string;
+//   expiresIn: number;
+//   expiresAt: string;
+//   userCode: string;
+//   verificationUri: string;
+//   verificationUriComplete: string;
+//   interval: number;
+//   qrImage: string;
+// }
 
 export interface WeatherResponse {
   units: WEATHER_RESPONSE_UNITS;
@@ -36,15 +36,11 @@ export interface WeatherResponse {
   svg: string;
 }
 
-export interface MindyResponse {
-  redirect: string;
-}
+// export interface ICResponse {
+//   host: [{ cipher: string }];
+//   guest: [{ cipher: string }];
+// }
 
-export interface ICResponse {
-  host: [{ cipher: string }];
-  guest: [{ cipher: string }];
-}
-
-export interface ICToken {
-  token: string;
-}
+// export interface ICToken {
+//   token: string;
+// }

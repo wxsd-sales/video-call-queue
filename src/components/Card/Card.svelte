@@ -8,16 +8,15 @@
   const loadingTimer = 2000;
 
   let buttonIsLoading = false;
-  
 
   const dial = () => {
-    history.replaceState(null, "", " ");
-    setTimeout(()=>{
+    history.replaceState(null, '', ' ');
+    setTimeout(() => {
       window.location.hash = String(extensionNumber);
-    }, 500 );
-    setTimeout(()=>{
-      history.replaceState(null, "", " ");
-    }, loadingTimer );
+    }, 500);
+    setTimeout(() => {
+      history.replaceState(null, '', ' ');
+    }, loadingTimer);
   };
 
   /** Submits a request and append it to the queue */

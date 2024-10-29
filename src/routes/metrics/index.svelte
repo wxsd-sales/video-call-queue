@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CirclePackChart, LineChart, TreemapChart, TreeChart } from '@carbon/charts-svelte';
+  import { CirclePackChart, LineChart, TreeChart } from '@carbon/charts-svelte';
   import '@carbon/charts/styles.css';
 
   export let userDemosData;
