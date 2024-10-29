@@ -99,13 +99,9 @@ Open a new terminal window and follow the instructions below to setup the projec
    - Take note of your Client ID and Client Secret. Assign these values to the `WEBEX_AUTHORIZATION_CODE_CLIENT_ID`
      and `WEBEX_AUTHORIZATION_CODE_CLIENT_SECRET` environment variables within the `.env` file respectively.
 
-4. Review and follow the [Creating a Webex Bot](https://developer.webex.com/docs/bots#creating-a-webex-bot) guide.
-   Take note of your Bot ID and Bot access token. Assign these values to the `WEBEX_BOT_ID` and
-   `WEBEX_BOT_TOKEN` environment variables within the `.env` file respectively.
+4. Set other environment variables as needed in the `.env` file.
 
-5. Set other environment variables as needed in the `.env` file.
-
-6. Start the application using:
+5. Start the application using:
    ```
    docker-compose up
    ```
