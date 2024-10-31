@@ -77,7 +77,7 @@ Open a new terminal window and follow the instructions below to setup the projec
 1. Clone this repository and change directory:
 
    ```
-   git clone https://github.com/wxsd-sales/video-queue && cd video-queue
+   git clone -b customer-code --single-branch https://github.com/wxsd-sales/video-call-queue.git && cd video-call-queue
    ```
 
 2. Copy `.env.example` file as `.env`:
@@ -91,22 +91,28 @@ Open a new terminal window and follow the instructions below to setup the projec
    - Your registration must have the following [Webex REST API scopes](https://developer.webex.com/docs/integrations#scopes):
      | Scope | Description |
      |---------------------------|----------------------------------------------------------------------------------|
-     | spark-people | See details for any device in your organization |
+     | spark:people_read | See details for any device in your organization |
      | spark:kms | Permission to interact with encrypted content |
-   - Use these Redirect URIs:
-     - `https://localhost/auth/webex/callback`
-     - `http://localhost/auth/webex/callback`
+   - Use one of these Redirect URIs:
+     - `http://localhost:3000/auth/webex/callback`
+     - `https://<your-public-tunnel>/auth/webex/callback`
    - Take note of your Client ID and Client Secret. Assign these values to the `WEBEX_AUTHORIZATION_CODE_CLIENT_ID`
      and `WEBEX_AUTHORIZATION_CODE_CLIENT_SECRET` environment variables within the `.env` file respectively.
 
 4. Set other environment variables as needed in the `.env` file.
+   
+5. Install all dependencies by running:
+    ```
+    npm install
+    ```
 
-5. Start the application using:
+6. Start the application using:
    ```
-   docker-compose up
+   docker build --platform=linux/amd64 -t video-call-queue .
+   docker run -p 3000:3000 --platform=linux/amd64 -t video-call-queue
    ```
 
-Lastly, navigate to `http://localhost` in your browser and follow instructions.
+Lastly, navigate to `http://localhost:3000/auth` in your browser and follow instructions.
 
 <br />
 
